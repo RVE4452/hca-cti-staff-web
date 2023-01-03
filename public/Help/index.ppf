@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ppfml version="2.00" project="MyScheduler User Manual" type="4">
+  <contextmap>
+    
+  </contextmap>
+  <topiclist defaulttopic="Welcome_to_MyScheduler.htm">
+    
+    <topic>
+      Welcome_to_MyScheduler.htm
+    </topic>
+    
+    <topic>
+      MyScheduler_Overview.htm
+    </topic>
+    
+    <topic>
+      Accessing_MyScheduler.htm
+    </topic>
+    
+    <topic>
+      Navigation.htm
+    </topic>
+    
+    <topic>
+      Employee_Profile_and_Notifications.htm
+    </topic>
+    
+    <topic>
+      Self-Scheduling_Defaults.htm
+    </topic>
+    
+    <topic>
+      Scheduling_Preferences.htm
+    </topic>
+    
+    <topic>
+      SMS_Text_Message_Management.htm
+    </topic>
+    
+    <topic>
+      Payroll_Details.htm
+    </topic>
+    
+    <topic>
+      Calendar_View.htm
+    </topic>
+    
+    <topic>
+      Department_Schedule_View.htm
+    </topic>
+    
+    <topic>
+      Operating_Room_Procedures.htm
+    </topic>
+    
+    <topic>
+      Self-Scheduling.htm
+    </topic>
+    
+    <topic>
+      Department_Needs.htm
+    </topic>
+    
+    <topic>
+      Trade_Shifts.htm
+    </topic>
+    
+    <topic>
+      Request_Time_Off.htm
+    </topic>
+    
+    <topic>
+      Unavailability.htm
+    </topic>
+    
+    <topic>
+      Browser_Support.htm
+    </topic>
+    
+    <topic>
+      Release_Notes.htm
+    </topic>
+    
+  </topiclist>
+  <filenamemap>
+    <filenameentry moniker="wh_languagetype">
+      <filename>
+        en_US
+      </filename>
+    </filenameentry>
+    <filenameentry moniker="wh_stoplist">
+      <filename>
+        whxdata/stopwords.xml
+      </filename>
+    </filenameentry>
+    <filenameentry moniker="startpage">
+      <filename>
+        index.htm
+      </filename>
+    </filenameentry>
+        
+  </filenamemap>
+</ppfml>
