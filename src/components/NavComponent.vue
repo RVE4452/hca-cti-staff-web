@@ -1,6 +1,6 @@
 <template>
   <neu-header>
-    <neu-toolbar  nav fluid color="primary-100">
+    <neu-toolbar v-if="oidcUser" nav fluid color="primary-100">
       <neu-drawer-button slot="start" text="Menu" class="d-md-none" drawer="first">
       </neu-drawer-button>
 
@@ -27,7 +27,7 @@
       </neu-row>
 
       <neu-user-controls slot="end" class="d-none d-md-flex"
-        >
+        :user="oidcUser.firstName.toUpperCase() + ' ' + oidcUser.lastName.toUpperCase()">
         <neu-avatar class="icon-padding-person" color="plain-0">
           <neu-icon>person</neu-icon>
         </neu-avatar>
@@ -46,7 +46,7 @@
     </neu-toolbar>
   </neu-header>
 
-  <neu-drawer  side="start" drawer-id="first" content-id="drawerContent">
+  <neu-drawer v-if="oidcUser" side="start" drawer-id="first" content-id="drawerContent">
     <neu-content id="drawerContent" nav>
       <neu-list lines="full" nav>
         <neu-drawer-toggle auto-hide drawer="first">
@@ -77,7 +77,7 @@
         </neu-item>
       </neu-list>
 
-      <neu-user-controls  drawer>
+      <neu-user-controls :user="oidcUser.firstName.toUpperCase() + ' ' + oidcUser.lastName.toUpperCase()" drawer>
         <neu-avatar slot="avatar" color="gray-60">
           <neu-icon>person</neu-icon>
         </neu-avatar>
@@ -131,7 +131,7 @@ export default defineComponent({
   data() {
     return {
       selectedPage: '',
-      pages: ['Schedule', 'DeaprtmentView'],
+      pages: ['Schedule', 'Deaprtment'],
       appLogoutUrl: process.env.VUE_APP_LOGOUT,
     }
   },
