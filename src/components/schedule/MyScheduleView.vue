@@ -4,12 +4,7 @@
         <div class="schedulerMainDiv" v-bind:class="{ 'panel-open': sharedToggle, 'posNone': isWelcomeModalVisible }">
         <div v-if="isWelcomeModalVisible">
             <WelcomeMsgPopup @closeWelcomePopup="onCloseWelcomePopup()"></WelcomeMsgPopup>
-        </div>
-        <!-- HEADER -->
-        <!-- <div class="neu-dashboard__header neu-elevation-1 neu-text--asphalt schedulingHeader" v-bind:class="{ 'no-print': viewFlag !='CalView'}">
-           
-            </div> -->
-            <!-- END HEADER -->
+        </div>       
             <div class="container calContainer" v-if="viewFlag == 'CalView'">
                 <div v-if="!isLoading">
                     <!-- DESKTOP NAV -->
@@ -31,21 +26,15 @@
                             <div style="text-align: center">
                                 <h5>
                                     
-                                    <neu-icon @click="beforeMonthNavigate(false)"  style="position: relative; top: 4px" class="m-3 neu-icon neu-icon--large hydrated" data-v-f0432b46="">chevron_left</neu-icon>
+                                    <neu-icon @click="beforeMonthNavigate(false)"  style="position: relative; top: 4px" class="m-3 neu-icon neu-icon--large hydrated">chevron_left</neu-icon>
                                     <span>
                                         {{ this.currentDate }}
-                                    </span>
-                                    <!-- <i @click="beforeMonthNavigate(true)"
-                                       name="scheduleRightChevron"
-                                       class="material-icons pointer calendar-navigation"
-                                       style="position: relative; top: 4px">
-                                        chevron_right
-                                    </i> -->
-                                    <neu-icon @click="beforeMonthNavigate(true)" class="m-3 neu-icon neu-icon--large hydrated" data-v-f0432b46="">chevron_right</neu-icon>
+                                    </span>                                  
+                                    <neu-icon @click="beforeMonthNavigate(true)" style="position: relative; top: 4px" class="m-3 neu-icon neu-icon--large hydrated" >chevron_right</neu-icon>
                                 </h5>
                             </div>
                         </div>
-                        <div class="col-md-3 neu-right-elem">
+                        <div class="col-md-3 neu-right-elem">                            
                             <div class="neu-float--right">
                                 <h5>
                                     <p>
@@ -74,7 +63,7 @@
                                  class="neu-float--right"
                                  @click="toggleFilterPanel()">
                                 <!-- <i class="material-icons">filter_list</i> -->
-                                <neu-icon class="m-3 neu-icon neu-icon--large hydrated">filter_list</neu-icon>
+                                <neu-icon class="m-3 neu-icon neu-icon--large hydrated neu-float--right">filter_list</neu-icon>
                             </div>
                         </div>
                     </div>
