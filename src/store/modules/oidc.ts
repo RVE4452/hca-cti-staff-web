@@ -3,7 +3,7 @@ import { vuexOidcCreateStoreModule } from "vuex-oidc";
 // import NProgress from "nprogress";
 import store from "@/store";
 import http from "@/store/axios";
-import { WebStorageStateStore } from 'oidc-client';
+import { WebStorageStateStore } from 'oidc-client-ts';
 import router from "@/router";
 
 export default vuexOidcCreateStoreModule(
@@ -14,7 +14,6 @@ export default vuexOidcCreateStoreModule(
     silentRedirectUri: process.env.VUE_APP_SILENTREDIRECTURI!,
     responseType: "code",
     scope: "openid profile",
-    loadUserInfo: false,
     automaticSilentRenew: true,
     automaticSilentSignin: false,
     

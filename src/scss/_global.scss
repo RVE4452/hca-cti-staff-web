@@ -1,0 +1,34 @@
+html {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+
+  text-rendering: optimizeLegibility;
+
+  position: relative;
+
+  width: 100%;
+  min-height: 100vh;
+
+  scroll-behavior: smooth;
+
+  padding: 20px !important;
+}
+
+.icon-padding {
+  margin-left: 3px !important;
+  margin-right: 3px !important;
+}
+
+.icon-padding-person {
+  margin-left: 3px !important;
+  margin-right: 8px !important;
+}
+
+.row-align-center {
+  align-items: center !important;
+}

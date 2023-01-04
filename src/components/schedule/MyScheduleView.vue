@@ -12,71 +12,6 @@
             <!-- END HEADER -->
             <div class="container calContainer" v-if="viewFlag == 'CalView'">
                 <div v-if="!isLoading">
-                    <!-- MOBILE NAV -->
-                    <div class="row neu-margin--top-10 mobile-header no-print">
-                        <div class="col-md-12 pb2">
-                            <h5>
-                                <p class="neu-float--left"
-                                   style="margin-top: 0.25em;">
-                                    <small @click.prevent="todayDate()">
-                                        <i class="material-icons">home</i>
-                                        <a style="position: relative; top: -7px; margin-left: 0.5em;"
-                                           class="neu-link"
-                                           href="#">TODAY</a>
-                                    </small>
-                                </p>
-                            </h5>
-                            <span style="margin-top: 0.25em; margin-left: 0.5em;"
-                                 class="neu-float--right"
-                                 @click="toggleFilterPanel()">
-                                <i class="material-icons">filter_list</i>
-                            </span>
-                            <h5 class="neu-float--right">
-                                <p>
-                                    <span class="neu-text--tag" v-if="scheduleStatus.toUpperCase() == 'PLAN SHEET' && isTierOpen">
-                                        SELF-SCHEDULING OPEN
-                                    </span>
-                                    <span class="neu-text--tag" v-if="scheduleStatus.toUpperCase() == 'PLAN SHEET' && !isTierOpen">
-                                        FUTURE SCHEDULE
-                                    </span>
-                                    <span class="neu-text--tag" v-if="scheduleStatus.toUpperCase() == 'AFTER PLAN SHEET'">
-                                        PENDING MANAGEMENT REVIEW
-                                    </span>
-                                    <span class="neu-text--tag" v-if="scheduleStatus.toUpperCase() == 'FIRST APPROVAL'">
-                                        PENDING MANAGEMENT APPROVAL
-                                    </span>
-                                    <span class="neu-text--tag" v-if="scheduleStatus.toUpperCase() == 'POSTED'">
-                                        SCHEDULE POSTED
-                                    </span>
-                                    <span class="neu-text--tag" v-if="scheduleStatus.toUpperCase() == 'BEFORE PLAN SHEET' || scheduleStatus.toUpperCase() == 'FUTURE'">
-                                        FUTURE SCHEDULE
-                                    </span>
-                                </p>
-                            </h5>
-                        </div>
-                        <div class="col-md-12 pb2 ph0">
-                            <div style="text-align: center">
-                                <h5>
-                                    <i @click="prevMonth($event)"
-                                       name="scheduleLeftChevron"
-                                       class="material-icons pointer calendar-navigation"
-                                       style="position: relative; top: 4px">
-                                        chevron_left
-                                    </i>
-                                    <span class="schedulePeriodDate">
-                                        {{ this.currentDate }}
-                                    </span>
-                                    <i @click="nextMonth"
-                                       name="scheduleRightChevron"
-                                       class="material-icons pointer calendar-navigation"
-                                       style="position: relative; top: 4px">
-                                        chevron_right
-                                    </i>
-                                </h5>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- DESKTOP NAV -->
                     <div class="row neu-margin--top-10 desktop-header no-print">
                         <div class="col-md-3">
@@ -84,7 +19,7 @@
                                 <p class="neu-float--left"
                                    style="margin-top: 0.25em; margin-left: 1em;">
                                     <small @click.prevent="todayDate()">
-                                        <i class="material-icons">home</i>
+                                        <neu-icon class="m-3 neu-icon neu-icon--large hydrated">home</neu-icon>                                        
                                         <a style="position: relative; top: -7px; margin-left: 0.5em;"
                                            class="neu-link"
                                            href="#">TODAY</a>
@@ -95,21 +30,18 @@
                         <div class="col-md-6">
                             <div style="text-align: center">
                                 <h5>
-                                    <i @click="beforeMonthNavigate(false)"
-                                       name="scheduleLeftChevron"
-                                       class="material-icons pointer calendar-navigation"
-                                       style="position: relative; top: 4px">
-                                        chevron_left
-                                    </i>
+                                    
+                                    <neu-icon @click="beforeMonthNavigate(false)"  style="position: relative; top: 4px" class="m-3 neu-icon neu-icon--large hydrated" data-v-f0432b46="">chevron_left</neu-icon>
                                     <span>
                                         {{ this.currentDate }}
                                     </span>
-                                    <i @click="beforeMonthNavigate(true)"
+                                    <!-- <i @click="beforeMonthNavigate(true)"
                                        name="scheduleRightChevron"
                                        class="material-icons pointer calendar-navigation"
                                        style="position: relative; top: 4px">
                                         chevron_right
-                                    </i>
+                                    </i> -->
+                                    <neu-icon @click="beforeMonthNavigate(true)" class="m-3 neu-icon neu-icon--large hydrated" data-v-f0432b46="">chevron_right</neu-icon>
                                 </h5>
                             </div>
                         </div>
@@ -141,7 +73,8 @@
                             <div style="margin-top: 0.25em; margin-left: 0.5em;"
                                  class="neu-float--right"
                                  @click="toggleFilterPanel()">
-                                <i class="material-icons">filter_list</i>
+                                <!-- <i class="material-icons">filter_list</i> -->
+                                <neu-icon class="m-3 neu-icon neu-icon--large hydrated">filter_list</neu-icon>
                             </div>
                         </div>
                     </div>
@@ -280,8 +213,9 @@
     import { ORSchedule, Event } from "@/models";
     import { Options, Vue } from "vue-class-component";
     import moment from "moment";
-    import { mapState } from "vuex";  
-    import {ref,onMounted} from 'vue' 
+
+    import { mapState } from "vuex"; 
+    import { NeuContent, } from '@neutron/vue'
     //import { VclFacebook, VclInstagram } from "vue-content-loading";
     // import { bus } from "../../main";
     //import bus from '../../eventBus'
@@ -291,7 +225,21 @@
     import ConfirmMsgPopUp from "../shared/ConfirmMsgPopUp.vue";
     import AlertPopUp from "../shared/AlertPopUp.vue";
     import { useAppInsights } from '../../store/modules/AppInsights';
-    
+    import {
+    NeuButton,
+    NeuTableRowCount,
+    NeuTable,
+    NeuTableRow,
+    NeuLabel,
+    NeuTableBody,
+    NeuTableHeading,
+    NeuCard,
+    NeuInput,
+    NeuContainer,
+    NeuRow,
+    NeuCol,
+    NeuPaginator
+} from "@neutron/vue";
     
     @Options({
     props: {
@@ -301,9 +249,9 @@
     },
     
     computed: {
-        ...mapState(['oidcUser']),
+        ...mapState('oidcStore',['oidcUser']),
          ...mapState('schedule',['userSchedules']),
-        ...mapState('profile', ['profileData', 'oidcUser', 'appInsightEventData'])
+        ...mapState('profile', ['profileData', 'appInsightEventData'])
     },
     components: {
         FullCalendar, 
@@ -315,7 +263,20 @@
                 WelcomeMsgPopup,
                 ConfirmMsgPopUp,
                 AlertPopUp,
-                NotificationMsgPopUp
+                NotificationMsgPopUp,
+                 NeuButton,
+                NeuTableRowCount,
+                NeuTable,
+                NeuTableRow,
+                NeuLabel,
+                NeuTableBody,
+                NeuTableHeading,
+                NeuCard,
+                NeuInput,
+                NeuContainer,
+                NeuRow,
+                NeuCol,
+                NeuPaginator
     },
     watch: {
             viewFlag(viewFlag) {

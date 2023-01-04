@@ -14,7 +14,10 @@ module.exports = {
   rules: {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
-    "no-unused-vars": "off"
+    "no-unused-vars": "off",
+    'vue/no-deprecated-slot-attribute': 'off',
+    "vue/no-multiple-template-root": 0
+  
   },
 
   extends: [

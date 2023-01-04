@@ -271,15 +271,7 @@
                               :classFlag="classFlag"></SaveMsgPopUp>
             </div>
         </div>
-        <SharedPanel v-if="isSharedPanelOpen"
-                     :isSharedPanelOpen="isSharedPanelOpen"
-                     :currentShift="currentShifts"
-                     :calSelectedDates="calenderSelectedDates"
-                     :counter="counter"
-                     :key="counter"
-                     @close-modal="closeModal"
-                     @showSuccessMesssgPopUp="showSMPModal">
-        </SharedPanel>
+      
     </div>
 </template>
 <script lang="ts">
@@ -287,17 +279,16 @@
     import moment from "moment";
     import { mapState } from "vuex";
     import EmploymentDetails from "./EmploymentDetails.vue";
-    import SelfSchedulingDefault from "./SelfSchedulingDefault.vue";
+   
     import SchedulingPref from "./SchedulingPref.vue";
     import SMSPref from "./SMSPref.vue";
     import NotificationMgmt from "./NotificationMgmt.vue";
     import PayrollDetails from "./PayrollDetails.vue";
-    import SharedPanel from "./SharedPanel.vue"
    
     import SaveMsgPopUp from "@/components/shared/SaveMsgPopUp.vue";
 
     Options({
-        components: { EmploymentDetails, SchedulingPref, SMSPref, NotificationMgmt, PayrollDetails, SelfSchedulingDefault, SharedPanel, SaveMsgPopUp },
+        components: { EmploymentDetails, SchedulingPref, SMSPref, NotificationMgmt, PayrollDetails, SaveMsgPopUp },
         computed: {
             ...mapState(["oidcUser"]),
              ...mapState('profile',["profileData"]),

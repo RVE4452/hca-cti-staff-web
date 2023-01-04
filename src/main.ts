@@ -11,7 +11,7 @@ import 'vue-search-select/dist/VueSearchSelect.css'
 //import VueAppInsights from 'vue-application-insights'
 import mitt from 'mitt';
 import Component from "vue-class-component";
-// import { NeutronVue } from '@neutron/vue';
+import { NeutronVue } from '@neutron/vue';
 //Add all icons to the library so you can use it in your pag
 //library.add(fas, far, fab);
 const emitter = mitt();
@@ -21,6 +21,6 @@ const app = createApp(App);
 app.config.globalProperties.$store = store;
 app.config.globalProperties.emitter = emitter;
 //app.provide("$store", store);
-app.use(router).mount('#app');
+app.use(NeutronVue).use(router).mount('#app');
 
 

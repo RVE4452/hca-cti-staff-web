@@ -2,6 +2,7 @@ import { createWebHistory, createRouter } from "vue-router";
 import { vuexOidcCreateRouterMiddleware } from 'vuex-oidc'
 import Admin from "@/components/admin/Admin.vue";
 import Login from "@/components/Login.vue";
+import OidcPopupCallback from "@/components/OidcPopupCallback.vue";
 import InvalidAccount from "@/components/error/InvalidAccount.vue";
 import ErrorAccount from "@/components/error/ErrorAccount.vue";
 import SystemMaintenance from "@/components/error/SystemMaintenance.vue";
@@ -32,6 +33,17 @@ const routes = [
         props: { viewFlag: 'DeptView' }
     },
     {
+        path: '/Schedule',
+        name: 'Schedule',
+        component: MySchedule,
+        meta: {key: 'schedule', title: 'Schedule Management - Schedule'}
+      },
+      {
+        path: '/DeaprtmentView',
+        name: 'DeaprtmentView',
+        component: MySchedule
+      },
+    {
         path: '/profile',
         component: Profile
     },
@@ -39,6 +51,12 @@ const routes = [
         path: '/admin',
         component: Admin
     },
+    {
+        path: '/callback-silent',
+        name: 'oidcPopupCallback',
+        component: OidcPopupCallback,
+        meta: {key: 'callbackSilent', title: 'Schedule Management - Callback Silent'}
+      },
     {
         path: '/invalidaccount',
         component: InvalidAccount
