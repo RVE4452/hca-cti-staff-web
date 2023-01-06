@@ -1,1 +1,46 @@
 @import 'global';
+
+/* vue-multiselect style start  */
+.multiselect__tag{
+    background-image: none !important;
+    background-color: #e8e8e8 !important;
+    border-color: #e8e8e8 !important;
+    color: #15202E !important;
+}
+
+.multiselect__tags{
+    border: 1px solid #CED1D7 !important;
+}
+
+.multiselect{
+    font-size: 14px !important;
+}
+
+.multiselect__option { 
+    min-height: 28px !important;
+    line-height: 2px !important;
+}
+
+.multiselect__option:after{
+    line-height: 28px !important;
+}
+
+.multiselect__option--highlight {
+    background-color: #164D87 !important;
+    border-color: #164D87 !important;
+}
+
+.multiselect__option--highlight:after{
+    background-color: #164D87 !important;
+    border-color: #164D87 !important;
+}
+
+.multiselect__option--selected.multiselect__option--highlight, .multiselect__option--selected.multiselect__option--highlight:after{
+    background: #ff6a6a !important;
+    color: #fff;
+}
+/* vue-multiselect style end  */
+
+i {
+    cursor: pointer;
+}

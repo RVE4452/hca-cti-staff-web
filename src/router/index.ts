@@ -25,10 +25,10 @@ const routes = [
         props: { viewFlag: 'CalView' }
     },
     {
-        path: '/Deaprtment',
+        path: '/Department',
         component: MySchedule,
         props: { viewFlag: 'DeptView' }
-    },         
+    },    
     {
         path: '/profile',
         component: Profile

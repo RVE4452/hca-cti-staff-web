@@ -131,7 +131,7 @@ export default defineComponent({
   data() {
     return {
       selectedPage: '',
-      pages: ['Schedule', 'Deaprtment'],
+      pages: ['Schedule', 'Department'],
       appLogoutUrl: process.env.VUE_APP_LOGOUT,
     }
   },
