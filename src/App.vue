@@ -31,4 +31,7 @@ export default defineComponent({
 <style lang="scss">
 @import '~@neutron/core/css/neutron.min.css';
 @import './scss/main.scss';
+@import 'vue-multiselect/dist/vue-multiselect.css';
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons"); //Material Design Fonts
+@import url("https://unpkg.com/tachyons@4/css/tachyons.min.css"); //tachyons
 </style>

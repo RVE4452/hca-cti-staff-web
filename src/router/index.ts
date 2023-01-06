@@ -39,8 +39,8 @@ const routes = [
         meta: {key: 'schedule', title: 'Schedule Management - Schedule'}
       },
       {
-        path: '/Deaprtment',
-        name: 'Deaprtment View',
+        path: '/Department',
+        name: 'Department View',
         component: MySchedule
       },
     {
