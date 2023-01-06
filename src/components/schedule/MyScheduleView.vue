@@ -1,17 +1,15 @@
 <template>
+<neu-container>
     <div>
         <div id="printHeadingMsg">Schedules are dynamic and may change at any time. Employees are encouraged to log in to MyScheduler to confirm upcoming scheduled shifts.<hr/></div>
         <div class="schedulerMainDiv" v-bind:class="{ 'panel-open': sharedToggle, 'posNone': isWelcomeModalVisible }">
         <div v-if="isWelcomeModalVisible">
             <WelcomeMsgPopup @closeWelcomePopup="onCloseWelcomePopup()"></WelcomeMsgPopup>
-        </div>       
-            <div class="container calContainer" v-if="viewFlag == 'CalView'">
-                <div v-if="!isLoading">
-                    <!-- DESKTOP NAV -->
-                    <div class="row neu-margin--top-10 desktop-header no-print">
-                        <div class="col-md-3">
+        </div>  
+        <neu-row v-if="viewFlag == 'CalView'">
+            <neu-col md="3" left="true">
                             <h5>
-                                <p class="neu-float--left"
+                                <p left="true"
                                    style="margin-top: 0.25em; margin-left: 1em;">
                                     <small @click.prevent="todayDate()">
                                         <neu-icon class="m-3 neu-icon neu-icon--large hydrated">home</neu-icon>                                        
@@ -21,11 +19,11 @@
                                     </small>
                                 </p>
                             </h5>
-                        </div>
-                        <div class="col-md-6">
+            </neu-col>
+            <neu-col md="6" >
+                    <div>
                             <div style="text-align: center">
                                 <h5>
-                                    
                                     <neu-icon @click="beforeMonthNavigate(false)"  style="position: relative; top: 4px" class="m-3 neu-icon neu-icon--large hydrated">chevron_left</neu-icon>
                                     <span>
                                         {{ this.currentDate }}
@@ -33,41 +31,45 @@
                                     <neu-icon @click="beforeMonthNavigate(true)" style="position: relative; top: 4px" class="m-3 neu-icon neu-icon--large hydrated" >chevron_right</neu-icon>
                                 </h5>
                             </div>
-                        </div>
-                        <div class="col-md-3 neu-right-elem">                            
-                            <div class="neu-float--right">
-                                <h5>
-                                    <p>
-                                        <span class="neu-text--tag" v-if="scheduleStatus.toUpperCase() == 'PLAN SHEET' && isTierOpen">
+                    </div>
+            </neu-col>
+            <neu-col  md="2" >
+            <neu-row>
+                <neu-col> 
+                     <h5>
+                        <p  style="margin-top: 1em; margin-left: 1em;">
+                                        <span v-if="scheduleStatus.toUpperCase() == 'PLAN SHEET' && isTierOpen">
                                             SELF-SCHEDULING OPEN
                                         </span>
-                                        <span class="neu-text--tag" v-if="scheduleStatus.toUpperCase() == 'PLAN SHEET' && !isTierOpen">
+                                        <span v-if="scheduleStatus.toUpperCase() == 'PLAN SHEET' && !isTierOpen">
                                             FUTURE SCHEDULE
                                         </span>
-                                        <span class="neu-text--tag" v-if="scheduleStatus.toUpperCase() == 'AFTER PLAN SHEET'">
+                                        <span v-if="scheduleStatus.toUpperCase() == 'AFTER PLAN SHEET'">
                                             PENDING MANAGEMENT REVIEW
                                         </span>
-                                        <span class="neu-text--tag" v-if="scheduleStatus.toUpperCase() == 'FIRST APPROVAL'">
+                                        <span v-if="scheduleStatus.toUpperCase() == 'FIRST APPROVAL'">
                                             PENDING MANAGEMENT APPROVAL
                                         </span>
-                                        <span class="neu-text--tag" v-if="scheduleStatus.toUpperCase() == 'POSTED'">
+                                        <span v-if="scheduleStatus.toUpperCase() == 'POSTED'">
                                             SCHEDULE POSTED
                                         </span>
-                                        <span class="neu-text--tag" v-if="scheduleStatus.toUpperCase() == 'BEFORE PLAN SHEET' || scheduleStatus.toUpperCase() == 'FUTURE'">
+                                        <span v-if="scheduleStatus.toUpperCase() == 'BEFORE PLAN SHEET' || scheduleStatus.toUpperCase() == 'FUTURE'">
                                             FUTURE SCHEDULE
                                         </span>
                                     </p>
                                 </h5>
-                            </div>
-                            <div style="margin-top: 0.25em; margin-left: 0.5em;"
-                                 class="neu-float--right"
+                            </neu-col>
+                        </neu-row>
+            </neu-col>
+             <neu-col md="1" right="true">
+                            <div 
                                  @click="toggleFilterPanel()">
-                                <!-- <i class="material-icons">filter_list</i> -->
-                                <neu-icon class="m-3 neu-icon neu-icon--large hydrated neu-float--right">filter_list</neu-icon>
+                                <neu-icon class="m-3 neu-icon neu-icon--large hydrated" right="true">filter_list</neu-icon>
                             </div>
-                        </div>
-                    </div>
-
+                            </neu-col>
+        </neu-row>     
+            <div class="container calContainer" v-if="viewFlag == 'CalView'">
+                <div v-if="!isLoading">                    
                     <!-- Print NAV -->
                     <div class="calDetailsPrint">
                         <table>
@@ -101,15 +103,13 @@
                     <!-- END SCHEDULE NAV -->
                     <!-- CALENDAR -->
 
-                    <div class="row">
-                        <div class="col-sm-12 padd0">
+                    <neu-row>
+                        <neu-col xl="12">
                             <FullCalendar :options="calendarOptions"
-                                          ref="fullCalendarCurrentMonth">
-                                <!-- <template v-slot:eventContent="arg">
-                                    <b>{{ arg.timeText }}</b>
-                                    <i>{{ arg.event.title }}</i>
-                                </template> -->
+                                          ref="fullCalendarCurrentMonth">                                
                             </FullCalendar>
+                        </neu-col>
+                        <neu-col xl="4">
                             <CalendarFilterPanel ref="calendarfilter"
                                                  @close-event="toggleFilterPanel"
                                                  @sched-event="onCheckSchedEvents"
@@ -122,14 +122,13 @@
                             <div class="col-sm-12 neu-margin--top-20 neu-text--caption neu-text--align-center mTop0">
                                 <span class="neu-text--bold">Important Note </span>: Shift assignments display on the date of the shift's actual start time.
                             </div>
-                        </div>
-                    </div>
+                        </neu-col>
+                    </neu-row>
                     <!-- END CALENDAR -->
                     <!-- MODAL -->
                 </div>
                 <div v-else>
-                    <vcl-facebook></vcl-facebook>
-                    <!-- <vcl-instagram></vcl-instagram> -->
+                    <vcl-facebook></vcl-facebook>                   
                 </div>
                 <!-- END MODAL -->
             </div>
@@ -142,8 +141,7 @@
                     </div>
                 </div>
                 <div v-else>
-                    <vcl-facebook></vcl-facebook>
-                    <!-- <vcl-instagram></vcl-instagram> -->
+                    <vcl-facebook></vcl-facebook>                   
                 </div>
             </div>
             <div v-if="isSMPModalVisible">
@@ -186,6 +184,7 @@
             </AlertPopUp>
         </div>
     </div>
+</neu-container>
 </template>
 
 <script lang="ts">    
@@ -202,10 +201,7 @@
     import { ORSchedule, Event } from "@/models";
     import { Options, Vue } from "vue-class-component";
     import moment from "moment";
-
     import { mapState } from "vuex"; 
-    import { NeuContent, } from '@neutron/vue'
-    //import { VclFacebook, VclInstagram } from "vue-content-loading";
     // import { bus } from "../../main";
     //import bus from '../../eventBus'
     import tippy from 'tippy.js';
@@ -1040,13 +1036,8 @@
                 this.calenderStartforCSD = new Date(
                     this.userSchedules[index].startDate
                 );
-                 //check home dept self schedule needs
-                 if(this.scheduleStatus.toUpperCase() == 'PLAN SHEET')
-                 {
-                    this.checkHomeDeptNeeds();
-                 }
-                this.scheduleId = this.userSchedules[index].id;
-                this.getCommitmentSubmitDetails();
+                 
+                this.scheduleId = this.userSchedules[index].id;               
             }
             if (this.viewFlag == 'CalView') {
                 if (this.leftNavBar) {
@@ -1837,12 +1828,7 @@
             }
         }
 
-        handleEventClick(clickInfo: any) {
-            //clickInfo.jsEvent.preventDefault();
-            //this: MyScheduleView;
-            //alert(`Hello, there! You clicked on a ${clickInfo}`)
-        //   let re = ()=> {this.processClickEvent(clickInfo.event.title, clickInfo.event.start, clickInfo.event.id, clickInfo.event.extendedProps.needFV)};
-        //    re()
+        handleEventClick(clickInfo: any) {         
             this.processClickEvent(clickInfo.event.title, clickInfo.event.start, clickInfo.event.id, clickInfo.event.extendedProps.needFV);
         }
 
@@ -1927,35 +1913,7 @@
                         isSelfScheduledEvent: false,
                         SelfScheduleDepartments: event.selfScheduleDepartments                      
                     };
-                }
-                else if (event.type == "Pending" || (event.type == "Assignment" && event.status == "Pending") ||
-                    (this.scheduleStatus.toUpperCase() != "POSTED" && this.isSelfScheduleAllowed == true &&
-                        event.type == "Assignment" && event.status == "Scheduled")) //
-                {
-                    let strClickEventDate = moment(event.date).format("YYYY-MM-DD");
-                    let clickEventNextDate: Date = new Date(moment(event.date).format("YYYY/MM/DD"));
-                    clickEventNextDate.setDate(clickEventNextDate.getDate() + 1);
-                    let todayDate = moment(new Date()).format("YYYY-MM-DD");
-
-                    if (new Date(strClickEventDate) <= new Date(todayDate)) {
-                        this.isUnavailabilityAllowed = false;
-                    }
-                    else {
-                        this.isUnavailabilityAllowed = this.profileData.isUnavailabilityAllowed;
-                    }
-
-                    this.calSelectedDates = { startDate: eventStart, endDate: clickEventNextDate };
-
-                    this.sharedRequest = {
-                        type: 1,
-                        selfSchedule: true,
-                        status: this.scheduleStatus,
-                        request: this.checkIfFutureDate(strClickEventDate),
-                        calSelectedDates: this.calSelectedDates,
-                        availability: true,
-                        isSelfScheduledEvent: event.isSelfScheduled
-                    };
-                }
+                }                
                 else if (event.type == "Unavailability") {
                     this.sharedRequest = {
                         type: 1,
@@ -2018,251 +1976,7 @@
             this.currentEvents = events;
         }
 
-        getWeeklyHours(flag: string) {
-            let totalHrs = 0,
-                totalMins = 0,
-                weekStartDate: Date = new Date(this.calenderStartforCSD),
-                weekEndDate: Date = new Date(this.calenderStartforCSD),
-                weekEvents!: Event[];
-
-            if (this.weeksInSchedule == 6) {
-                if (flag == "Week1") {
-                    weekEndDate.setDate(this.calenderStartforCSD.getDate() + 6);
-                } else if (flag == "Week2") {
-                    weekStartDate.setDate(this.calenderStartforCSD.getDate() + 7);
-                    weekEndDate.setDate(this.calenderStartforCSD.getDate() + 13);
-                } else if (flag == "Week3") {
-                    weekStartDate.setDate(this.calenderStartforCSD.getDate() + 14);
-                    weekEndDate.setDate(this.calenderStartforCSD.getDate() + 20);
-                }
-                else if (flag == "Week4") {
-                    weekStartDate.setDate(this.calenderStartforCSD.getDate() + 21);
-                    weekEndDate.setDate(this.calenderStartforCSD.getDate() + 27);
-                }
-                else if (flag == "Week5") {
-                    weekStartDate.setDate(this.calenderStartforCSD.getDate() + 28);
-                    weekEndDate.setDate(this.calenderStartforCSD.getDate() + 34);
-                }
-                else {
-                    weekStartDate.setDate(this.calenderStartforCSD.getDate() + 35);
-                    weekEndDate.setDate(this.calenderStartforCSD.getDate() + 41);
-                }
-            }
-            else //--- this.weeksInSchedule == 4
-            {
-                if (flag == "Week1") {
-                    weekEndDate.setDate(this.calenderStartforCSD.getDate() + 6);
-                } else if (flag == "Week2") {
-                    weekStartDate.setDate(this.calenderStartforCSD.getDate() + 7);
-                    weekEndDate.setDate(this.calenderStartforCSD.getDate() + 13);
-                } else if (flag == "Week3") {
-                    weekStartDate.setDate(this.calenderStartforCSD.getDate() + 14);
-                    weekEndDate.setDate(this.calenderStartforCSD.getDate() + 20);
-                } else {
-                    weekStartDate.setDate(this.calenderStartforCSD.getDate() + 21);
-                    weekEndDate.setDate(this.calenderStartforCSD.getDate() + 27);
-                }
-            }
-
-            weekEvents = this.events.filter(
-                (event: Event) =>
-                    new Date(event.date) >= weekStartDate &&
-                    new Date(event.date) <= weekEndDate &&
-                    (event.isCommitment && (event.type == "Pending" || event.type == "Assignment" ||
-                        event.type == "Request"))
-            );
-
-            weekEvents.forEach((event: Event) => {
-                totalHrs += event.hours;
-                totalMins += event.minutes;
-            });
-            return totalHrs + totalMins / 60;
-        }
-
-        checkHomeDeptNeeds() {
-            let
-                // weekStartDate: Date = new Date(this.calenderStartforCSD),
-                // weekEndDate: Date = new Date(this.calenderStartforCSD),
-                weekEvents!: Event[];
-               let week1Hours = this.getWeeklyHours("Week1"),
-                week2Hours = this.getWeeklyHours("Week2"),
-                week3Hours = this.getWeeklyHours("Week3"),
-                week4Hours = this.getWeeklyHours("Week4"),
-                week5Hours = (this.weeksInSchedule == 6 ? this.getWeeklyHours("Week5") : 0),
-                week6Hours = (this.weeksInSchedule == 6 ? this.getWeeklyHours("Week6") : 0);
-            if (this.weeksInSchedule == 6) {
-
-                    if((week1Hours + week2Hours) < 2 * this.guranteedHrs)
-                    {   let weekStartDate: Date = new Date(this.calenderStartforCSD),
-                         weekEndDate: Date = new Date(this.calenderStartforCSD);
-                        weekEndDate.setDate(this.calenderStartforCSD.getDate() + 13);
-                        this.checkPrimaryDeptNeeds(weekStartDate, weekEndDate,false);
-
-                    }
-                    //2nd pay periods
-                    if( (week3Hours + week4Hours) < 2 * this.guranteedHrs )
-                    {
-                         let weekStartDate: Date = new Date(this.calenderStartforCSD),
-                         weekEndDate: Date = new Date(this.calenderStartforCSD);
-                    weekStartDate.setDate(this.calenderStartforCSD.getDate() + 14);
-                    weekEndDate.setDate(this.calenderStartforCSD.getDate() + 27);
-                    this.checkPrimaryDeptNeeds(weekStartDate, weekEndDate,false);
-
-                    }
-
-                    //3rd pay periods
-                    if( (week5Hours + week6Hours) < 2 * this.guranteedHrs )
-                    {
-                         let weekStartDate: Date = new Date(this.calenderStartforCSD),
-                         weekEndDate: Date = new Date(this.calenderStartforCSD);
-                    weekStartDate.setDate(this.calenderStartforCSD.getDate() + 28);
-                    weekEndDate.setDate(this.calenderStartforCSD.getDate() + 41);
-                    this.checkPrimaryDeptNeeds(weekStartDate, weekEndDate,false);
-
-                    }
-                     //first pay periods
-                    if(this.displayWSC)
-                    {
-                         let weekStartDate: Date = new Date(this.calenderStartforCSD),
-                         weekEndDate: Date = new Date(this.calenderStartforCSD);
-                        weekStartDate.setDate(this.calenderStartforCSD.getDate());
-                        weekEndDate.setDate(this.calenderStartforCSD.getDate() + 41);
-                        this.checkPrimaryDeptNeeds(weekStartDate, weekEndDate,true);
-                    }
-            }
-            else //--- this.weeksInSchedule == 4
-            {
-                //1st pay periods
-                 if((week1Hours + week2Hours) < 2 * this.guranteedHrs)
-                {
-                     let weekStartDate: Date = new Date(this.calenderStartforCSD),
-                         weekEndDate: Date = new Date(this.calenderStartforCSD);
-                    weekEndDate.setDate(this.calenderStartforCSD.getDate() + 13);
-                    this.checkPrimaryDeptNeeds(weekStartDate, weekEndDate,false);
-
-                }
-               //end pay periods
-                //2nd pay periods
-                    if( (week3Hours + week4Hours) < 2 * this.guranteedHrs )
-                    {
-                         let weekStartDate: Date = new Date(this.calenderStartforCSD),
-                         weekEndDate: Date = new Date(this.calenderStartforCSD);
-                    weekStartDate.setDate(this.calenderStartforCSD.getDate() + 14);
-                    weekEndDate.setDate(this.calenderStartforCSD.getDate() + 27);
-                    this.checkPrimaryDeptNeeds(weekStartDate, weekEndDate, false);
-
-                    }
-                     if(this.displayWSC)
-                    {
-                        let weekStartDate: Date = new Date(this.calenderStartforCSD),
-                         weekEndDate: Date = new Date(this.calenderStartforCSD);
-                        weekStartDate.setDate(this.calenderStartforCSD.getDate());
-                        weekEndDate.setDate(this.calenderStartforCSD.getDate() + 27);
-                        this.checkPrimaryDeptNeeds(weekStartDate, weekEndDate, true);
-                    }
-            }
-        }
-     checkPrimaryDeptNeeds(startDate:any, endDate:any, isWeekend:any)
-     {
-         let payperiodEvents;
-         if(isWeekend)
-         {
-           payperiodEvents = this.events.filter(
-                (event: Event) =>
-                    new Date(event.date) >= startDate &&
-                    new Date(event.date) <= endDate && event.isWeekend == true
-            );
-         }
-         else
-         {
-          payperiodEvents = this.events.filter(
-                (event: Event) =>
-                    new Date(event.date) >= startDate &&
-                    new Date(event.date) <= endDate
-            );
-         }
-            payperiodEvents.forEach((event:any) => {
-               if(event.type == "Need" && event.hasEventSelfScheduleNeedsInPrimaryDept)
-            {
-                 var isOtherAssignmentExist = this.events.find(
-                        (evt: Event) =>
-                            moment(evt.date).format("YYYY-MM-DD") ==
-                            moment(event.date).format("YYYY-MM-DD")
-                            && evt.type != "Need"
-                    );
-                    if (isOtherAssignmentExist == undefined || isOtherAssignmentExist == null) {
-                        this.hasSelfScheduleNeedsInPrimaryDept = true;
-                    }
-            }
-            });
-     }
-
-        getPendingEvents() {
-            return this.events.filter(
-                (event: Event) => event.type == "Pending"
-            );
-        }
-
-        getWeekendShiftCommitmentCount() {
-            let countWSC: number = 0;
-            let payPeriodStartDate: Date = new Date(this.calenderStartforCSD),
-                payPeriodEndDate: Date = new Date(payPeriodStartDate),
-                payPeriodEvents!: Event[];
-
-            if (this.weeksInSchedule == 6) {
-                payPeriodEndDate.setDate(payPeriodStartDate.getDate() + 41);
-            }
-            else //this.weeksInSchedule == 4
-            {
-                payPeriodEndDate.setDate(payPeriodStartDate.getDate() + 27);
-            }
-
-            payPeriodEvents = this.events.filter(
-                (event: Event) =>
-                    new Date(event.date) >= payPeriodStartDate &&
-                    new Date(event.date) <= payPeriodEndDate &&
-                    (event.isCommitment && (event.type == "Pending" || event.type == "Assignment" ||
-                        event.type == "Request"))
-            );
-
-            payPeriodEvents.forEach((event: Event) => {
-                if (event.isWeekend) {
-                    countWSC++;
-                }
-            });
-            return countWSC;
-        }
-
-        getCommitmentSubmitDetails() {
-            const { selfScheduleToCommitment, selfSchedulePastCommitment, limitSelfScheduleToTarget } = this.profileData;
-            this.objCommitmentSubmit = {
-                scheduleId: this.scheduleId,
-                guranteedHours: this.guranteedHrs,
-                otHours: this.otHrs,
-                maxSelfScheduleHours: this.maxSelfScheduleHours,
-                employeeType: this.employeeType,
-                week1Hours: this.getWeeklyHours("Week1"),
-                week2Hours: this.getWeeklyHours("Week2"),
-                week3Hours: this.getWeeklyHours("Week3"),
-                week4Hours: this.getWeeklyHours("Week4"),
-                week5Hours: (this.weeksInSchedule == 6 ? this.getWeeklyHours("Week5") : 0),
-                week6Hours: (this.weeksInSchedule == 6 ? this.getWeeklyHours("Week6") : 0),
-                displayWSC: this.displayWSC,
-                countWSC: this.displayWSC ? this.getWeekendShiftCommitmentCount() : 0,
-                reqCountWSC: this.reqCountWSC,
-                scheduleStatus: this.scheduleStatus.toUpperCase(),
-                pendingShifts: this.getPendingEvents().length,
-                pendingShiftList: this.getPendingEvents(),
-                selfScheduleToCommitment,
-                selfSchedulePastCommitment,
-                limitSelfScheduleToTarget,
-                weeksInSchedule: this.weeksInSchedule,
-                hasSelfScheduleNeedsInPrimaryDept: this.hasSelfScheduleNeedsInPrimaryDept,
-                defaultSelfScheduleState: this.defaultSelfScheduleState,
-                isTierOpen: this.isTierOpen
-            };
-        }
-
+        
         async prevMonth() {
             if (this.currentShceduleIndex > 0) {
                 this.currentShceduleIndex -= 1;

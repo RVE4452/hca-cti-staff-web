@@ -1,6 +1,4 @@
 
-import {Case} from './case.model';
-
 export interface Event {
      id: string;
      type: string;
@@ -35,7 +33,6 @@ export interface Event {
      hours: number;
      minutes: number;
      comment: string;
-     cases: Case[];
      isCommitment: boolean;
      isSelfScheduled: boolean;
      isOvertime: boolean;
