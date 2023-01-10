@@ -1,7 +1,7 @@
 
 <template>
     <div class="margin">
-        <neu-row >
+        <neu-row class="no-print">
             <neu-col xxl="" xl="3" lg="12" md="2" sm="6" cols="12">
                 <neu-select interface="popover" :value="selectedFacilityId" @v-neu-change="onFacilityChange">
                 <neu-option v-for="facility in facilities" :value="facility.facilityId" :key="facility.facilityId">
@@ -50,10 +50,27 @@
             <neu-col xxl="2" xl="3" lg="12" md="2" sm="6" cols="12">
                 <span>Last Updated : <br> {{lastUpdatedDate}}</span>
             </neu-col>
-        </neu-row>
-        
+        </neu-row>        
     </div>
-
+    <neu-divider color="gray-100" dark="true" >
+    </neu-divider>
+    <!--Print Page Filters -->
+    <div class="deptFiltersPrint">
+            <table>
+                <tr>
+                    <td>Facility :</td>
+                    <td class="print-td-style">{{selectedFacilityName}}</td>
+                    <td>Dept :</td>
+                    <td class="print-td-style">{{ selectedDeptName}}</td>
+                    <td>Skills :</td>
+                    <td class="print-td-style">{{selectedSkillList}}</td>
+                    <td>Schedule Period :</td>
+                    <td class="print-td-style">{{selectedScheduleName}}</td>
+                    <td>Last Updated :</td>
+                    <td class="print-td-style">{{lastUpdatedDate}}</td>
+                </tr>
+            </table>          
+        </div>
     <div class="neu-container neu-padding--0 deptTableContainer deptContainer margin">
             <table class="neu-table_new deptView">
                 <tr class="th_HeaderRow">
@@ -70,6 +87,12 @@
                             <i class="material-icons pointer colNavigation " v-bind:class="{ 'hideIcon': iconToggle }" @click="showColumns" >
                                 chevron_right
                             </i>
+                            <!-- <neu-icon class="material-icons pointer colNavigation"  v-bind:class="{ 'hideIcon': !iconToggle }" @click="hideColumns">
+                                chevron_right
+                            </neu-icon>
+                            <neu-icon class="material-icons pointer colNavigation " v-bind:class="{ 'hideIcon': iconToggle }" @click="showColumns">
+                                chevron_right
+                            </neu-icon> -->
                         </div>
                     </th>
                     <th v-for="day in days" :key="days.indexOf(day)" class="neu-input__label periodWidth" 
@@ -153,17 +176,24 @@
         private columnToggle: boolean = false;
         private iconToggle: boolean = true;
 
-        async mounted() {
-            // if(this.profileData.first == null || this.profileData.first == undefined)
-            //     {
-                //await this.$store.dispatch('profile/getProfileDetails','') ;   
+        async mounted() { 
+            if(this.profileData.first == null || this.profileData.first == undefined)
+            {
+                await this.$store.dispatch('profile/getProfileDetails','') ;
+                await this.getFiltersData();
+                await this.showScheduleDays();
+                await this.getDepartmentSchedule();
+                localStorage.setItem("visitedDepartmentView", "true");
+                useAppInsights().trackEvent({name:'ViewDepartment',properties: 
+                JSON.parse(JSON.stringify(this.appInsightEventData))});  
+            } else{
                 await this.getFiltersData();
                 await this.showScheduleDays();
                 await this.getDepartmentSchedule();
                 localStorage.setItem("visitedDepartmentView", "true");
                 useAppInsights().trackEvent({name:'ViewDepartment',properties: 
                 JSON.parse(JSON.stringify(this.appInsightEventData))});
-                //} 
+            }            
         }
 
         async getFiltersData() {
@@ -266,7 +296,6 @@
         async showScheduleDays() {
             this.days = [];
             var date1 = new Date(this.userSchedules[this.currentShceduleIndex].startDate);
-            //var date2 = new Date(this.userSchedules[this.currentShceduleIndex].endDate);
             var daysInSchedule = this.profileData.weeksInSchedule * 7;
             for (var i = 0; i < daysInSchedule; i++) {
                 var d = new Date(date1);
@@ -480,7 +509,7 @@
     {
         .deptTableContainer{
             overflow:auto !important;
-            height:420px;
+            height:455px;
         }
 
         .deptTable{
@@ -492,7 +521,7 @@
         }
 
         .th_HeaderRow {
-            position: sticky;
+            /* position: sticky; */
             top: 0;
             z-index: 3;
             width: 25vw;
@@ -658,6 +687,10 @@
                 z-index: 0 !important;
                 height: 24px;
             }
+
+            neu-col{
+                padding-bottom: 5px;
+            }
         }
     /* Media Query for low resolution  Tablets, Ipads */
         @media (min-width: 481px) and (max-width: 899px) {
@@ -690,7 +723,9 @@
                 background: white;
                 border-right: 1px solid silver !important;
             }
-
+            neu-col{
+                padding-bottom: 5px;
+            }
 
         }
     }
@@ -761,5 +796,10 @@
 .neu-table__row:hover,
 .neu-table__row:focus {
     background: #d9d9d6;
+}
+.print-td-style{
+    font-weight:bold;
+    padding-right: 15px;
+    padding-left: 5px;
 }
 </style>
