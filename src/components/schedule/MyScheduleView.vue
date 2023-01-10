@@ -1,173 +1,149 @@
 <template>
-<neu-container>
-    <div>
-        <div id="printHeadingMsg">Schedules are dynamic and may change at any time. Employees are encouraged to log in to MyScheduler to confirm upcoming scheduled shifts.<hr/></div>
-        <div class="schedulerMainDiv" v-bind:class="{ 'panel-open': sharedToggle, 'posNone': isWelcomeModalVisible }">
-        <div v-if="isWelcomeModalVisible">
-            <WelcomeMsgPopup @closeWelcomePopup="onCloseWelcomePopup()"></WelcomeMsgPopup>
-        </div>  
-        <neu-row v-if="viewFlag == 'CalView'">
-            <neu-col md="3" left="true">
-                            <h5>
-                                <p left="true"
-                                   style="margin-top: 0.25em; margin-left: 1em;">
-                                    <small @click.prevent="todayDate()">
-                                        <neu-icon class="m-3 neu-icon neu-icon--large hydrated">home</neu-icon>                                        
-                                        <a style="position: relative; top: -7px; margin-left: 0.5em;"
-                                           class="neu-link"
-                                           href="#">TODAY</a>
-                                    </small>
-                                </p>
-                            </h5>
-            </neu-col>
-            <neu-col md="6" >
-                    <div>
-                            <div style="text-align: center">
+<div>
+    <neu-container>
+        <div class="schedulerMainDiv"  v-bind:class="{ 'panel-open': sharedToggle, 'posNone': isWelcomeModalVisible }">
+            <neu-table>
+            <neu-row v-if="viewFlag == 'CalView'">
+                <neu-col md="3" left="true">
                                 <h5>
-                                    <neu-icon @click="beforeMonthNavigate(false)"  style="position: relative; top: 4px" class="m-3 neu-icon neu-icon--large hydrated">chevron_left</neu-icon>
-                                    <span>
-                                        {{ this.currentDate }}
-                                    </span>                                  
-                                    <neu-icon @click="beforeMonthNavigate(true)" style="position: relative; top: 4px" class="m-3 neu-icon neu-icon--large hydrated" >chevron_right</neu-icon>
-                                </h5>
-                            </div>
-                    </div>
-            </neu-col>
-            <neu-col  md="2" >
-            <neu-row>
-                <neu-col> 
-                     <h5>
-                        <p  style="margin-top: 1em; margin-left: 1em;">
-                                        <span v-if="scheduleStatus.toUpperCase() == 'PLAN SHEET' && isTierOpen">
-                                            SELF-SCHEDULING OPEN
-                                        </span>
-                                        <span v-if="scheduleStatus.toUpperCase() == 'PLAN SHEET' && !isTierOpen">
-                                            FUTURE SCHEDULE
-                                        </span>
-                                        <span v-if="scheduleStatus.toUpperCase() == 'AFTER PLAN SHEET'">
-                                            PENDING MANAGEMENT REVIEW
-                                        </span>
-                                        <span v-if="scheduleStatus.toUpperCase() == 'FIRST APPROVAL'">
-                                            PENDING MANAGEMENT APPROVAL
-                                        </span>
-                                        <span v-if="scheduleStatus.toUpperCase() == 'POSTED'">
-                                            SCHEDULE POSTED
-                                        </span>
-                                        <span v-if="scheduleStatus.toUpperCase() == 'BEFORE PLAN SHEET' || scheduleStatus.toUpperCase() == 'FUTURE'">
-                                            FUTURE SCHEDULE
-                                        </span>
+                                    <p left="true"
+                                    >
+                                        <small @click.prevent="todayDate()">
+                                            <neu-icon class="m-3 neu-icon pointer neu-icon--large hydrated">home</neu-icon>                                        
+                                            <a style="position: relative; top: -7px;"
+                                            class="neu-link"
+                                            href="#">TODAY</a>
+                                        </small>
                                     </p>
                                 </h5>
-                            </neu-col>
-                        </neu-row>
-            </neu-col>
-             <neu-col md="1" right="true">
-                            <div 
-                                 @click="toggleFilterPanel()">
-                                <neu-icon class="m-3 neu-icon neu-icon--large hydrated" right="true">filter_list</neu-icon>
-                            </div>
-                            </neu-col>
-        </neu-row>     
-            <div class="container calContainer" v-if="viewFlag == 'CalView'">
-                <div v-if="!isLoading">                    
-                    <!-- Print NAV -->
-                    <div class="calDetailsPrint">
-                        <table>
-                            <tr>
-                                <td>Schedule Period:</td>
-                                <td class="fontBold pr5">{{this.currentDate}}</td>
-                                <td>Schedule Phase:</td>
-                                <td>
-                                    <span class="neu-text--tag fontBold" v-if="scheduleStatus.toUpperCase() == 'PLAN SHEET' && isTierOpen">
-                                        SELF-SCHEDULING OPEN
-                                    </span>
-                                    <span class="neu-text--tag fontBold" v-if="scheduleStatus.toUpperCase() == 'PLAN SHEET' && !isTierOpen">
-                                        FUTURE SCHEDULE
-                                    </span>
-                                    <span class="neu-text--tag fontBold" v-if="scheduleStatus.toUpperCase() == 'AFTER PLAN SHEET'">
-                                        PENDING MANAGEMENT REVIEW
-                                    </span>
-                                    <span class="neu-text--tag fontBold" v-if="scheduleStatus.toUpperCase() == 'FIRST APPROVAL'">
-                                        PENDING MANAGEMENT APPROVAL
-                                    </span>
-                                    <span class="neu-text--tag fontBold" v-if="scheduleStatus.toUpperCase() == 'POSTED'">
-                                        SCHEDULE POSTED
-                                    </span>
-                                    <span class="neu-text--tag fontBold" v-if="scheduleStatus.toUpperCase() == 'BEFORE PLAN SHEET' || scheduleStatus.toUpperCase() == 'FUTURE'">
-                                        FUTURE SCHEDULE
-                                    </span>
-                                </td>
-                            </tr>
-                        </table>          
-                    </div>
-                    <!-- END SCHEDULE NAV -->
-                    <!-- CALENDAR -->
+                </neu-col>
+                <neu-col md="6" >
+                        <div>
+                                <div style="text-align: center">
+                                    <h5>
+                                        <neu-icon @click="beforeMonthNavigate(false)"  style="position: relative; top: 4px" class="m-3 neu-icon pointer neu-icon--large hydrated">chevron_left</neu-icon>
+                                        <span>
+                                            {{ this.currentDate }}
+                                        </span>                                  
+                                        <neu-icon @click="beforeMonthNavigate(true)" style="position: relative; top: 4px" class="m-3 neu-icon pointer neu-icon--large hydrated" >chevron_right</neu-icon>
+                                    </h5>
+                                </div>
+                        </div>
+                </neu-col>
+                <neu-col  md="2" >                
+                        <h5>
+                            <p  style="margin-top: 1em; margin-left: 1em;">
+                                            <span v-if="scheduleStatus.toUpperCase() == 'PLAN SHEET' && isTierOpen">
+                                                SELF-SCHEDULING OPEN
+                                            </span>
+                                            <span v-if="scheduleStatus.toUpperCase() == 'PLAN SHEET' && !isTierOpen">
+                                                FUTURE SCHEDULE
+                                            </span>
+                                            <span v-if="scheduleStatus.toUpperCase() == 'AFTER PLAN SHEET'">
+                                                PENDING MANAGEMENT REVIEW
+                                            </span>
+                                            <span v-if="scheduleStatus.toUpperCase() == 'FIRST APPROVAL'">
+                                                PENDING MANAGEMENT APPROVAL
+                                            </span>
+                                            <span v-if="scheduleStatus.toUpperCase() == 'POSTED'">
+                                                SCHEDULE POSTED
+                                            </span>
+                                            <span v-if="scheduleStatus.toUpperCase() == 'BEFORE PLAN SHEET' || scheduleStatus.toUpperCase() == 'FUTURE'">
+                                                FUTURE SCHEDULE
+                                            </span>
+                                        </p>
+                                    </h5>                               
+                </neu-col>
+                <neu-col md="1" left="true">
+                                <div 
+                                    @click="toggleFilterPanel()">
+                                    <neu-icon class="m-3 neu-icon pointer neu-icon--large hydrated">filter_list</neu-icon>
+                                </div>
+                                </neu-col>
+            </neu-row>    
+            <neu-row> 
+                <div class="container calContainer" v-if="viewFlag == 'CalView'">
+                    <div v-if="!isLoading">                    
+                        <!-- Print NAV -->
+                        <div class="calDetailsPrint">
+                            <neu-table>
+                                <neu-row>
+                                    <neu-col>Schedule Period:</neu-col>
+                                    <neu-col class="fontBold pr5">{{this.currentDate}}</neu-col>
+                                    <neu-col>Schedule Phase:</neu-col>
+                                    <neu-col>
+                                        <span class="neu-text--tag fontBold" v-if="scheduleStatus.toUpperCase() == 'PLAN SHEET' && isTierOpen">
+                                            SELF-SCHEDULING OPEN
+                                        </span>
+                                        <span class="neu-text--tag fontBold" v-if="scheduleStatus.toUpperCase() == 'PLAN SHEET' && !isTierOpen">
+                                            FUTURE SCHEDULE
+                                        </span>
+                                        <span class="neu-text--tag fontBold" v-if="scheduleStatus.toUpperCase() == 'AFTER PLAN SHEET'">
+                                            PENDING MANAGEMENT REVIEW
+                                        </span>
+                                        <span class="neu-text--tag fontBold" v-if="scheduleStatus.toUpperCase() == 'FIRST APPROVAL'">
+                                            PENDING MANAGEMENT APPROVAL
+                                        </span>
+                                        <span class="neu-text--tag fontBold" v-if="scheduleStatus.toUpperCase() == 'POSTED'">
+                                            SCHEDULE POSTED
+                                        </span>
+                                        <span class="neu-text--tag fontBold" v-if="scheduleStatus.toUpperCase() == 'BEFORE PLAN SHEET' || scheduleStatus.toUpperCase() == 'FUTURE'">
+                                            FUTURE SCHEDULE
+                                        </span>
+                                    </neu-col>
+                                </neu-row>
+                            </neu-table>          
+                        </div>
+                        <!-- END SCHEDULE NAV -->
+                        <!-- CALENDAR -->
 
-                    <neu-row>
-                        <neu-col xl="12">
-                            <FullCalendar :options="calendarOptions"
-                                          ref="fullCalendarCurrentMonth">                                
-                            </FullCalendar>
-                        </neu-col>
-                        <neu-col xl="4">
-                            <CalendarFilterPanel ref="calendarfilter"
-                                                 @close-event="toggleFilterPanel"
-                                                 @sched-event="onCheckSchedEvents"
-                                                 @check-pend-event="onCheckPendRequestsOption"
-                                                 @check-depart-need-event="onCheckDepartNeedsOption"
-                                                 @check-trade-shift-event="onCheckTradeShiftsOption"
-                                                 @check-unavailability-event="onCheckUnavailabilityOption"
-                                                 @check-all="onCheckAllOption"
-                                                 :toggleStatus="leftNavBar"></CalendarFilterPanel>
+                        <neu-row>
+                            <neu-col xl="12">
+                                <FullCalendar :options="calendarOptions"
+                                            ref="fullCalendarCurrentMonth">                                
+                                </FullCalendar>
+                            </neu-col>
+                            <neu-col xl="4">
+                               
+                                
+                            </neu-col>
                             <div class="col-sm-12 neu-margin--top-20 neu-text--caption neu-text--align-center mTop0">
-                                <span class="neu-text--bold">Important Note </span>: Shift assignments display on the date of the shift's actual start time.
-                            </div>
-                        </neu-col>
-                    </neu-row>
-                    <!-- END CALENDAR -->
-                    <!-- MODAL -->
+                                    <span class="neu-text--bold">Important Note </span>: Shift assignments display on the date of the shift's actual start time.
+                                </div>
+                        </neu-row>
+                        <!-- END CALENDAR -->
+                        <!-- MODAL -->
+                    </div>
+                    <div v-else>
+                        <vcl-facebook></vcl-facebook>                   
+                    </div>
+                    <!-- END MODAL -->
                 </div>
-                <div v-else>
-                    <vcl-facebook></vcl-facebook>                   
-                </div>
-                <!-- END MODAL -->
-            </div>
-
-            <div class="neu-container neu-padding--top-0 paddingDeptView" v-else>
-                <div v-if="!isLoading">
-                    <DepartmentView :currentScheduleId="currentShceduleIndex" />
-                    <div class="col-sm-12 neu-margin--top-20 neu-text--caption neu-text--align-center mTop0">
-                        <span class="neu-text--bold">Important Note </span>: Shift assignments display on the date of the shift's actual start time.
+                <div class="neu-container neu-padding--top-0 paddingDeptView" v-else>
+                    <div v-if="!isLoading">
+                        <DepartmentView :currentScheduleId="currentShceduleIndex" />
+                        <div class="col-sm-12 neu-margin--top-20 neu-text--caption neu-text--align-center mTop0">
+                            <span class="neu-text--bold">Important Note </span>: Shift assignments display on the date of the shift's actual start time.
+                        </div>
+                    </div>
+                    <div v-else>
+                        <vcl-facebook></vcl-facebook>                   
                     </div>
                 </div>
-                <div v-else>
-                    <vcl-facebook></vcl-facebook>                   
-                </div>
-            </div>
-            <div v-if="isSMPModalVisible">
-                <SaveMsgPopUp @closeModal="closeSMPModal"
-                              :msgValue="msgValue"
-                              :classFlag="classFlag"></SaveMsgPopUp>
-            </div>
-
-            <div v-if="isConfirmModalVisible">
-            <ConfirmMsgPopUp @cancelled="isConfirmModalVisible = false"
-                             @confirmed="confirmedClicked"
-                             :msgValue="confirmMsgValue"></ConfirmMsgPopUp>
-            </div>
-
-            <div v-if="isNotificationSuccessModalVisible">
-                <NotificationMsgPopUp @closeModal="closeNotificationSuccessModal"
-                              :msgValue="successMsgValue"
-                              :classFlag="successClassFlag"></NotificationMsgPopUp>
-            </div>
-            <div v-if="isNotificationErrorModalVisible">
-                <NotificationMsgPopUp @closeModal="closeNotificationErrorModal"
-                              :msgValue="errorMsgValue"
-                              :classFlag="errorClassFlag"></NotificationMsgPopUp>
-            </div>
-        </div>
-        <SharedModal v-if="sharedToggle"
+            </neu-row> 
+            </neu-table>      
+        </div> 
+        <div>
+             <CalendarFilterPanel ref="calendarfilter"
+                                                    @close-event="toggleFilterPanel"
+                                                    @sched-event="onCheckSchedEvents"
+                                                    @check-pend-event="onCheckPendRequestsOption"
+                                                    @check-depart-need-event="onCheckDepartNeedsOption"
+                                                    @check-trade-shift-event="onCheckTradeShiftsOption"
+                                                    @check-unavailability-event="onCheckUnavailabilityOption"
+                                                    @check-all="onCheckAllOption"
+                                                    :toggleStatus="leftNavBar"></CalendarFilterPanel>
+         <SharedModal v-if="sharedToggle"
                      :currentEvent="currentEvent"
                      :scheduleStartDate="scheduleStartDate"
                      :scheduleEndDate="scheduleEndDate"
@@ -179,12 +155,9 @@
                      :counter="counter"
                      :key="counter">
         </SharedModal>
-        <div v-if="isAlertModalVisible">
-            <AlertPopUp @cancelled="isAlertModalVisible = false"  :msgValue="alertMsgValue">
-            </AlertPopUp>
         </div>
-    </div>
-</neu-container>
+    </neu-container>
+</div>
 </template>
 
 <script lang="ts">    
@@ -226,12 +199,15 @@
     NeuPaginator
 } from "@neutron/vue";
     
+    class Props{
+        viewFlag!:string;
+    }
     @Options({
-    props: {
-        viewFlag: {
-        type: String
-        }
-    },
+    // props: {
+    //     viewFlag: {
+    //     type: String
+    //     }
+    // },
     
     computed: {
         ...mapState('oidcStore',['oidcUser']),
@@ -276,9 +252,8 @@
     }
     })
     
-    export default class MyScheduleView extends Vue {
-        
-        viewFlag:string= 'CalView';
+    export default class MyScheduleView extends Vue.with(Props) {
+    
         sharedRequest: any = null;
         leftNavBar: boolean = false;
         isAlertModalVisible: boolean = false;
@@ -297,7 +272,7 @@
         private currentDate: string = "March, 2021";
         confirmMsgValue = "You have not submitted your shift requests. Are you sure you want to navigate away?";
         isConfirmModalVisible: boolean = false;
-
+        profile: any = null;
         private allocatedHours: number = 0;
         private backDate = new Date();
         private forwardDate = new Date();
@@ -307,7 +282,7 @@
         currentMonthCalendarApi: any = null;
         private schedules: any;
         private scheduleStatus = "Unknown";
-        currentEvent!: Event;
+        currentEvent: any =null;
 
         updateData: string = "";
         firstName: string = "";
@@ -845,6 +820,7 @@
             await this.$store.dispatch("profile/getProfileDetails", "");           
                 if(this.profileData.username !== undefined)
                 {
+                    this.profile =  this.profileData;
                     if (localStorage.getItem("visitedDepartmentView") != null) {
                         localStorage.removeItem("visitedDepartmentView");
                         await this.getSchedules(false);
@@ -1952,7 +1928,7 @@
                         event: this.checkIf48hour(event),
                         assignmentDetail: true,
                         status: this.scheduleStatus,
-                        isSymphonyUser: this.profileData.useMySchedulerOperatingRoom? true :false
+                        isSymphonyUser: this.profile.useMySchedulerOperatingRoom? true :false
                     };
                 }
             }
