@@ -281,10 +281,11 @@ input[type="checkbox"]:before {
 }
 
 .modal {
-  background: #ffffff;
+  background: #ffffff !important;
   box-shadow: 2px 2px 20px 1px;
   overflow-x: auto;
   display: flex;
+  height: 550px;
   flex-direction: column;
 }
 
