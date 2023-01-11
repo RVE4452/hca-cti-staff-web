@@ -32,7 +32,19 @@ const routes = [
     {
         path: '/profile',
         component: Profile
-    },   
+    },  
+    {
+        path: '/SchedulerPreference',
+        component: Profile
+    },
+    {
+        path: '/EmployeeDetails',
+        component: Profile
+    },
+    {
+        path: '/PayrollDetails',
+        component: Profile
+    }, 
     {
         path: '/callback-silent',
         name: 'oidcPopupCallback',

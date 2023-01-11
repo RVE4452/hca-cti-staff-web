@@ -25,12 +25,14 @@
           </neu-tab>
         </neu-tablist>
       </neu-row>
-
+      
       <neu-user-controls slot="end" class="d-none d-md-flex"
-        :user="oidcUser.firstName.toUpperCase() + ' ' + oidcUser.lastName.toUpperCase()">
+        :user="oidcUser.firstName.toUpperCase() + ' ' + oidcUser.lastName.toUpperCase()" @click="routeNavigation('profile')">
+        <neu-link nav @click="routeNavigation('profile')">
         <neu-avatar class="icon-padding-person" color="plain-0">
           <neu-icon>person</neu-icon>
         </neu-avatar>
+        </neu-link>
         <neu-avatar class="icon-padding" color="plain-0">
           <neu-icon>notifications</neu-icon>
         </neu-avatar>
@@ -77,11 +79,13 @@
         </neu-item>
       </neu-list>
 
-      <neu-user-controls :user="oidcUser.firstName.toUpperCase() + ' ' + oidcUser.lastName.toUpperCase()" drawer>
-        <neu-avatar slot="avatar" color="gray-60">
-          <neu-icon>person</neu-icon>
-        </neu-avatar>
-      </neu-user-controls>
+        <neu-user-controls :user="oidcUser.firstName.toUpperCase() + ' ' + oidcUser.lastName.toUpperCase()" drawer @click="routeNavigation('profile')" >
+          <neu-link nav @click="routeNavigation('profile')">
+          <neu-avatar slot="avatar" color="gray-60">
+            <neu-icon>person</neu-icon>
+          </neu-avatar>
+        </neu-link>
+        </neu-user-controls>
     </neu-content>
   </neu-drawer>
 </template>
@@ -162,7 +166,11 @@ export default defineComponent({
     },
     routeToPage(event: { target: HTMLInputElement; }) {
       this.$router.push('/' + event.target.innerText.split(' ')[0])
-    }
+    },
+    routeNavigation(path:string){
+        debugger;
+        this.$router.push('/' +path);
+      },
   }
 })
 </script>
