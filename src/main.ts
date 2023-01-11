@@ -1,4 +1,4 @@
-
+import Vue from 'vue'
 import "./router/componentHooks" // <-- Needs to be first
 import { createApp } from "vue";
 import App from './App.vue';
@@ -6,6 +6,8 @@ import router from "./router";
 import store from "./store";
 import mitt from 'mitt';
 import { NeutronVue } from '@neutron/vue';
+import "bootstrap/dist/css/bootstrap.min.css"
+import "bootstrap"
 //Add all icons to the library so you can use it in your pag
 //library.add(fas, far, fab);
 const emitter = mitt();

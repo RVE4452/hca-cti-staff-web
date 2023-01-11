@@ -1,85 +1,39 @@
 <template>
-    <div v-if="profileData" class="overflowHide">
-        <div class="row neu-margin--top-20 neu-margin--bottom-20">
-            <div class="col-sm-10 neu-margin--bottom-20" v-if="showErrorMsg">
-                <ErrorNotification :errorMsg="errorMsg" :errorType="errorType" />
+    <div class="container-fluid p-2">
+            <div class="w-100">
+                <neu-col xxl="12" xl="12" lg="12" md="12" sm="12" cols="12" v-if="showErrorMsg">
+                    <ErrorNotification :errorMsg="errorMsg" :errorType="errorType" />
+                </neu-col>
             </div>
-            <neu-container>
-                <neu-row>
-                    <neu-col xxl="3" xl="3" lg="4" md="3" sm="6" cols="12">
-                        <label for="txtFromDate" class="neu-input__label">From</label>
-                        <neu-input type="date" id="txtFromDate" v-model="fromDateVal"></neu-input>
-                    </neu-col>
 
-                    <neu-col xxl="3" xl="3" lg="4" md="3" sm="6" cols="12">
-                        <label for="txtToDate" class="neu-input__label">To</label>
-                        <neu-input type="date" id="txtToDate" v-model="toDateVal" autocomplete="off" inputmode="search"
-                            enterkeyhint="search" autocorrect="off">
-                        </neu-input>
-                    </neu-col>
+            <div class="card-group">
+                <div class="card bg-transparent border-0">
+                  <div class="card-body p-0 mr-2">
+                    <label for="txtFromDate" class="neu-input__label">From</label>
+                    <neu-input type="date" id="txtFromDate" v-model="fromDateVal"></neu-input>
+                  </div>
+                </div>
 
-                    <neu-col xxl="3" xl="3" lg="4" md="3" sm="6" cols="12">
-                        <neu-button class="col-sm-1 neu-margin--top-20 w100 no-print" color="primary" fill="raised"
-                            @click="getPayrollDetails">
-                            Go
-                        </neu-button>
-                    </neu-col>
-                </neu-row>
+                <div class="card bg-transparent border-0 mr-2">
+                  <div class="card-body p-0">
+                    <label for="txtToDate" class="neu-input__label">To</label>
+                    <neu-input type="date" id="txtToDate" v-model="toDateVal" autocomplete="off" inputmode="search" enterkeyhint="search" autocorrect="off"></neu-input>
+                  </div>
+                </div>
 
+                <div class="card bg-transparent border-0 btn-section mt-1">                  
+                    <div class="card-body p-0">
+                        <neu-button class="neu-button--primary neu-button neu-button--raised neu-margin--top-20 w100 no-print" fill="raised" @click="getPayrollDetails">Go</neu-button>
+                    </div>
+                </div>
 
-
-            </neu-container>
-        </div>
-
-        <div class="neu-container neu-margin--top-20 neu-margin--bottom-20">
-            <template v-if="payrollDetails.length > 0">
-                <table class="neu-table">
-                    <tr class="th_HeaderRow">
-                        <th class="neu-input__label  purpleColor">Schedule</th>
-                        <th class="neu-input__label  redColor">Actual</th>
-                    </tr>
-
-                    <tr v-for="payrollDetail in payrollDetails" :key="payrollDetails.indexOf(payrollDetail)">
-                        <td class="silverBorder">
-                            <div class="div_centered neu-input__label" v-if="payrollDetail.departmentId != 0">
-                                {{ formatDate(payrollDetail.start) }}
-                                <br />
-                                <span class="purpleColor">{{ payrollDetail.shiftCode }}
-                                    {{ formatTime(payrollDetail.start) }} - {{ formatTime(payrollDetail.end) }} </span>
-                                <br />
-                                Dept : {{ payrollDetail.departmentCode }}
-                            </div>
-                        </td>
-                        <td class="silverBorder">
-                            <div class="div_centered neu-input__label" v-for="clockInOut in payrollDetail.clockInOuts"
-                                :key="payrollDetail.clockInOuts.indexOf(clockInOut)">
-                                {{ formatDate(clockInOut.inDateTime) }}
-                                <br />
-                                <span style="font-weight:bold;">{{ clockInOut.code }}</span>
-                                <br />
-                                <span class="redColor">
-                                    {{ formatTime(clockInOut.inDateTime) }} - {{
-                                        clockInOut.outDateTime != null ?
-                                            formatTime(clockInOut.outDateTime) : ''
-                                    }}
-                                </span>
-                                <span style="font-weight:bold;">
-                                    [ {{ totalHours(clockInOut.inDateTime, clockInOut.outDateTime) }} hrs ]
-                                </span>
-                                <br />
-                                Dept : {{ clockInOut.departmentCode }}
-                            </div>
-
-                        </td>
-                    </tr>
-                </table>
-            </template>
-            <template v-else>
-                <div class="neu-input__label" style="text-align:center;">No data exist</div>
-            </template>
-        </div>
+                <div class="card bg-transparent border-0 text-start">                  
+                    <div class="card-body p-0 text-start">                    
+                        <label class="card-text mt-4">PTO Balance: 300</label>
+                    </div>
+                </div>
+              </div>
     </div>
-
 </template>
 
 <script lang="ts">
@@ -239,7 +193,11 @@ export default class PayrollDetails extends Vue {
 }
 </script>
 
+
 <style scoped>
+.neu-container.formSection{
+    background: transparent;
+}
 .th_HeaderRow {
     position: sticky;
     top: 0;
@@ -276,6 +234,11 @@ export default class PayrollDetails extends Vue {
     padding: 10px;
 }
 
+.btn-section,.btn-section .card-body{
+    flex: 0 0 0 0;
+}
+
+
 /* Media Query for Mobile Devices */
 @media (max-width: 480px) {
     .div_centered {
@@ -297,4 +260,4 @@ export default class PayrollDetails extends Vue {
         max-width: 100% !important;
     }
 }
-</style> 
+</style>

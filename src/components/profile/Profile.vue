@@ -2,7 +2,7 @@
     <div class="container pheadingNavigation0 containerWidth">
         <div class="row profileMainDiv" v-bind:class="{ 'sidepanel-open': isSharedPanelOpen }">
             <!-- MOBILE NAV -->
-                <div class="flex flex-column neu-background--white vh-100">
+                <div class="flex flex-column neu-background--white">
                     <neu-sub-left-nav name={{userName}} color="plain" side="left"  @v-neu-change="myFunction" class="mobile-menu profile-mobile-header no-print vh-100">
                         <neu-item class="pl-3" @click="$router.push('/' +'EmployeeDetails')">
                             <neu-stepper slot="start" >
