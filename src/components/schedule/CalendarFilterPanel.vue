@@ -1,4 +1,5 @@
 <template >
+
   <div v-if="toggleStatus" class="overflow-hidden absolute bottom-0 fr filterwidth right-0 z-999 no-print" :style="customTop">
     <div class="bg-near-white h-100 ml-auto relative rightnav-drawer-filter"  :style="this.toggleStatus ? 'left: 0' : 'left:502px'">
       <div class="bg-near-white z-999">
@@ -36,16 +37,7 @@
                     <label class="neu-checkbox__label neu-text--caption" for="chk_Unavailability">Unavailability</label>
                   </div>
                 </div>
-              </div>
-            <!-- <div class="col-sm-12 neu-margin--top-10">
-              <h7 class="tc w-100" style=" text-align:left;font-weight:bold">SELF-SCHEDULING</h7>
-              <div class="neu-checkbox neu-margin--top-10">
-                <input id="chk_All_Default" type="checkbox" class="neu-checkbox__input neu-margin--top-10" v-model="checkALLDefaultOption">
-                  <label class="neu-checkbox__label neu-text--caption" for="chk_All_Default">
-                    Apply  <a class="neu-link" href="javascript:void(0)">My Defaults</a>
-                  </label>
-                </div>
-            </div> -->
+              </div>           
             </div>
           </div>
         </div>
@@ -55,14 +47,42 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+ import {
+    NeuButton,
+    NeuInput,
+    NeuContainer,
+    NeuRow,
+    NeuCol,
+    NeuCheckbox
+} from "@neutron/vue";
 
-
-Options({
+@Options({  
   data:() => {
   return {
 
   }
-  }
+  },
+  props: {
+        toggleStatus: {
+        type: Boolean
+        }
+    },
+    components:{
+      NeuButton,
+    NeuInput,
+    NeuContainer,
+    NeuRow,
+    NeuCol,
+    NeuCheckbox
+
+    },
+  watch: {
+    onMatchChanged(toggleStatus) {
+    if (this.toggleStatus) {
+      this.headerHeight = "12.5px";
+      this.firstClick = true;
+    }}}
+  
 })
 export default class CalendarFilterPanel extends Vue {
   checkALLOption: boolean = true;
@@ -74,18 +94,8 @@ export default class CalendarFilterPanel extends Vue {
   checkALLDefaultOption: boolean = false;
 
   headerHeight: string = "";
-  //@Prop({ required: true }) readonly toggleStatus!: boolean;
+  
   public firstClick: boolean = false;
-
- 
-
-  // @Watch("toggleStatus", { immediate: true }) onMatchChanged() {
-  //   if (this.toggleStatus) {
-  //     this.headerHeight = "12.5px";
-  //     this.firstClick = true;
-  //   }
-  // }
-
   get customTop() {
     if (this.firstClick) {
       return `top:${this.headerHeight}`;

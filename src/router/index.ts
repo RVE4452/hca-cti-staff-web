@@ -1,6 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router";
 import { vuexOidcCreateRouterMiddleware } from 'vuex-oidc'
-import Admin from "@/components/admin/Admin.vue";
 import Login from "@/components/Login.vue";
 import OidcPopupCallback from "@/components/OidcPopupCallback.vue";
 import InvalidAccount from "@/components/error/InvalidAccount.vue";
@@ -8,9 +7,6 @@ import ErrorAccount from "@/components/error/ErrorAccount.vue";
 import SystemMaintenance from "@/components/error/SystemMaintenance.vue";
 import MySchedule from "@/components/schedule/MyScheduleView.vue"
 import Profile from "@/components/profile/Profile.vue";
-//import NProgress from "nprogress";
-import "../css/nprogress.css";
-
 import store from '../store/index'
 
 const routes = [
@@ -23,34 +19,20 @@ const routes = [
         component: Login
     },
     {
-        path: '/schedule',
+        path: '/Schedule',
+        name: 'Schedule',
         component: MySchedule,
         props: { viewFlag: 'CalView' }
     },
     {
-        path: '/departmentView',
+        path: '/Department',
         component: MySchedule,
         props: { viewFlag: 'DeptView' }
-    },
-    {
-        path: '/Schedule',
-        name: 'Schedule',
-        component: MySchedule,
-        meta: {key: 'schedule', title: 'Schedule Management - Schedule'}
-      },
-      {
-        path: '/Deaprtment',
-        name: 'Deaprtment View',
-        component: MySchedule
-      },
+    },    
     {
         path: '/profile',
         component: Profile
-    },
-    {
-        path: '/admin',
-        component: Admin
-    },
+    },   
     {
         path: '/callback-silent',
         name: 'oidcPopupCallback',

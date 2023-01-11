@@ -1,338 +1,39 @@
 <template>
-    <div class="no-print" v-bind:class="isPanelOpen ? 'sideNavPanel' : 'sideNavPanelClose'">
-        <header class="fs-22 fw-bold modal-header flex relative" id="modalTitle">
-            <span class="panHeading">{{ requestTypeArray[sharedRequest.type - 1]}} </span>
-            <button type="button"
-                    class="btn-close f1 absolute pointer btnSidePanelClose"
-                    @click="close"
-                    data-test="modal-close"
-                    aria-label="Close Modal">
-                &times;
-            </button>
-        </header>
-        <template v-if="showDateNavigation()">
-            <div class="col-md calender-nav">
-                <div style="text-align: center">
+   <div class="no-print modal" v-bind:class="isPanelOpen ? 'sideNavPanel' : 'sideNavPanelClose'">
+        <div  style="text-align:center">
+        <neu-header class="fs-22 fw-bold modal-header relative" id="modalTitle">           
+            <f5><span>{{ requestTypeArray[sharedRequest.type - 1]}} </span></f5>            
+            <neu-icon  @click="close" data-test="modal-close" class="btn-close f1 absolute pointer btnSidePanelClose m-3 neu-icon neu-icon--large hydrated">close</neu-icon>
+        </neu-header>       
+           <template v-if="showDateNavigation()">
+            <div >
+                <div>
                     <h5>
-                        <i @click="previousDay"
+                    <neu-icon @click="previousDay"
                            class="material-icons pointer calendar-navigation"
                            style="position: relative; top: 4px">
                             chevron_left
-                        </i>
+                        </neu-icon>
                         <span>
                             {{ this.sharedRequest && this.sharedRequest.calSelectedDates && this.sharedRequest.calSelectedDates.startDate ? formatDate(this.sharedRequest.calSelectedDates.startDate) : formatDate(currentEvent.date)  }}
                         </span>
-                        <i @click="nextDay"
+                        <neu-icon @click="nextDay"
                            class="material-icons pointer calendar-navigation"
                            style="position: relative; top: 4px">
                             chevron_right
-                        </i>
+                        </neu-icon>
                     </h5>
                 </div>
             </div>
         </template> 
-        <!-- To-Do: Changing tab visibility logic need to update tab content visibility and this.getActiveTab() logic-->      
-        <div class="neu-tablist" role="tablist">
-            <template v-if="sharedRequest.type === 1">
-                <button v-if="sharedRequest.selfSchedule && this.currentEvent.status !='0 Needs'"
-                        v-bind:id="'tabBtn-' + (sharedRequest.status == 'Posted' ? 'OpenNeeds' : 'SelfSchedule')"
-                        v-on="{ click: () => (activeTab = 0) }"
-                        v-bind:class="
-        ` ${
-            activeTab == 0 ? 'neu-tablist__tab-on-light--is-active' : ''
-        }`
-        "
-                        class="neu-tablist__tab neu-tablist__tab-on-light padding-left1 padding-right1 pb3 pt3"
-                        role="tab"
-                        aria-selected="true"
-                        aria-controls="panel-name1">
-                    <span class="neu-tablist__tab-text neu-tablist__tab-text-on-light" v-text="sharedRequest.status == 'Posted' ? 'Open Needs' : 'Self Schedule'">
-                    </span>
-                </button>
-                <button v-if="sharedRequest.request"
-                        id="tabBtn-Request"
-                        v-on="{ click: () => (activeTab = 1) }"
-                        v-bind:class="
-        ` ${
-            activeTab == 1 ? 'neu-tablist__tab-on-light--is-active' : ''
-        }`
-        "
-                        class="neu-tablist__tab neu-tablist__tab-on-light padding-left1 padding-right1 pb3 pt3"
-                        role="tab"
-                        aria-selected="true"
-                        aria-controls="panel-name1">
-                    <span class="neu-tablist__tab-text neu-tablist__tab-text-on-light">{{ !sharedRequest.availability ? "Request Detail" : "Request"}}</span>
-                </button>
-                <!--<button v-if="sharedRequest.needApproval"
-                                v-on="{ click: () => (activeTab = 2) }"
-                                v-bind:class="
-                ` ${
-                activeTab == 2 ? 'neu-tablist__tab-on-light--is-active' : ''
-                }`
-            "
-                                class="neu-tablist__tab neu-tablist__tab-on-light padding-left1 padding-right1 pb3 pt3"
-                                role="tab"
-                                aria-selected="false"
-                                aria-controls="panel-name2">
-                            <span class="neu-tablist__tab-text neu-tablist__tab-text-on-light">Need Approval</span>
-                        </button>-->
-                <button v-if="sharedRequest.availability"
-                        id="tabBtn-Unvailability"
-                        v-on="{ click: () => (activeTab = 2) }"
-                        v-bind:class="
-        ` ${
-            activeTab == 2 ? 'neu-tablist__tab-on-light--is-active' : ''
-        }`
-        "
-                        class="neu-tablist__tab neu-tablist__tab-on-light padding-left1 padding-right1 pb3 pt3"
-                        role="tab"
-                        aria-selected="false"
-                        aria-controls="panel-name2">
-                    <span class="neu-tablist__tab-text neu-tablist__tab-text-on-light">Unavailability</span>
-                </button>
-                <button v-if="sharedRequest.vacationBidding"
-                        id="tabBtn-VacationBidding"
-                        v-on="{ click: () => (activeTab = 3) }"
-                        v-bind:class="
-        ` ${
-            activeTab == 3 ? 'neu-tablist__tab-on-light--is-active' : ''
-        }`
-        "
-                        class="neu-tablist__tab neu-tablist__tab-on-light padding-left1 padding-right1 pb3 pt3"
-                        role="tab"
-                        aria-selected="false"
-                        aria-controls="panel-name2">
-                    <span class="neu-tablist__tab-text neu-tablist__tab-text-on-light">Vacation Bidding</span>
-                </button>
-                <button v-if="sharedRequest.additionalRequest"
-                        id="tabBtn-AdditionalRequest"
-                        v-on="{ click: () => (activeTab = 4) }"
-                        v-bind:class="
-        ` ${
-            activeTab == 4 ? 'neu-tablist__tab-on-light--is-active' : ''
-        }`
-        "
-                        class="neu-tablist__tab neu-tablist__tab-on-light padding-left1 padding-right1 pb3 pt3"
-                        role="tab"
-                        aria-selected="false"
-                        aria-controls="panel-name2">
-                    <span class="neu-tablist__tab-text neu-tablist__tab-text-on-light">Request</span>
-                </button>
-            </template>
-            <template v-if="sharedRequest.type === 2">
-                <button v-if="sharedRequest.isSymphonyUser && sharedRequest.status == 'Posted'"
-                        id="tabBtn-ORProcedure"
-                        v-on="{ click: () => (activeTab = 0) }"
-                        v-bind:class="
-        ` ${
-            activeTab == 0 ? 'neu-tablist__tab-on-light--is-active' : ''
-        }`
-        "
-                        class="neu-tablist__tab neu-tablist__tab-on-light padding-left1 padding-right1 pb3 pt3"
-                        role="tab"
-                        aria-selected="false"
-                        aria-controls="panel-name2">
-                    <span class="neu-tablist__tab-text neu-tablist__tab-text-on-light">Procedures</span>
-                </button>
-                <button v-if="sharedRequest.event"
-                        id="tabBtn-Event"
-                        v-on="{ click: () => (activeTab = 1) }"
-                        v-bind:class="
-        ` ${
-            activeTab == 1 ? 'neu-tablist__tab-on-light--is-active' : ''
-        }`
-        "
-                        class="neu-tablist__tab neu-tablist__tab-on-light padding-left1 padding-right1 pb3 pt3"
-                        role="tab"
-                        aria-selected="false"
-                        aria-controls="panel-name2">
-                    <span class="neu-tablist__tab-text neu-tablist__tab-text-on-light">Event</span>
-                </button>
-                <button v-if="sharedRequest.assignmentDetail"
-                        id="tabBtn-Detail"
-                        v-on="{ click: () => (activeTab = 2) }"
-                        v-bind:class="
-        ` ${
-            activeTab == 2 ? 'neu-tablist__tab-on-light--is-active' : ''
-        }`
-        "
-                        class="neu-tablist__tab neu-tablist__tab-on-light padding-left1 padding-right1 pb3 pt3"
-                        role="tab"
-                        aria-selected="false"
-                        aria-controls="panel-name2">
-                    <span class="neu-tablist__tab-text neu-tablist__tab-text-on-light">Detail</span>
-                </button>
-            </template>
-            <template v-if="sharedRequest.type === 3">
-                <!-- third box -->
-            </template>
-            <template v-if="sharedRequest.type === 4">
-                <!-- trade box -->
-                <button v-if="sharedRequest.isSymphonyUser"
-                        id="tabBtn-ORProcedure"
-                        v-on="{ click: () => (activeTab = 0) }"
-                        v-bind:class="
-        ` ${
-            activeTab == 0 ? 'neu-tablist__tab-on-light--is-active' : ''
-        }`
-        "
-                        class="neu-tablist__tab neu-tablist__tab-on-light padding-left1 padding-right1 pb3 pt3"
-                        role="tab"
-                        aria-selected="false"
-                        aria-controls="panel-name2">
-                    <span class="neu-tablist__tab-text neu-tablist__tab-text-on-light">Procedures</span>
-                </button>
-                <button v-if="sharedRequest.tradeShift"
-                        id="tabBtn-TradeShift"
-                        v-on="{ click: () => (activeTab = 1) }"
-                        v-bind:class="
-        ` ${
-            activeTab == 1 ? 'neu-tablist__tab-on-light--is-active' : ''
-        }`
-        "
-                        class="neu-tablist__tab neu-tablist__tab-on-light padding-left1 padding-right1 pb3 pt3"
-                        role="tab"
-                        aria-selected="false"
-                        aria-controls="panel-name2">
-                    <span class="neu-tablist__tab-text neu-tablist__tab-text-on-light">Trade Event</span>
-                </button>               
-                 <button v-if="sharedRequest.assignmentDetail"
-                        id="tabBtn-Detail"
-                        v-on="{ click: () => (activeTab = 2) }"
-                        v-bind:class="
-        ` ${
-            activeTab == 2 ? 'neu-tablist__tab-on-light--is-active' : ''
-        }`
-        "
-                        class="neu-tablist__tab neu-tablist__tab-on-light padding-left1 padding-right1 pb3 pt3"
-                        role="tab"
-                        aria-selected="false"
-                        aria-controls="panel-name2">
-                    <span class="neu-tablist__tab-text neu-tablist__tab-text-on-light">Details</span>
-                </button>
-                 <button v-if="sharedRequest.request"
-                        id="tabBtn-Request"
-                        v-on="{ click: () => (activeTab = 3) }"
-                        v-bind:class="
-        ` ${
-            activeTab == 3 ? 'neu-tablist__tab-on-light--is-active' : ''
-        }`
-        "
-                        class="neu-tablist__tab neu-tablist__tab-on-light padding-left1 padding-right1 pb3 pt3"
-                        role="tab"
-                        aria-selected="false"
-                        aria-controls="panel-name2">
-                    <span class="neu-tablist__tab-text neu-tablist__tab-text-on-light">Request</span>
-                </button>
-            </template>
-        </div>
-        <template v-if="sharedRequest.type === 1">
-            <div class="pb3 row" v-if="activeTab == 0 && this.currentEvent.status !='0 Needs'" id="tab">
-                <div v-if="sharedRequest.status == 'Posted'">
-                    <OpenNeed :currentEvent="currentEvent" :scheduleStartDate="scheduleStartDate"
-                     :scheduleEndDate="scheduleEndDate" @closeSharedModal="close" @showSuccessMsgPopUp="showSuccessModal" />
-                </div>                
-                <div v-else>
-                    <SelfSchedule :currentEvent="currentEvent" :dayChanged="currentEvent.date" :scheduleStatus="sharedRequest.status" :isSelfScheduledEvent="sharedRequest.isSelfScheduledEvent" :departmentsCanSelfSchedule="sharedRequest.SelfScheduleDepartments" @closeSharedModal="close" @showSuccessMsgPopUp="showSuccessModal" :calSelectedDates="sharedRequest.calSelectedDates" :scheduleId="sharedRequest.scheduleId"/>
-                </div>
-
-
-                <!-- enabledd -->
-                <!-- <Detail :enableField="['shift']" :currentEvent="currentEvent" />
-                <ShiftDetail :currentEvent="currentEvent" />
-                <div class="container-fluid">
-            <div>
-                <div class="col-12">
-                <button name="btnWithdrawal"
-                    class="d-block mb4 mt4 neu-background--denim neu-button w-100 white"
-                >
-                    Withdraw
-                </button>
-                </div>
-            </div>
-                </div> -->
-            </div>
-            <div class="pb3 row" id="tab" v-if="activeTab == 1">
-                <Request :currentEvent="currentEvent" :additionalRequestEvent="false" :dayChanged="currentEvent.date" :calSelectedDates="sharedRequest.calSelectedDates" @closeSharedModal="close" @showSuccessMsgPopUp="showSuccessModal" :key="counter" />
-            </div>
-            <!--<div class="pb3 row" v-if="activeTab == 2">
-            <Approval @closeSharedModal="close" />
-        </div>-->
-            <div class="pb3 row" v-if="activeTab == 2">
-                <Unavailability :isUnavailabilityEvent="sharedRequest.isUnavailabilityEvent" :calSelectedDates="sharedRequest.calSelectedDates" :currentEvent="currentEvent" @closeSharedModal="close" @showSuccessMsgPopUp="showSuccessModal" :key="counter" />
-            </div>
-            <div class="container-fluid" id="tab" v-if="activeTab == 3">
-                <div class="pb3 row">
-                    <div class="col-12 pt3">
-                        test tab6
-                    </div>
-                </div>
-            </div>
-            <div class="pb3 row" id="tab" v-if="activeTab == 4">
-                <Request :currentEvent="currentEvent" :additionalRequestEvent="true" :dayChanged="currentEvent.date" :calSelectedDates="sharedRequest.calSelectedDates" @closeSharedModal="close" @showSuccessMsgPopUp="showSuccessModal" :key="counter" />
-            </div>
-            <div class="pb3 row" id="tab" v-if="activeTab == 5">
-                <div class="bg-black-05" style="width: 100%; min-height: 200px; display: flex; align-items: center; justify-content: center;margin-top:50px;margin-bottom:50px;">
-                    <h4>No events to display.</h4>
-                </div>
-            </div>
-        </template>
-        <template v-if="sharedRequest.type === 2">
-            <div class="pb3 row" v-if="activeTab == 0 && sharedRequest.isSymphonyUser == true && sharedRequest.status == 'Posted'">
-                <SymphonyOperatingRooms :key="counter" :currentEvent="currentEvent" @closeSharedModal="close" />
-            </div>
-            <div class="pb3 row" v-if="activeTab == 1">
-                <Detail :enableField="[]" :currentEvent="currentEvent" :key="counter" />
-                <PotentialTrade :key="counter + 1" />
-                <ShiftDetail :currentEvent="currentEvent" :key="counter + 2" />
-                <div class="container-fluid">
-                    <div>
-                        <div class="col-12">
-                            <button name="btnSwapShift" class="d-block mb4 mt4 neu-background--denim neu-button w-100 white">
-                                Swap Shift
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="pb3 row" v-if="activeTab == 2">
-                <!-- <AssignmentDetail :currentEvent="currentEvent" /> -->
-                <Detail :enableField="[]" :currentEvent="currentEvent" :key="counter" />
-                <ShiftDetail :currentEvent="currentEvent" :key="counter + 1" />
-                <div class="container-fluid tc">
-                    <div>
-                        <div class="col-12">
-                            <h6>Cannot be Modified</h6>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </template>
-        <template v-if="sharedRequest.type === 3">
-            <RequestedTrade :key="counter" :currentEvent="currentEvent" @closeSharedModal="close" @showSuccessMsgPopUp="showSuccessModal" />
-        </template>
-        <template v-if="sharedRequest.type === 4">
-            <div class="pb3 row" v-if="activeTab == 0 && sharedRequest.isSymphonyUser == true">
-                <SymphonyOperatingRooms :key="counter" :currentEvent="currentEvent" @closeSharedModal="close" />
-            </div>
-            <div class="pb3 row" v-if="activeTab == 1">
-                <TradeShift :key="counter" :currentEvent="currentEvent" @showSuccessMsgPopUp="showSuccessModal" @closeSharedModal="close" />
-            </div>
-             <div class="pb3 row" id="tab" v-if="activeTab == 2">
-                <Detail :enableField="[]" :currentEvent="currentEvent" :key="counter" />
-                <ShiftDetail :currentEvent="currentEvent" :key="counter + 1" />
-                <div class="container-fluid tc">
-                    <div>
-                        <div class="col-12">
-                            <h6>Cannot be Modified</h6>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="pb3 row" id="tab" v-if="activeTab == 3">
-                <Request :key="counter" :currentEvent="currentEvent" :additionalRequestEvent="false" :calSelectedDates="sharedRequest.calSelectedDates" @closeSharedModal="close" @showSuccessMsgPopUp="showSuccessModal" />
-            </div>           
-        </template>
+         </div>
+            <neu-tablist color="primary-100"  value="assignment">
+        <neu-tab tab="assignment" navy="true">Details</neu-tab>
+        <neu-tab tab="request" navy="true">Request</neu-tab>
+        <neu-tab tab="unavailablity" navy="true">Unavailability</neu-tab>
+      </neu-tablist>
+       
+      
     </div>
 </template>
 
@@ -340,9 +41,9 @@
     //import plugins and modules
     import { Options, Vue } from 'vue-class-component';
     import { mapState } from "vuex";
-    // import AssignmentDetail from "./AssignmentDetail.vue";
-    // import ShiftDetail from "./ShiftDetail.vue";
-    // import Detail from "./Detail.vue";
+    import AssignmentDetail from "./AssignmentDetail.vue";
+    import ShiftDetail from "./ShiftDetail.vue";
+    import Detail from "./Detail.vue";
     /*import Approval from "./Approval.vue";*/
     // import PotentialTrade from "./PotentialTrades.vue";
     // import SelfSchedule from './SelfSchedule.vue';
@@ -354,6 +55,11 @@
     
     import moment from "moment";
     //import SymphonyOperatingRooms from './SymphonyOperatingRooms.vue'
+     import {
+                NeuHeader,
+                NeuRow,
+                NeuCol
+            } from "@neutron/vue";
 
     class Props {
          readonly isPanelOpen!: boolean;
@@ -372,18 +78,21 @@
     //     }
     // },
         components: {
-            // AssignmentDetail,
+             AssignmentDetail,
             /*Approval,*/
             // PotentialTrade,
-            // Detail,
-            // ShiftDetail,
-            // SelfSchedule,
-            Request,
+             Detail,
+             ShiftDetail,
+            // // SelfSchedule,
+            // Request,
             // RequestedTrade,
             // Unavailability,
             // OpenNeed,
             // TradeShift,
-            // SymphonyOperatingRooms
+            // SymphonyOperatingRooms,
+            NeuHeader,
+            NeuRow,
+            NeuCol,
         },
          computed: {
                 ...mapState('schedule', ['assignmentDetail']),
@@ -403,6 +112,7 @@
         created() {
             //super(props);
             const sharedRequest = JSON.parse(JSON.stringify(this.sharedRequest));
+            const currentEvent = JSON.parse(JSON.stringify(this.currentEvent));
             delete sharedRequest.type;
             delete sharedRequest.calSelectedDates;
             //const updatedArray = Object.entries(sharedRequest);

@@ -1,1 +1,112 @@
 @import 'global';
+
+/* vue-multiselect style start  */
+.multiselect__tag{
+    background-image: none !important;
+    background-color: #e8e8e8 !important;
+    border-color: #e8e8e8 !important;
+    color: #15202E !important;
+}
+
+.multiselect__tags{
+    border: 1px solid #CED1D7 !important;
+}
+
+.multiselect{
+    font-size: 14px !important;
+}
+
+.multiselect__option { 
+    min-height: 28px !important;
+    line-height: 2px !important;
+}
+
+.multiselect__option:after{
+    line-height: 28px !important;
+}
+
+.multiselect__option--highlight {
+    background-color: #164D87 !important;
+    border-color: #164D87 !important;
+}
+
+.multiselect__option--highlight:after{
+    background-color: #164D87 !important;
+    border-color: #164D87 !important;
+}
+
+.multiselect__option--selected.multiselect__option--highlight, .multiselect__option--selected.multiselect__option--highlight:after{
+    background: #ff6a6a !important;
+    color: #fff;
+}
+/* vue-multiselect style end  */
+
+/*================================================================================
+ Neutron css
+================================================================================*/
+
+.neu-container {
+	position: relative;
+	width: 100%;
+	padding: 0.938rem;
+	background-color: white;
+	border-radius: core-border-radius;
+	box-shadow: neu-elevation-1;
+	overflow: hidden;
+
+	/* Extends small container class */
+	.neu-container.neu-container--small {
+		padding: 0.625rem 0.938rem !important;
+	}
+}
+.neu-margin--top-20 {
+    margin-top: 1.25em !important;
+  }
+
+.neu-text--caption,
+.neu-text--support,
+small {
+  display: block;
+  line-height: 1.5;
+}
+
+.neu-text--align-center {
+    text-align: center;
+}
+
+.neu-padding--top-0 {
+    padding-top: 0 !important;
+  }
+
+/*================================================================================
+ Neutron css
+================================================================================*/
+
+@media print
+{
+    .no-print, .no-print
+    {
+        display: none !important;
+    }
+
+    .paddBottom0{
+        padding-bottom: 0!important;
+    }
+
+    body {
+        -webkit-print-color-adjust: exact !important;
+    }
+}
+@media print and (max-width: 899px) 
+{ 
+    body,html{ 
+        min-width: 1100px;
+    }
+}
+
+.mTop0{
+    margin-top: 0px !important;
+}
+i {
+    cursor: pointer;
+}

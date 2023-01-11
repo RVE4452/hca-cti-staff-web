@@ -1,85 +1,102 @@
 
 <template>
-    <div>
-        <hr class="neu-divider neu-divider--dark">
-        <div class="row mlr2 no-print">
-            <div class="col-sm-3 neu-margin--top-10 neu-margin--bottom-10 plr5">
-                <select name="ddlFacility" class="neu-input__text-field neu-input__label filterFields" v-model="selectedFacilityId" @change="onFacilityChange($event)">
-                    <option v-for="facility in facilities" :value="facility.facilityId" :key="facility.facilityId">
-                        {{facility.facilityName}}
-                    </option>
-                </select>
-            </div>
-            <div class="col-sm-2 neu-margin--top-10 neu-margin--bottom-10 filter-input plr5">
-                <select name="ddlDepartment" class="neu-input__text-field neu-input__label filterFields" v-model="selectedDeptId" @change="onDepartmentChange($event)">
-                    <option v-for="department in facilityDepts" :value="department.deptId" :key="department.deptId">
-                        {{department.deptName}}
-                    </option>
-                </select>
-            </div>
-            <div class="col-sm-2 neu-margin--top-10 neu-margin--bottom-10 filter-input plr5">
-                <multi-list-select :list="skills"
-                                   name="ddlSkills"
-                                   :selectedItems="selectedSkills"
-                                   option-value="id"
-                                   option-text="description"
-                                   placeholder="Select Skills"                                  
-                                   @select="onSkillSelect">
-                </multi-list-select>
-            </div>
-            <div class="col-sm-3 neu-margin--top-10 neu-margin--bottom-10 filter-input plr5">
-                <select name="ddlSchedulePeriod" class="neu-input__text-field neu-input__label filterFields" v-model="selectedScheduleId" @change="onScheduleChange($event.target.value)">
-                    <option v-for="schedule in userSchedules" :value="schedule.id" :key="schedule.id">
+    <div class="margin">
+        <neu-row class="no-print">
+            <neu-col xxl="" xl="3" lg="12" md="2" sm="6" cols="12">
+                <neu-select interface="popover" :value="selectedFacilityId" @v-neu-change="onFacilityChange">
+                <neu-option v-for="facility in facilities" :value="facility.facilityId" :key="facility.facilityId">
+                    {{facility.facilityName}}
+                </neu-option>
+                </neu-select>
+            </neu-col>
+            <neu-col xxl="2" xl="3" lg="12" md="2" sm="6" cols="12">
+                <neu-select interface="popover" :value="selectedDeptId" @v-neu-change="onDepartmentChange">
+                <neu-option v-for="department in facilityDepts" :value="department.deptId" :key="department.deptId">
+                    {{department.deptName}}
+                </neu-option>
+                </neu-select>
+            </neu-col>
+            <neu-col xxl="2" xl="3" lg="12" md="2" sm="6" cols="12">
+                <VueMultiselect v-model="selectedSkills"
+                        :options="skills"
+                        :multiple="true"
+                        :searchable="true"
+                        :close-on-select="true"
+                        @update:modelValue="onSkillSelect"
+                        placeholder="Select Skills"
+                        label="description"
+                        track-by="description">
+                </VueMultiselect>
+            </neu-col>
+            <neu-col xxl="2" xl="3" lg="12" md="2" sm="6" cols="12">
+                <VueMultiselect v-model="selectedSkills"
+                        :options="skills"
+                        :multiple="true"
+                        :searchable="true"
+                        :close-on-select="true"
+                        @update:modelValue="onSkillSelect"
+                        placeholder="Select Schedule Blocks"
+                        label="description"
+                        track-by="description">
+                </VueMultiselect>
+            </neu-col>
+            <neu-col xxl="2" xl="3" lg="12" md="2" sm="6" cols="12">
+                <neu-select interface="popover" :value="selectedScheduleId" @v-neu-change="onScheduleChange">
+                    <neu-option v-for="schedule in userSchedules" :key="schedule.id" :value="schedule.id">
                         {{getSchedulePeriod(userSchedules.indexOf(schedule))}}
-                    </option>
-                </select>
-            </div>
-
-            <div class="col-sm-2 neu-margin--top-10 neu-margin--bottom-10 filter-input plr5">
-                <span class="neu-input__label">Last Updated : {{lastUpdatedDate}}</span>
-            </div>
-        </div>
-        <hr class="neu-divider neu-divider--light">
-        <br />
-
-        <!--Print Page Filters -->
-        <div class="deptFiltersPrint">
+                    </neu-option>
+                </neu-select>
+            </neu-col>
+            <neu-col xxl="2" xl="3" lg="12" md="2" sm="6" cols="12">
+                <span>Last Updated : <br> {{lastUpdatedDate}}</span>
+            </neu-col>
+        </neu-row>        
+    </div>
+    <neu-divider color="gray-100" dark="true" >
+    </neu-divider>
+    <!--Print Page Filters -->
+    <div class="deptFiltersPrint">
             <table>
                 <tr>
-                    <td>Facility:</td>
-                    <td style="font-weight:bold;">{{selectedFacilityName}}</td>
-                    <td>Dept:</td>
-                    <td style="font-weight:bold;">{{ selectedDeptName}}</td>
-                    <td>Skills:</td>
-                    <td style="font-weight:bold;">{{selectedSkillList}}</td>
-                    <td>Schedule Period:</td>
-                    <td style="font-weight:bold;">{{selectedScheduleName}}</td>
-                    <td>Last Updated:</td>
-                    <td style="font-weight:bold;">{{lastUpdatedDate}}</td>
+                    <td>Facility :</td>
+                    <td class="print-td-style">{{selectedFacilityName}}</td>
+                    <td>Dept :</td>
+                    <td class="print-td-style">{{ selectedDeptName}}</td>
+                    <td>Skills :</td>
+                    <td class="print-td-style">{{selectedSkillList}}</td>
+                    <td>Schedule Period :</td>
+                    <td class="print-td-style">{{selectedScheduleName}}</td>
+                    <td>Last Updated :</td>
+                    <td class="print-td-style">{{lastUpdatedDate}}</td>
                 </tr>
             </table>          
         </div>
-        <div class="neu-container neu-padding--0 deptTableContainer deptContainer">
-            <table class="neu-table deptView deptTable">
+    <div class="neu-container neu-padding--0 deptTableContainer deptContainer margin">
+            <table class="neu-table_new deptView">
                 <tr class="th_HeaderRow">
-                    <th class="neu-input__label td_column1 empName pt10" v-bind:class="{ 'hideEmployeNameCol': columnToggle }">
-                        Employee Name<i class="material-icons neu-table__sort no-print" v-on:click="getSortedDSData('clicked')" style="vertical-align: bottom;">
-                            {{ sortArrow }}
-                        </i>
+                    <th class="neu-input__label td_column1 empName pt10"  v-bind:class="{ 'hideEmployeNameCol': columnToggle }">
+                        Employee Name
+                        <i class="material-icons neu-table__sort no-print valign" v-on:click="getSortedDSData('clicked')">{{ sortArrow }}</i>
                     </th>
                     <th class="neu-input__label td_column2 skillWidth pt14" v-bind:class="{ 'hideSkillCol': columnToggle }">
                         <span v-bind:class="{ 'hideIcon': columnToggle }">Skill</span>
                         <div class="navArrow mobileNav no-print">
-                            <i class="material-icons pointer colNavigation" v-bind:class="{ 'hideIcon': !iconToggle }" @click="hideColumns" >
+                            <i class="material-icons pointer colNavigation"  v-bind:class="{ 'hideIcon': !iconToggle }" @click="hideColumns">
                                 chevron_left
                             </i>
                             <i class="material-icons pointer colNavigation " v-bind:class="{ 'hideIcon': iconToggle }" @click="showColumns" >
                                 chevron_right
                             </i>
+                            <!-- <neu-icon class="material-icons pointer colNavigation"  v-bind:class="{ 'hideIcon': !iconToggle }" @click="hideColumns">
+                                chevron_right
+                            </neu-icon>
+                            <neu-icon class="material-icons pointer colNavigation " v-bind:class="{ 'hideIcon': iconToggle }" @click="showColumns">
+                                chevron_right
+                            </neu-icon> -->
                         </div>
                     </th>
                     <th v-for="day in days" :key="days.indexOf(day)" class="neu-input__label periodWidth" 
-                       v-bind:class="applyCSS(day,null)"
+                        v-bind:class="applyCSS(day,null)"
                         >
                         {{  getFormattedDay(day) }}
                         <br />
@@ -87,43 +104,43 @@
                     </th>
                 </tr>
 
-                <tr class="neu-table__row" style="border:1px solid silver" v-for="ds in sortedDSList" :key="sortedDSList.indexOf(ds)" :staffId="ds.staffId">
-                    <td :class="['neu-table__cell neu-table__row-comfy neu-input__label td_column1 colEmpNameData', (ds.staffId == profileData.staffId || ds.charge== 1) ? 'boldClass' : '', columnToggle? 'hideEmployeNameCol': '']" >
-                        <!--v-bind:class="getClass(props.item.name)"-->
+                <tr class="neu-table__row tableBorder" v-for="ds in sortedDSList" :key="sortedDSList.indexOf(ds)" :staffId="ds.staffId">
+                    <td :class="['neu-table__cell neu-table__row-comfy neu-input__label td_column1 colEmpNameData', (ds.staffId == profileData.staffId || ds.charge== 1) ? 'boldClass' : '', columnToggle? 'hideEmployeNameCol': '']"  >
                         {{ ds.lastName }},  {{ ds.firstName }}
                     </td>
                     <td class="neu-table__row-comfy neu-input__label td_column2" v-bind:class="{ 'hideSkillCol': columnToggle }">
                         {{ !columnToggle ? ds.skill: '' }}
                     </td>
                     <td v-for="day in days" :key="days.indexOf(day)+'_row'" class="neu-table__row-comfy neu-input__label"
-                        v-bind:class="applyCSS(day,ds)"
+                    v-bind:class="applyCSS(day,ds)"
                         style=" border: 1px solid silver; word-wrap: break-word !important; text-align: center !important;"  :date="displayDate(day)">
                         {{ showCellData(day,ds) }}
                     </td>
                 </tr>
             </table>
         </div>
-    </div>
 </template>
 
 <script lang="ts">
     import { Options, Vue } from 'vue-class-component';
+    //@ts-ignore
     import moment from "moment";
     import { mapState } from "vuex";
     import { DepartmentStaff, DepartmentAssignment } from "@/models";    
-    //import _ from 'lodash';
-    //import { MultiListSelect } from 'vue-search-select';
+    //@ts-ignore
+    import { Multiselect } from 'vue-multiselect';
     import { useAppInsights } from '../../store/modules/AppInsights'
 
     class Props{
         readonly currentScheduleId!: string;
     }
     @Options({
-        components: { //MultiListSelect
+        components: { 
+            VueMultiselect : Multiselect
          },
          computed: {
                 ...mapState('profile', ['profileData','appInsightEventData']),
-                 ...mapState('schedule', ['departmentSchedules','userSchedules'])
+                ...mapState('schedule', ['departmentSchedules','userSchedules'])
             },
     })
     export default class DepartmentView extends Vue.with(Props) {
@@ -159,25 +176,28 @@
         private columnToggle: boolean = false;
         private iconToggle: boolean = true;
 
-        async created() {
-            this.showScheduleDays();
-            await this.getFiltersData();
-            await this.getDepartmentSchedule();
-            localStorage.setItem("visitedDepartmentView", "true");
-            useAppInsights().trackEvent({name:'ViewDepartment',properties: 
-               JSON.parse(JSON.stringify(this.appInsightEventData))
-            });
+        async mounted() { 
+            if(this.profileData.first == null || this.profileData.first == undefined)
+            {
+                await this.$store.dispatch('profile/getProfileDetails','') ;
+                await this.getFiltersData();
+                await this.showScheduleDays();
+                await this.getDepartmentSchedule();
+                localStorage.setItem("visitedDepartmentView", "true");
+                useAppInsights().trackEvent({name:'ViewDepartment',properties: 
+                JSON.parse(JSON.stringify(this.appInsightEventData))});  
+            } else{
+                await this.getFiltersData();
+                await this.showScheduleDays();
+                await this.getDepartmentSchedule();
+                localStorage.setItem("visitedDepartmentView", "true");
+                useAppInsights().trackEvent({name:'ViewDepartment',properties: 
+                JSON.parse(JSON.stringify(this.appInsightEventData))});
+            }            
         }
 
-        //@Watch('currentScheduleId', { immediate: true }) 
-        onMatchChanged() {
-            this.selectedScheduleId = this.userSchedules[this.currentScheduleId].id;
-            let Schedule = this.userSchedules.filter((x:any)=> x.id == this.selectedScheduleId)[0]
-            this.selectedScheduleName = this.getSchedulePeriod(this.userSchedules.indexOf(Schedule));
-            this.onScheduleChange(this.selectedScheduleId);
-        }
         async getFiltersData() {
-            if (this.profileData != null) {
+            if (this.profileData != null && this.profileData?.username != null) {
                 var objPrimaryFacilityDepartment = {
                     facilityId: this.profileData.facilityId,
                     coid: this.profileData.coid,
@@ -199,7 +219,7 @@
                 this.facilityDepts = this.profileData.secondaryDepartments.filter((x:any) => x.facilityId == this.selectedFacilityId);
                 this.selectedDeptId = (localStorage.getItem("selDepId") == null ? this.profileData.deptId : Number(localStorage.getItem("selDepId")));               
 
-                if (this.userSchedules == undefined) {
+                if (this.userSchedules.length  == 0 || this.userSchedules == undefined) {
                     var payload = {
                         username: this.profileData.username,
                         index: this.currentShceduleIndex,
@@ -273,10 +293,9 @@
             this.lastUpdatedDate = date + ' ' + time;
         }
 
-        showScheduleDays() {
+        async showScheduleDays() {
             this.days = [];
             var date1 = new Date(this.userSchedules[this.currentShceduleIndex].startDate);
-            var date2 = new Date(this.userSchedules[this.currentShceduleIndex].endDate);
             var daysInSchedule = this.profileData.weeksInSchedule * 7;
             for (var i = 0; i < daysInSchedule; i++) {
                 var d = new Date(date1);
@@ -456,9 +475,9 @@
             return scheduleDate;
         }
 
-        async onScheduleChange(value:string) {
-            this.selectedScheduleId = value;
-            var schedule = this.userSchedules.find((x:any) => x.id == value);
+        async onScheduleChange(value:any) {
+            this.selectedScheduleId = value.target.value;
+            var schedule = this.userSchedules.find((x:any) => x.id == value.target.value);
             this.currentShceduleIndex = this.userSchedules.indexOf(schedule);
             localStorage.setItem("sIndex", this.currentShceduleIndex.toString());
             let Schedule = this.userSchedules.filter((x:any)=> x.id == this.selectedScheduleId)[0]
@@ -490,7 +509,7 @@
     {
         .deptTableContainer{
             overflow:auto !important;
-            height:420px;
+            height:455px;
         }
 
         .deptTable{
@@ -502,7 +521,7 @@
         }
 
         .th_HeaderRow {
-            position: sticky;
+            /* position: sticky; */
             top: 0;
             z-index: 3;
             width: 25vw;
@@ -668,6 +687,10 @@
                 z-index: 0 !important;
                 height: 24px;
             }
+
+            neu-col{
+                padding-bottom: 5px;
+            }
         }
     /* Media Query for low resolution  Tablets, Ipads */
         @media (min-width: 481px) and (max-width: 899px) {
@@ -700,7 +723,9 @@
                 background: white;
                 border-right: 1px solid silver !important;
             }
-
+            neu-col{
+                padding-bottom: 5px;
+            }
 
         }
     }
@@ -756,4 +781,25 @@
         }
        
     }
+
+ .valign{
+    vertical-align: bottom;
+}
+
+.tableBorder{
+    border:1px solid silver
+}
+.margin {
+      margin: 8px;
+  }
+
+.neu-table__row:hover,
+.neu-table__row:focus {
+    background: #d9d9d6;
+}
+.print-td-style{
+    font-weight:bold;
+    padding-right: 15px;
+    padding-left: 5px;
+}
 </style>
