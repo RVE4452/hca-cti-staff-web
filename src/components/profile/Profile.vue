@@ -1,108 +1,92 @@
 <template>
     <div class="container pheadingNavigation0 containerWidth">
-        <div class="row profileMainDiv" v-bind:class="{ 'sidepanel-open': isSharedPanelOpen }">
-            <!-- MOBILE NAV -->
-                <div class="flex flex-column neu-background--white vh-100">
-                    <neu-sub-left-nav name={{userName}} color="plain" side="left"  @v-neu-change="myFunction" class="mobile-menu profile-mobile-header no-print vh-100">
-                        <neu-item class="pl-3" @click="$router.push('/' +'EmployeeDetails')">
-                            <neu-stepper slot="start" >
-                            <neu-icon slot="start">manage_accounts</neu-icon>
-                            </neu-stepper>
-                        </neu-item>
-                        <neu-item  class="pl-3" @click="routeNavigation('SchedulerPreference')">
-                            <neu-stepper slot="start" >
-                                <neu-icon slot="start">event_available</neu-icon>
-                            </neu-stepper>
-                        <!-- <neu-icon slot="end">navigate_next</neu-icon> -->
-                        </neu-item>
-                        <neu-item  class="pl-3" @click="routeNavigation('PayrollDetails')">
-                            <neu-stepper slot="start" >
-                                <neu-icon slot="start">timer</neu-icon>
-                            </neu-stepper>
-                        </neu-item>
-                    </neu-sub-left-nav>
-                </div>
-            <!-- Desktop NAV -->
-            <neu-sub-left-nav name={{userName}} color="plain" side="left"  @v-neu-change="myFunction" class="profile-desktop-header profile-nav flex40 no-print vh-100">
-                <neu-item class="pl-3" @click="routeNavigation('EmployeeDetails')">
-                    <neu-stepper slot="start">
-                    <neu-icon slot="start">manage_accounts</neu-icon>
-                    </neu-stepper>
-                    <neu-label> Employee Info </neu-label>
-                    <neu-icon v-if="isSelected('EmpDtls')"  slot="end">navigate_next</neu-icon>
-                </neu-item>
-                <neu-item  class="pl-3" @click="routeNavigation('SchedulerPreference')">
-                    <neu-stepper slot="start">
-                        <neu-icon slot="start">event_available</neu-icon>
-                    </neu-stepper>
-                    
-                    <neu-label> Scheduler Preference </neu-label>
-                    <neu-icon slot="end" v-if="isSelected('SchPref')">navigate_next</neu-icon>
-                </neu-item>
-                <neu-item  class="pl-3" @click="routeNavigation('PayrollDetails')" selected="isSelected('PayrollDtls')">
-                    <neu-stepper slot="start">
-                        <neu-icon slot="start">timer</neu-icon>
-                    </neu-stepper>
-                    <neu-label> Payroll Details </neu-label>
-                    <neu-icon slot="end" v-if="isSelected('PayrollDtls')">navigate_next</neu-icon>
-                </neu-item>
-            </neu-sub-left-nav>
-            <div class="col-sm-8 mobile-Content flex60 w100">
-                <main aria-label="content">
-                    <!-- MOBILE NAV -->
-                    <header class="row neu-margin--bottom-30 flex flex-row w-100 mobile-header ml0">
-                        <div class="row neu-margin--top-20 center">
+        <neu-container class="row profileMainDiv" v-bind:class="{ 'sidepanel-open': isSharedPanelOpen }">
+            <neu-row cols="12">
+                <neu-col cols="4" class="profile-desktop-header profile-nav flex40 no-print">
+                    <neu-card-content  class="vh-100 vw-20" color="plain-0" col="3">
+                        <neu-sub-left-nav name="NAVIGATION" color="plain" side="left"  class="flex justify-content-center">
+                            <neu-item :selected="isSelected('EmpDtls')" class="pl-3" @click="routeNavigation('EmployeeDetails')">
+                            <neu-stepper slot="start"> <neu-icon slot="start">manage_accounts</neu-icon></neu-stepper>
+                            <neu-label>Employee Info</neu-label>
+                            <neu-icon v-if="isSelected('EmpDtls')" slot="end">navigate_next</neu-icon>
+                            </neu-item>
+                            <neu-item :selected="isSelected('SchPref')" class="pl-3"  @click="routeNavigation('SchedulerPreference')" >
+                            <neu-stepper slot="start"> <neu-icon slot="start">calendar_month</neu-icon></neu-stepper>
+                            <neu-label> Scheduler Preference </neu-label>
+                            <neu-icon v-if="isSelected('SchPref')" slot="end">navigate_next</neu-icon>
+                            </neu-item>
+                            <neu-item :selected="isSelected('PayrollDtls')" class="pl-3" @click="routeNavigation('PayrollDetails')">
+                            <neu-stepper slot="start"> <neu-icon slot="start">timer</neu-icon></neu-stepper>
+                            <neu-label > Payroll Details </neu-label>
+                            <neu-icon slot="end" v-if="isSelected('PayrollDtls')"  >navigate_next</neu-icon>
+                            </neu-item>
+                            </neu-sub-left-nav>
+                    </neu-card-content>
+                </neu-col>
+                <neu-col cols="4" class="mobile-menu profile-mobile-header no-print">
+                    <neu-card-content  class="vh-100 vw-100" color="plain-0" col="3" >
+                        <neu-sub-left-nav name="NAVIGATION" color="plain" side="left" >
+                            <neu-item class="pl-3"  @click="routeNavigation('EmployeeDetails')">
+                            <neu-stepper slot="start"> <neu-icon slot="start">manage_accounts</neu-icon></neu-stepper>
+                            </neu-item>
+                            <neu-item selected="true" class="pl-3"  @click="routeNavigation('SchedulerPreference')">
+                            <neu-stepper slot="start"> <neu-icon slot="start">calendar_month</neu-icon></neu-stepper>
+                            </neu-item>
+                            <neu-item selected="true" class="pl-3"  @click="routeNavigation('PayrollDetails')">
+                            <neu-stepper slot="start"> <neu-icon slot="start">timer</neu-icon></neu-stepper>
+                            </neu-item>
+                            </neu-sub-left-nav>
+                    </neu-card-content>
+                </neu-col>
+                <neu-col cols="8">
+                    <neu-card-content  class="vw-80" color="plain-0" col="3" >
+                        <main aria-label="content">
+                            <!-- MOBILE NAV -->
+                            <header class="row neu-margin--bottom-30 flex flex-row w-100 mobile-header ml0">
+                                <div class="row neu-margin--top-20 center">
+                                    
+                                
+                                    <neu-card-content center="true">
+                                            <h5>
+                                                {{ headerCaption }}
+                                            </h5>
+                                            <div class="neu-text--support small">
+                                                {{ pagingNumber }}
+                                            </div>
+                                    </neu-card-content>
+                                    
+                                </div>
+                            </header>
                             
-                           
-                            <neu-card-content center="true">
-                                    <h5>
-                                        {{ headerCaption }}
-                                    </h5>
-                                    <div class="neu-text--support small">
-                                        {{ pagingNumber }}
-                                    </div>
-                            </neu-card-content>
+                            <div v-if="isSelected('EmpDtls')">
+                                <EmploymentDetails />
+                            </div>
                             
-                        </div>
-                    </header>
-                    
-                    <div v-if="isSelected('EmpDtls')">
-                        <EmploymentDetails />
-                    </div>
-                    
-                    <div v-else-if="isSelected('SchPref')">
-                        <SchedulingPref />
-                    </div>
-                    
-                    <div v-else-if="isSelected('PayrollDtls')">
-                        <PayrollDetails />
-                    </div>
-                    
-                </main>
-            </div>
-            <div v-if="isNotificationMessageVisible">
-                <SaveMsgPopUp @closeModal="closeSMPModal"
-                              :msgValue="msgValue"
-                              :classFlag="classFlag"></SaveMsgPopUp>
-            </div>
-        </div>
-      
+                            <div v-else-if="isSelected('SchPref')">
+                                <!-- <SchedulingPref /> -->
+                                <neu-lable>SchedulingPref</neu-lable>
+                            </div>
+                            
+                            <div v-else-if="isSelected('PayrollDtls')">
+                                <!-- <PayrollDetails /> -->
+                                <neu-lable>PayrollDetails</neu-lable>
+                            </div>
+                            
+                        </main>
+                    </neu-card-content>
+                </neu-col>
+            </neu-row>
+        </neu-container>
     </div>
 </template>
-
-
 <script lang="ts">
           import { Options, Vue } from 'vue-class-component';
         import moment from "moment";
         import { mapState } from "vuex";
         import EmploymentDetails from "./EmploymentDetails.vue";
-        import SchedulingPref from "./SchedulingPref.vue";
-        import SMSPref from "./SMSPref.vue";
-        import NotificationMgmt from "./NotificationMgmt.vue";
-        import PayrollDetails from "./PayrollDetails.vue";
+        // import SchedulingPref from "./SchedulingPref.vue";
+        // import PayrollDetails from "./PayrollDetails.vue";
        
-        import SaveMsgPopUp from "@/components/shared/SaveMsgPopUp.vue";
-    
         
         import { NeuContainer } from '@neutron/vue'
         import { defineComponent } from '@vue/runtime-core' 
@@ -131,10 +115,14 @@
                 }
             },
             props: {},
-            components: { EmploymentDetails, SchedulingPref, 
+            components: { 
+                EmploymentDetails, 
+                // SchedulingPref, 
                 // SMSPref, 
                 // NotificationMgmt,
-                 PayrollDetails, SaveMsgPopUp },
+                //  PayrollDetails,
+                //  SaveMsgPopUp
+                 },
             computed: {
                 ...mapState(["oidcUser"]),
                 ...mapState('profile',["profileData"]),
@@ -143,8 +131,6 @@
                 this.setDefaultValue()
             },
             methods: {
-                myFunction(){
-                },
                 setDefaultValue(){
                     if (this.profileData) {
                         this.userName = this.profileData.first + " " + this.profileData.last;
@@ -157,12 +143,16 @@
                         if (this.isSelfScheduleAllowed){
                             this.pagingNumber = "Page 1 of 5";
                         }
-    
+                        
                         var isSelfScheduleDefaultRedirect = (localStorage.getItem("isSelfScheduleDefaultRedirect") == null ? false : localStorage.getItem("isSelfScheduleDefaultRedirect")=='true');
                         
                         if(isSelfScheduleDefaultRedirect){
                             this.clickTab("SelfSchPrefDefault");
                             localStorage.removeItem("isSelfScheduleDefaultRedirect");
+                        }
+                        let path = window.location.pathname
+                        if (path !== '/' && path.split('/').length > 1) {
+                            this.routeNavigation(path.split('/')[1])
                         }
                     }
                 },
@@ -233,71 +223,20 @@
                         return true;
                     }
                 },
-    
-               
-                
                 showSidePanel(options:any) {
                     this.isSharedPanelOpen = options.sharedToggle;
                     this.calenderSelectedDates = options.calSelectedDates;
                     this.currentShifts = options.currentShift;
                     this.counter = this.counter + 1;
                 },
-    
-                closeModal() {
-                    this.isSharedPanelOpen = false;
-                    if (this.ssdCounter >= 0) {
-                        this.ssdCounter = -1;
-                    }
-                    else {
-                        this.ssdCounter = this.ssdCounter - 1;
-                    }
-                },
-                showSMPModal(successFlag: boolean = true, msgValue: string = '') {
-                    window.scrollTo(0, 0);
-                    if (msgValue != '') {
-                        this.msgValue = successFlag ? msgValue : "Failed to save your changes";
-                    }
-                    else {
-                        this.msgValue = successFlag ? "Your changes have been saved." : "Failed to save your changes";
-                    }
-                    this.classFlag = successFlag ? "success" : "error";
-                    this.isNotificationMessageVisible = true;
-                    
-                    if (this.ssdCounter <= 0) {
-                        this.ssdCounter = 1;
-                    }
-                    else {
-                        this.ssdCounter = this.ssdCounter + 1;
-                    }
-                    this.isSharedPanelOpen = false;
-                },
-    
-                closeSMPModal() {
-                    this.isNotificationMessageVisible = false;
-                },
-    
-                showNotificationModal(options:any) {
-                    if (options.msgValue != '') {
-                        this.msgValue = options.msgValue;
-                    }
-                    else {
-                        this.msgValue = options.successFlag ? "Your changes have been saved." : "Failed to save your changes";
-                    }
-                    this.classFlag = options.successFlag ? "success" : "error";
-                    this.isNotificationMessageVisible = true;
-                },
                 routeNavigation(path:string){
-                    debugger;
-                    if(path ==="EmployeeDetails" ){
+                    if(path ==="EmployeeDetails" || path ==="profile"  ){
                         this.clickTab("EmpDtls");
                     }else if(path ==="SchedulerPreference"){
                         this.clickTab("SchPref");
                     }else if(path ==="PayrollDetails"){
-                        this.clickTab("PayrollDtls");
-
-                        
+                        this.clickTab("PayrollDtls"); 
                     }
-
                     this.$router.push('/' +path);
                 }
             },
@@ -306,6 +245,10 @@
 <style scoped>
     .div-cursor {
         cursor: pointer;
+    }
+    .itemcenter{
+        display: flex;
+        align-items: center;
     }
 
     /* Media Query for Mobile Devices */
@@ -320,7 +263,7 @@
         }
 
         .mobile-menu {
-            max-width: 15%;
+            min-width: 15%;
             display: block;
         }
 
@@ -355,6 +298,7 @@
         .profile-desktop-header {
             display: none;
         }
+        
 
         .profile-Name {
             height: 45px;
@@ -383,6 +327,9 @@
             transition: width 0.2s ease-in-out;
             width: 100%;
         }
+        .desktop-menu {
+            display: none;
+        }
     }
 
     @media (min-width: 481px) {
@@ -392,6 +339,9 @@
 
         .profile-desktop-header {
             display: initial;
+        }
+        .desktop-menu {
+            display: none;
         }
     }
 
@@ -430,6 +380,12 @@
             -webkit-font-smoothing: antialiased;
             transition: width 0.2s ease-in-out;
             width: 100%;
+        }
+        .mobile-menu{
+            display: none;
+        }
+        .desktop-menu {
+            display: block;
         }
     }
 
@@ -481,6 +437,12 @@
             margin-right: 0px !important;
             margin-left: 0px !important;
         }
+        .mobile-menu{
+            display: none;
+        }
+        .desktop-menu {
+            display: block;
+        }
     }
 
     /* Media Query for Laptops and Desktops */
@@ -509,6 +471,12 @@
 
         .pdleft0 {
             padding-left: 0px !important;
+        }
+        .mobile-menu{
+            display: none;
+        }
+        .desktop-menu {
+            display: block;
         }
     }
 

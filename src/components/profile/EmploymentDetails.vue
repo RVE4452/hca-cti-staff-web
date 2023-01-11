@@ -11,13 +11,10 @@
                     IDENTIFIERS
                 </h6>
             </div>
-            <div class="col-sm-4 neu-margin--top-20 neu-input flex100 flex83">
-                <label for="username" class="neu-input__label">Name</label>
-                <input class="readonly_text_field"
-                       type="text"
-                       id="txtUsername"
-                       :value="getName"
-                       readonly />
+            <div class="col-sm-4 neu-margin--top-20">
+                <neu-label for="username">Name</neu-label>
+                <neu-input type="text" autocomplete="off" readonly="true" inputmode="search" enterkeyhint="search" autocorrect="off" :value="getName" id="txtUsername" >
+                </neu-input>
             </div>
         </div>
         <div class="row neu-margin--top-20 neu-margin--bottom-20">
@@ -27,33 +24,25 @@
                 </h6>
             </div>
 
-            <div class="col-sm-6 neu-margin--top-20 neu-input">
-                <label for="txtEmail" class="neu-input__label">Email(s)</label>
-                <input class="readonly_text_field"
-                       type="text"
-                       name="Email"
-                       id="txtEmail"
-                       readonly
-                       :value="profileData.email" />
+            <div class="col-sm-6 neu-margin--top-20">
+                <neu-label for="txtEmail">Email(s)</neu-label>     
+                <neu-input type="text" autocomplete="off" readonly="true" inputmode="search" enterkeyhint="search" autocorrect="off" :value="profileData.email" id="txtEmail" name="Email" >
+                </neu-input>
             </div>
-            <div class="col-sm-4 neu-margin--top-20 neu-input flex41">
-                <label for="txtPhoneNumber" class="neu-input__label">Phone Number(s)</label>
-                <input class="readonly_text_field"
-                       type="text"
-                       name="PhoneNumber"
-                       id="txtPhoneNumber"
-                       readonly
-                       :value="profileData.homePhoneNumber" />
+            <div class="col-sm-4 neu-margin--top-20 flex41">
+                <neu-label for="txtPhoneNumber" >Phone Number(s)</neu-label>
+                
+                <neu-input type="text" autocomplete="off" readonly="true" inputmode="search" enterkeyhint="search" autocorrect="off" name="PhoneNumber"
+                id="txtPhoneNumber"
+                :value="profileData.homePhoneNumber"  >
+                </neu-input>
             </div>
 
-            <div class="col-sm-10 neu-margin--top-20 neu-input">
-                <label for="txtHomeAddress" class="neu-input__label">Home Address</label>
-                <input class="readonly_text_field"
-                       type="text"
-                       name="HomeAddress"
-                       id="txtHomeAddress"
-                       readonly
-                       :value="getFullHomeAddress" />
+            <div class="col-sm-10 neu-margin--top-20">
+                <neu-label for="txtHomeAddress">Home Address</neu-label>
+                <neu-input type="text" autocomplete="off" readonly="true" name="HomeAddress"
+                  id="txtHomeAddress" :value="getFullHomeAddress"   >
+                </neu-input>
             </div>
         </div>
 
@@ -63,57 +52,46 @@
                     EMPLOYMENT
                 </h6>
             </div>
-            <div class="col-sm-7 neu-margin--top-20 neu-input">
-                <label for="txtFacility" class="neu-input__label">Facility</label>
-                <input class="readonly_text_field"
-                       type="text"
-                       name="Facility"
-                       id="txtFacility"
-                       readonly
-                       :value="getFacility" />
+            <div class="col-sm-7 neu-margin--top-20">
+                <neu-label for="txtFacility">Facility</neu-label>
+                
+                <neu-input type="text" autocomplete="off" readonly="true"   name="Facility"
+                id="txtFacility"  :value="getFacility" >
+                </neu-input>
             </div>
-            <div class="col-sm-5 neu-margin--top-20 neu-input">
-                <label for="txtDepartment" class="neu-input__label">Department</label>
-                <input class="readonly_text_field"
-                       type="text"
-                       name="Department"
-                       id="txtDepartment"
-                       readonly
-                       :value="getDept" />
+            <div class="col-sm-5 neu-margin--top-20">
+                <neu-label for="txtDepartment">Department</neu-label>
+                
+                <neu-input type="text" autocomplete="off" readonly="true"   name="Department"
+                  id="txtDepartment" :value="getDept" >
+                </neu-input>
             </div>
-            <div class="col-sm-5 neu-margin--top-20 neu-input">
-                <label for="txtWorkSchedule" class="neu-input__label">Work Schedule</label>
-                <input class="readonly_text_field"
-                       type="text"
-                       name="WorkSchedule"
-                       id="txtWorkSchedule"
-                       readonly
-                       :value="profileData.workSchedule" />
+            <div class="col-sm-5 neu-margin--top-20">
+                <neu-label for="txtWorkSchedule">Work Schedule</neu-label>
+                
+                <neu-input type="text" autocomplete="off" readonly="true" name="WorkSchedule"
+                  id="txtWorkSchedule" :value="profileData.workSchedule">
+                </neu-input>
             </div>
-            <div class="col-sm-5 neu-margin--top-20 neu-input">
-                <label for="PartofDay" class="neu-input__label">Part of Day</label>
-                <input class="readonly_text_field"
-                       type="text"
-                       id="txtPartofDay"
-                       readonly
-                       :value="profileData.partOfDay" />
+            <div class="col-sm-5 neu-margin--top-20">
+                <neu-label for="PartofDay">Part of Day</neu-label>
+                
+                <neu-input type="text" autocomplete="off" readonly="true" id="txtPartofDay"
+                       :value="profileData.partOfDay">
+                </neu-input>
             </div>
-            <div class="col-sm-5 neu-margin--top-20 neu-input marTop1">
-                <label for="txtHireDate" class="neu-input__label">Hire Date</label>
-                <input class="readonly_text_field"
-                       type="text"
-                       name="HireDate"
-                       id="txtHireDate"
-                       readonly
-                       :value="getHireDate" />
+            <div class="col-sm-5 neu-margin--top-20  marTop1">
+                <neu-label for="txtHireDate">Hire Date</neu-label>
+                
+                <neu-input type="text" autocomplete="off" readonly="true" name="HireDate"
+                       id="txtHireDate" :value="getHireDate">
+                </neu-input>
             </div>
-            <div class="col-sm-5 neu-margin--top-20 neu-input marTop1">
-                <label for="PartofDay" class="neu-input__label">Guaranteed Hours (Per Week)</label>
-                <input class="readonly_text_field"
-                       type="text"
-                       id="txtGuaranteedHours"
-                       readonly
-                       :value="profileData.guarenteedHours" />
+            <div class="col-sm-5 neu-margin--top-20 marTop1">
+                <neu-label for="PartofDay">Guaranteed Hours (Per Week)</neu-label>
+                
+                <neu-input type="text" autocomplete="off" readonly="true"  id="txtGuaranteedHours" :value="profileData.guarenteedHours">
+                </neu-input>
             </div>
         </div>
 
@@ -123,53 +101,44 @@
                     DEPARTMENTAL SETTINGS
                 </h6>
             </div>
-            <div class="col-sm-5 neu-margin--top-20 neu-input">
-                <label class="neu-input__label">Primary Skill</label>
-                <input class="readonly_text_field"
-                       type="text"
-                       id="txtPrimarySkill"
-                       readonly
-                       :value="getPrimarySkill" />
+            <div class="col-sm-5 neu-margin--top-20">
+                <neu-label>Primary Skill</neu-label>
+               
+                <neu-input type="text" autocomplete="off" readonly="true" id="txtPrimarySkill" :value="getPrimarySkill">
+                </neu-input>
             </div>
-            <div class="col-sm-5 neu-margin--top-20 neu-input">
-                <label class="neu-input__label">Primary Shift</label>
-                <input class="readonly_text_field"
-                       type="text"
-                       id="txtPrimaryShift"
-                       readonly
-                       :value="profileData.primaryShift" />
+            <div class="col-sm-5 neu-margin--top-20">
+                <neu-label>Primary Shift</neu-label>
+        
+                <neu-input type="text" autocomplete="off" readonly="true" id="txtPrimaryShift"
+                :value="profileData.primaryShift" >
+                </neu-input>
             </div>
-            <div class="col-sm-5 neu-margin--top-20 neu-input">
-                <label class="neu-input__label">Weekend</label>
-                <input class="readonly_text_field"
-                       type="text"
-                       id="txtWeekend"
-                       readonly
-                       :value="profileData.weekend" />
+            <div class="col-sm-5 neu-margin--top-20">
+                <neu-label>Weekend</neu-label>
+                
+                <neu-input type="text" autocomplete="off" readonly="true" id="txtWeekend"
+                       :value="profileData.weekend"  >
+                </neu-input>
             </div>
-            <div class="col-sm-5 neu-margin--top-20 neu-input">
-                <label class="neu-input__label">Group</label>
-                <input class="readonly_text_field"
-                       type="text"
-                       id="txtGroup"
-                       readonly
-                       :value="profileData.group" />
+            <div class="col-sm-5 neu-margin--top-20">
+                <neu-label>Group</neu-label>
+                
+                <neu-input type="text" autocomplete="off" readonly="true" id="txtGroup"
+                :value="profileData.group"   >
+                </neu-input>
             </div>
-            <div class="col-sm-5 neu-margin--top-20 neu-input">
-                <label class="neu-input__label">Holiday</label>
-                <input class="readonly_text_field"
-                       type="text"
-                       id="txtHoliday"
-                       readonly
-                       :value="profileData.holiday" />
+            <div class="col-sm-5 neu-margin--top-20">
+                <neu-label>Holiday</neu-label>
+                <neu-input type="text" autocomplete="off" readonly="true" id="txtHoliday"
+                :value="profileData.holiday" >
+                </neu-input>
             </div>
-            <div class="col-sm-5 neu-margin--top-20 neu-input">
-                <label class="neu-input__label">Disaster</label>
-                <input class="readonly_text_field"
-                       type="text"
-                       id="txtDisaster"
-                       readonly
-                       :value="profileData.disaster" />
+            <div class="col-sm-5 neu-margin--top-20">
+                <neu-label>Disaster</neu-label>
+                <neu-input type="text" autocomplete="off" readonly="true" id="txtDisaster"
+                :value="profileData.disaster" >
+                </neu-input>
             </div>
         </div>
     </div>
