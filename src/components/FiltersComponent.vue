@@ -256,7 +256,7 @@ export default defineComponent({
         this.selectedFilters?.splice(index, 1);
       } else {
         this.selectedFilters?.push(filter);
-      };
+      }
     },
     /**
      * Finding the index from selected array for display styles variants.

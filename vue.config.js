@@ -2,11 +2,7 @@ const { defineConfig } = require('@vue/cli-service')
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 module.exports = {
   runtimeCompiler:true,
-  transpileDependencies: [
-    'vuetify',
-    'slash',
-    'cli-service'
-  ],
+  transpileDependencies: true,
   devServer: {
     https: true
   },
