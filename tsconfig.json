@@ -28,7 +28,7 @@
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": false,
-    "useDefineForClassFields":false
+    "useDefineForClassFields":true
   },
   "include": [
     "src/**/*.ts",

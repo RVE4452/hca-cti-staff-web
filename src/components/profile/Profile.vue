@@ -2,267 +2,82 @@
     <div class="container pheadingNavigation0 containerWidth">
         <div class="row profileMainDiv" v-bind:class="{ 'sidepanel-open': isSharedPanelOpen }">
             <!-- MOBILE NAV -->
-            <div class="mobile-menu profile-mobile-header no-print">
                 <div class="flex flex-column neu-background--white vh-100">
-                    <div class="flex flex-row profile-Name neu-margin--top-20 bg-gray" v-if="oidcUser">
-                        <h6 class="profile-Name-Initial">
-                            {{ nameInitials }}
-                        </h6>
-                    </div>
-
-                    <div class="flex flex-column neu-margin--top-30">
-                        <div class="neu-divider" />
-                        <div :class="{'neu-background--cerulean-25 pleft5': isSelected('EmpDtls')}" class="neu-padding--10 div-cursor" @click="clickTab('EmpDtls')">
-                            <div class="flex flex-row justify-content-between">
-                                <div class="flex">
-                                    <div :class="{'neu-background--denim neu-text--white': isSelected('EmpDtls')}"
-                                         class="flex justify-content-center profile-Navigation-Num">
-                                        <i class="material-icons">
-                                            manage_accounts
-                                        </i>
-                                    </div>
-                                </div>
-                                <p v-if="isSelected('EmpDtls')" class="material-icons neu-button__icon neu-button__icon--left neu-text--denim align-self-center">chevron_right</p>
-                            </div>
-                        </div>
-                        <div v-if="isSelfScheduleAllowed" class="neu-divider" />
-                        <div v-if="isSelfScheduleAllowed" :class="{'neu-background--cerulean-25 pleft5': isSelected('SelfSchPrefDefault')}" class="neu-padding--10 div-cursor" @click="clickTab('SelfSchPrefDefault')">
-                            <div class="flex flex-row justify-content-between">
-                                <div class="flex">
-                                    <div :class="{'neu-background--denim neu-text--white': isSelected('SelfSchPrefDefault')}"
-                                         class="flex justify-content-center profile-Navigation-Num">
-                                        <i class="material-icons">
-                                            calendar_month
-                                        </i>
-                                    </div>
-                                </div>
-                                <p v-if="isSelected('SelfSchPrefDefault')" class="material-icons neu-button__icon neu-button__icon--left neu-text--denim align-self-center">chevron_right</p>
-                            </div>
-                        </div>
-                        <div class="neu-divider" />
-                        <div :class="{'neu-background--cerulean-25 pleft5': isSelected('SchPref')}" class="neu-padding--10 div-cursor" @click="clickTab('SchPref')">
-                            <div class="flex flex-row justify-content-between">
-                                <div class="flex">
-                                    <div :class="{'neu-background--denim neu-text--white': isSelected('SchPref')}" class="flex justify-content-center profile-Navigation-Num">
-                                        <i class="material-icons">
-                                            edit_calendar
-                                        </i>
-                                    </div>
-                                </div>
-                                <p v-if="isSelected('SchPref')" class="material-icons neu-button__icon neu-button__icon--left neu-text--denim align-self-center">chevron_right</p>
-                            </div>
-                        </div>
-                        <div class="neu-divider" />
-                        <div :class="{'neu-background--cerulean-25 pleft5': isSelected('SMSPref')}" class="neu-padding--10 div-cursor" @click="clickTab('SMSPref')">
-                            <div class="flex flex-row justify-content-between">
-                                <div class="flex">
-                                    <div :class="{'neu-background--denim neu-text--white': isSelected('SMSPref')}"
-                                         class="flex justify-content-center profile-Navigation-Num">
-                                        <i class="material-icons">
-                                            message
-                                        </i>
-                                    </div>
-                                </div>
-                                <p v-if="isSelected('SMSPref')" class="material-icons neu-button__icon neu-button__icon--left neu-text--denim align-self-center">chevron_right</p>
-                            </div>
-                        </div>
-
-                        <div class="neu-divider" />
-                        <div :class="{'neu-background--cerulean-25 pleft5': isSelected('PayrollDtls')}" class="neu-padding--10 div-cursor" @click="clickTab('PayrollDtls')">
-                            <div class="flex flex-row justify-content-between">
-                                <div class="flex">
-                                    <div :class="{'neu-background--denim neu-text--white': isSelected('PayrollDtls')}"
-                                         class="flex justify-content-center profile-Navigation-Num">
-                                        <i class="material-icons">
-                                            timer
-                                        </i>
-                                    </div>
-                                </div>
-                                <p v-if="isSelected('PayrollDtls')" class="material-icons neu-button__icon neu-button__icon--left neu-text--denim align-self-center">chevron_right</p>
-                            </div>
-                        </div>
-                        <div class="neu-divider" />
-                    </div>
+                    <neu-sub-left-nav name={{userName}} color="plain" side="left"  @v-neu-change="myFunction" class="mobile-menu profile-mobile-header no-print vh-100">
+                        <neu-item class="pl-3" @click="$router.push('/' +'EmployeeDetails')">
+                            <neu-stepper slot="start" >
+                            <neu-icon slot="start">manage_accounts</neu-icon>
+                            </neu-stepper>
+                        </neu-item>
+                        <neu-item  class="pl-3" @click="routeNavigation('SchedulerPreference')">
+                            <neu-stepper slot="start" >
+                                <neu-icon slot="start">event_available</neu-icon>
+                            </neu-stepper>
+                        <!-- <neu-icon slot="end">navigate_next</neu-icon> -->
+                        </neu-item>
+                        <neu-item  class="pl-3" @click="routeNavigation('PayrollDetails')">
+                            <neu-stepper slot="start" >
+                                <neu-icon slot="start">timer</neu-icon>
+                            </neu-stepper>
+                        </neu-item>
+                    </neu-sub-left-nav>
                 </div>
-            </div>
             <!-- Desktop NAV -->
-            <div class="col-sm-4 profile-desktop-header profile-nav flex40 no-print">
-                <div class="flex flex-column neu-background--white vh-100">
-                    <div class="flex flex-row w-100 neu-margin--top-20" v-if="oidcUser">
-                        <p class="neu-text--product offset-1">
-                            {{ userName}}
-                        </p>
-                    </div>
-
-                    <div class="flex flex-column neu-margin--top-30">
-                        <div class="neu-divider" />
-                        <div :class="{'neu-background--cerulean-25': isSelected('EmpDtls')}" class="neu-padding--10 div-cursor" @click="clickTab('EmpDtls')">
-                            <div class="flex flex-row justify-content-between">
-                                <div class="flex">
-                                    <div :class="{'neu-background--denim neu-text--white': isSelected('EmpDtls')}"
-                                         class="flex justify-content-center profile-Navigation-Num">
-                                        <i class="material-icons">
-                                            manage_accounts
-                                        </i>
-                                    </div>
-                                    <div :class="{'neu-text--bold': isSelected('EmpDtls')}"
-                                         class="neu-text--caption neu-margin--left-10 align-self-center bold">My Employment Details</div>
-                                </div>
-                                <p v-if="isSelected('EmpDtls')" class="material-icons neu-button__icon neu-button__icon--left neu-text--denim align-self-center">chevron_right</p>
-                            </div>
-                        </div>
-                        <div v-if="isSelfScheduleAllowed" class="neu-divider" />
-                        <div v-if="isSelfScheduleAllowed" :class="{'neu-background--cerulean-25': isSelected('SelfSchPrefDefault')}" class="neu-padding--10 div-cursor" @click="clickTab('SelfSchPrefDefault')">
-                            <div class="flex flex-row justify-content-between">
-                                <div class="flex">
-                                    <div :class="{'neu-background--denim neu-text--white': isSelected('SelfSchPrefDefault')}"
-                                         class="flex justify-content-center profile-Navigation-Num">
-                                        <i class="material-icons">
-                                            calendar_month
-                                        </i>
-                                    </div>
-                                    <div :class="{'neu-text--bold': isSelected('SelfSchPrefDefault')}"
-                                         class="neu-text--caption neu-margin--left-10 align-self-center bold">Self-Scheduling Defaults</div>
-                                </div>
-                                <p v-if="isSelected('SelfSchPrefDefault')" class="material-icons neu-button__icon neu-button__icon--left neu-text--denim align-self-center">chevron_right</p>
-                            </div>
-                        </div>
-                        <div class="neu-divider" />
-                        <div :class="{'neu-background--cerulean-25': isSelected('SchPref')}" class="neu-padding--10 div-cursor" @click="clickTab('SchPref')">
-                            <div class="flex flex-row justify-content-between">
-                                <div class="flex">
-                                    <div :class="{'neu-background--denim neu-text--white': isSelected('SchPref')}" class="flex justify-content-center profile-Navigation-Num">
-                                        <i class="material-icons">
-                                            edit_calendar
-                                        </i>
-                                    </div>
-                                    <div :class="{'neu-text--bold': isSelected('SchPref')}"
-                                         class="neu-text--caption neu-margin--left-10 align-self-center bold">Schedule Preferences</div>
-                                </div>
-                                <p v-if="isSelected('SchPref')" class="material-icons neu-button__icon neu-button__icon--left neu-text--denim align-self-center">chevron_right</p>
-                            </div>
-                        </div>
-                        <div class="neu-divider" />
-                        <div :class="{'neu-background--cerulean-25': isSelected('SMSPref')}" class="neu-padding--10 div-cursor" @click="clickTab('SMSPref')">
-                            <div class="flex flex-row justify-content-between">
-                                <div class="flex">
-                                    <div :class="{'neu-background--denim neu-text--white': isSelected('SMSPref')}"
-                                         class="flex justify-content-center profile-Navigation-Num">
-                                        <i class="material-icons">
-                                            message
-                                        </i>
-                                    </div>
-                                    <div :class="{'neu-text--bold': isSelected('SMSPref')}"
-                                         class="neu-text--caption neu-margin--left-10 align-self-center bold">SMS Opt-In</div>
-                                </div>
-                                <p v-if="isSelected('SMSPref')" class="material-icons neu-button__icon neu-button__icon--left neu-text--denim align-self-center">chevron_right</p>
-                            </div>
-                        </div>
-
-                        <div class="neu-divider" />
-                        <div :class="{'neu-background--cerulean-25': isSelected('PayrollDtls')}" class="neu-padding--10 div-cursor" @click="clickTab('PayrollDtls')">
-                            <div class="flex flex-row justify-content-between">
-                                <div class="flex">
-                                    <div :class="{'neu-background--denim neu-text--white': isSelected('PayrollDtls')}"
-                                         class="flex justify-content-center profile-Navigation-Num">
-                                        <i class="material-icons">
-                                            timer
-                                        </i>
-                                    </div>
-                                    <div :class="{'neu-text--bold': isSelected('PayrollDtls')}"
-                                         class="neu-text--caption neu-margin--left-10 align-self-center bold">Payroll Details</div>
-                                </div>
-                                <p v-if="isSelected('PayrollDtls')" class="material-icons neu-button__icon neu-button__icon--left neu-text--denim align-self-center">chevron_right</p>
-                            </div>
-                        </div>
-                        <div class="neu-divider" />
-                    </div>
-                </div>
-            </div>
-
+            <neu-sub-left-nav name={{userName}} color="plain" side="left"  @v-neu-change="myFunction" class="profile-desktop-header profile-nav flex40 no-print vh-100">
+                <neu-item class="pl-3" @click="routeNavigation('EmployeeDetails')">
+                    <neu-stepper slot="start">
+                    <neu-icon slot="start">manage_accounts</neu-icon>
+                    </neu-stepper>
+                    <neu-label> Employee Info </neu-label>
+                    <neu-icon v-if="isSelected('EmpDtls')"  slot="end">navigate_next</neu-icon>
+                </neu-item>
+                <neu-item  class="pl-3" @click="routeNavigation('SchedulerPreference')">
+                    <neu-stepper slot="start">
+                        <neu-icon slot="start">event_available</neu-icon>
+                    </neu-stepper>
+                    
+                    <neu-label> Scheduler Preference </neu-label>
+                    <neu-icon slot="end" v-if="isSelected('SchPref')">navigate_next</neu-icon>
+                </neu-item>
+                <neu-item  class="pl-3" @click="routeNavigation('PayrollDetails')" selected="isSelected('PayrollDtls')">
+                    <neu-stepper slot="start">
+                        <neu-icon slot="start">timer</neu-icon>
+                    </neu-stepper>
+                    <neu-label> Payroll Details </neu-label>
+                    <neu-icon slot="end" v-if="isSelected('PayrollDtls')">navigate_next</neu-icon>
+                </neu-item>
+            </neu-sub-left-nav>
             <div class="col-sm-8 mobile-Content flex60 w100">
                 <main aria-label="content">
                     <!-- MOBILE NAV -->
                     <header class="row neu-margin--bottom-30 flex flex-row w-100 mobile-header ml0">
-                        <div class="row neu-margin--top-10">
-                            <div class="col-md-12 pb2 ph0">
-                                <div class="neu-text--align-left dib neu-float--left">
-                                    <button class="neu-button neu-text--denim prePageNavigationmobile"
-                                            v-if="selectedTab !== 'EmpDtls'"
-                                            @click="callPreviousPage()">
-                                        <span class="material-icons neu-button__icon neu-button__icon--left leftArrowMobile">chevron_left</span>
-                                        Previous Page
-                                    </button>
-                                </div>
-                                <div class="neu-text--align-right dib neu-float--right">
-                                    <button class="neu-button  neu-text--denim nxtPageNavigationmobile"
-                                            v-if="selectedTab !== 'PayrollDtls'"
-                                            @click="callNextPage()">
-                                        Next Page
-                                        <span class="material-icons neu-button__icon neu-button__icon--right rightArrowMobile">chevron_right</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="col-md-12 pb2 ph0">
-                                <div style="text-align: center">
-                                    <h6>
+                        <div class="row neu-margin--top-20 center">
+                            
+                           
+                            <neu-card-content center="true">
+                                    <h5>
                                         {{ headerCaption }}
-                                    </h6>
+                                    </h5>
                                     <div class="neu-text--support small">
                                         {{ pagingNumber }}
                                     </div>
-                                </div>
-                            </div>
+                            </neu-card-content>
+                            
                         </div>
                     </header>
-                    <!-- Desktop NAV -->
-                    <header class="row neu-margin--bottom-30 neu-margin--top-20 flex flex-row w-100 desktop-header">
-                        <div class="col-sm-3 neu-text--align-left no-print" v-bind:class="{ 'pdleft0': isSharedPanelOpen }">
-                            <button class="neu-button neu-text--denim"
-                                    v-bind:class="{ 'pdleft0': isSharedPanelOpen }"
-                                    v-if="selectedTab !== 'EmpDtls'"
-                                    @click="callPreviousPage()">
-                                <span class="material-icons neu-button__icon neu-button__icon--left">chevron_left</span>
-                                Previous Page
-                            </button>
-                        </div>
-                        <div class="col-sm-6 neu-text--align-center w100">
-                            <h6>
-                                {{ headerCaption }}
-                            </h6>
-                            <div class="neu-text--support small no-print">
-                                {{ pagingNumber }}
-                            </div>
-                        </div>
-                        <div class="col-sm-3 neu-text--align-right no-print">
-                            <button class="neu-button  neu-text--denim"
-                                    v-if="selectedTab !== 'PayrollDtls'"
-                                    @click="callNextPage()">
-                                Next Page
-                                <span class="material-icons neu-button__icon neu-button__icon--right">chevron_right</span>
-                            </button>
-                        </div>
-                    </header>
+                    
                     <div v-if="isSelected('EmpDtls')">
                         <EmploymentDetails />
                     </div>
-                    <div v-else-if="isSelected('SelfSchPrefDefault')">
-                        <SelfSchedulingDefault :ssdCounter="ssdCounter"
-                                               @showSidePanelCS="showSidePanel($event);"
-                                               @showNotificationModalCS="showNotificationModal($event);" />
-                    </div>
+                    
                     <div v-else-if="isSelected('SchPref')">
                         <SchedulingPref />
                     </div>
-                    <div v-else-if="isSelected('SMSPref')">
-                        <SMSPref />
-                    </div>
+                    
                     <div v-else-if="isSelected('PayrollDtls')">
                         <PayrollDetails />
                     </div>
-                    <div v-else-if="isSelected('NtfMgmt')">
-                        <NotificationMgmt />
-                    </div>
+                    
                 </main>
             </div>
             <div v-if="isNotificationMessageVisible">
@@ -274,230 +89,220 @@
       
     </div>
 </template>
+
+
 <script lang="ts">
-      import { Options, Vue } from 'vue-class-component';
-    import moment from "moment";
-    import { mapState } from "vuex";
-    import EmploymentDetails from "./EmploymentDetails.vue";
-   
-    import SchedulingPref from "./SchedulingPref.vue";
-    import SMSPref from "./SMSPref.vue";
-    import NotificationMgmt from "./NotificationMgmt.vue";
-    import PayrollDetails from "./PayrollDetails.vue";
-   
-    import SaveMsgPopUp from "@/components/shared/SaveMsgPopUp.vue";
-
-    Options({
-        components: { EmploymentDetails, SchedulingPref, SMSPref, NotificationMgmt, PayrollDetails, SaveMsgPopUp },
-        computed: {
-            ...mapState(["oidcUser"]),
-             ...mapState('profile',["profileData"]),
-        },
-    })
-    export default class Profile extends Vue {
-        oidcUser!: any;
+          import { Options, Vue } from 'vue-class-component';
+        import moment from "moment";
+        import { mapState } from "vuex";
+        import EmploymentDetails from "./EmploymentDetails.vue";
+        import SchedulingPref from "./SchedulingPref.vue";
+        import SMSPref from "./SMSPref.vue";
+        import NotificationMgmt from "./NotificationMgmt.vue";
+        import PayrollDetails from "./PayrollDetails.vue";
        
-        public profileData!: any;
-
-        userName: string = "";
-        nameInitials: string = "";
-
-        selectedTab = "EmpDtls";
-        headerCaption = "My Employment Details";
-        pagingNumber = "Page 1 of 4";
-        isSelfScheduleAllowed: boolean = false;
-        isSharedPanelOpen: boolean = false;
-        calenderSelectedDates: any = {};
-        currentShifts!: any;
-        isNotificationMessageVisible: boolean = false;
-        msgValue: string = '';
-        classFlag: string = '';
-        counter: any = 0;
-        ssdCounter: any = 0;
-
-        async mounted() {
-            if (this.profileData) {
-                this.userName = this.profileData.first + " " + this.profileData.last;
-                    
-                if (this.profileData.first != undefined && this.profileData.last != undefined) {
-                    this.nameInitials = this.profileData.first.charAt(0).toUpperCase() + this.profileData.last.charAt(0).toUpperCase();
+        import SaveMsgPopUp from "@/components/shared/SaveMsgPopUp.vue";
+    
+        
+        import { NeuContainer } from '@neutron/vue'
+        import { defineComponent } from '@vue/runtime-core' 
+    
+        export default defineComponent({
+            name: 'ProfileComponent',
+            data : () =>{
+                return { 
+                    oidcUser: '',
+                    profileData: {} as any,
+                    userName: "",
+                    nameInitials: "",
+    
+                    selectedTab: "EmpDtls",
+                    headerCaption: "My Employment Details",
+                    pagingNumber: "Page 1 of 3",
+                    isSelfScheduleAllowed: false,
+                    isSharedPanelOpen: false,
+                    calenderSelectedDates: {} as any,
+                    currentShifts: {} as any,
+                    isNotificationMessageVisible: false,
+                    msgValue: '',
+                    classFlag: '',
+                    counter: 0,
+                    ssdCounter: 0,
                 }
-
-                this.isSelfScheduleAllowed = this.profileData.selfSchedule;
-                if (this.isSelfScheduleAllowed){
-                    this.pagingNumber = "Page 1 of 5";
+            },
+            props: {},
+            components: { EmploymentDetails, SchedulingPref, 
+                // SMSPref, 
+                // NotificationMgmt,
+                 PayrollDetails, SaveMsgPopUp },
+            computed: {
+                ...mapState(["oidcUser"]),
+                ...mapState('profile',["profileData"]),
+            },
+            mounted() {
+                this.setDefaultValue()
+            },
+            methods: {
+                myFunction(){
+                },
+                setDefaultValue(){
+                    if (this.profileData) {
+                        this.userName = this.profileData.first + " " + this.profileData.last;
+                            
+                        if (this.profileData.first != undefined && this.profileData.last != undefined) {
+                            this.nameInitials = this.profileData.first.charAt(0).toUpperCase() + this.profileData.last.charAt(0).toUpperCase();
+                        }
+    
+                        this.isSelfScheduleAllowed = this.profileData.selfSchedule;
+                        if (this.isSelfScheduleAllowed){
+                            this.pagingNumber = "Page 1 of 5";
+                        }
+    
+                        var isSelfScheduleDefaultRedirect = (localStorage.getItem("isSelfScheduleDefaultRedirect") == null ? false : localStorage.getItem("isSelfScheduleDefaultRedirect")=='true');
+                        
+                        if(isSelfScheduleDefaultRedirect){
+                            this.clickTab("SelfSchPrefDefault");
+                            localStorage.removeItem("isSelfScheduleDefaultRedirect");
+                        }
+                    }
+                },
+                clickTab(flag: string) {
+                if (this.isSelfScheduleAllowed) {
+                    if (flag == "EmpDtls") {
+                        this.selectedTab = "EmpDtls";
+                        this.headerCaption = "My Employment Details";
+                        this.pagingNumber = "Page 1 of 3";
+                    }
+                    //  else if (flag == "SelfSchPrefDefault") {
+                    //     this.selectedTab = "SelfSchPrefDefault";
+                    //     this.headerCaption = "Self-Scheduling Defaults";
+                    //     this.pagingNumber = "Page 2 of 5";
+                    // }
+                     else if (flag == "SchPref") {
+                        this.selectedTab = "SchPref";
+                        this.headerCaption = "Scheduling Preferences";
+                        this.pagingNumber = "Page 2 of 3";
+                    }
+                    //  else if (flag == "SMSPref") {
+                    //     this.selectedTab = "SMSPref";
+                    //     this.headerCaption = "SMS Preferences";
+                    //     this.pagingNumber = "Page 4 of 5";
+                    // }
+                     else if (flag == "PayrollDtls") {
+                        this.selectedTab = "PayrollDtls";
+                        this.headerCaption = "Employee Payroll Details";
+                        this.pagingNumber = "Page 3 of 3";
+                    }
+    
+                    if (this.selectedTab == "SelfSchPrefDefault" && this.ssdCounter != 0) {
+                        this.ssdCounter = 0;
+                    }
                 }
-
-                var isSelfScheduleDefaultRedirect = (localStorage.getItem("isSelfScheduleDefaultRedirect") == null ? false : localStorage.getItem("isSelfScheduleDefaultRedirect")=='true');
+                else {
+                    if (flag == "EmpDtls") {
+                        this.selectedTab = "EmpDtls";
+                        this.headerCaption = "My Employment Details";
+                        this.pagingNumber = "Page 1 of 3";
+                    } else if (flag == "SchPref") {
+                        this.selectedTab = "SchPref";
+                        this.headerCaption = "Scheduling Preferences";
+                        this.pagingNumber = "Page 2 of 3";
+                    } 
+                    // else if (flag == "SMSPref") {
+                    //     this.selectedTab = "SMSPref";
+                    //     this.headerCaption = "SMS Preferences";
+                    //     this.pagingNumber = "Page 3 of 4";
+                    // }
+                     else if (flag == "PayrollDtls") {
+                        this.selectedTab = "PayrollDtls";
+                        this.headerCaption = "Employee Payroll Details";
+                        this.pagingNumber = "Page 3 of 3";
+                    }
+                }
+    
+                //else if (flag == "NtfMgmt") {
+                //    this.selectedTab = "NtfMgmt";
+                //    this.headerCaption = "Notification Management";
+                //    this.pagingNumber = "Page 4 of 4";
+                //}
+                //---Need to add code for Notification Management
+                },
+    
+                isSelected(selectedTabVal: string) {
+                    if(this.selectedTab === selectedTabVal){
+                        return true;
+                    }
+                },
+    
+               
                 
-                if(isSelfScheduleDefaultRedirect){
-                    this.clickTab("SelfSchPrefDefault");
-                    localStorage.removeItem("isSelfScheduleDefaultRedirect");
+                showSidePanel(options:any) {
+                    this.isSharedPanelOpen = options.sharedToggle;
+                    this.calenderSelectedDates = options.calSelectedDates;
+                    this.currentShifts = options.currentShift;
+                    this.counter = this.counter + 1;
+                },
+    
+                closeModal() {
+                    this.isSharedPanelOpen = false;
+                    if (this.ssdCounter >= 0) {
+                        this.ssdCounter = -1;
+                    }
+                    else {
+                        this.ssdCounter = this.ssdCounter - 1;
+                    }
+                },
+                showSMPModal(successFlag: boolean = true, msgValue: string = '') {
+                    window.scrollTo(0, 0);
+                    if (msgValue != '') {
+                        this.msgValue = successFlag ? msgValue : "Failed to save your changes";
+                    }
+                    else {
+                        this.msgValue = successFlag ? "Your changes have been saved." : "Failed to save your changes";
+                    }
+                    this.classFlag = successFlag ? "success" : "error";
+                    this.isNotificationMessageVisible = true;
+                    
+                    if (this.ssdCounter <= 0) {
+                        this.ssdCounter = 1;
+                    }
+                    else {
+                        this.ssdCounter = this.ssdCounter + 1;
+                    }
+                    this.isSharedPanelOpen = false;
+                },
+    
+                closeSMPModal() {
+                    this.isNotificationMessageVisible = false;
+                },
+    
+                showNotificationModal(options:any) {
+                    if (options.msgValue != '') {
+                        this.msgValue = options.msgValue;
+                    }
+                    else {
+                        this.msgValue = options.successFlag ? "Your changes have been saved." : "Failed to save your changes";
+                    }
+                    this.classFlag = options.successFlag ? "success" : "error";
+                    this.isNotificationMessageVisible = true;
+                },
+                routeNavigation(path:string){
+                    debugger;
+                    if(path ==="EmployeeDetails" ){
+                        this.clickTab("EmpDtls");
+                    }else if(path ==="SchedulerPreference"){
+                        this.clickTab("SchPref");
+                    }else if(path ==="PayrollDetails"){
+                        this.clickTab("PayrollDtls");
+
+                        
+                    }
+
+                    this.$router.push('/' +path);
                 }
-            }
-        }
-
-        clickTab(flag: string) {
-            if (this.isSelfScheduleAllowed) {
-                if (flag == "EmpDtls") {
-                    this.selectedTab = "EmpDtls";
-                    this.headerCaption = "My Employment Details";
-                    this.pagingNumber = "Page 1 of 5";
-                } else if (flag == "SelfSchPrefDefault") {
-                    this.selectedTab = "SelfSchPrefDefault";
-                    this.headerCaption = "Self-Scheduling Defaults";
-                    this.pagingNumber = "Page 2 of 5";
-                } else if (flag == "SchPref") {
-                    this.selectedTab = "SchPref";
-                    this.headerCaption = "Scheduling Preferences";
-                    this.pagingNumber = "Page 3 of 5";
-                } else if (flag == "SMSPref") {
-                    this.selectedTab = "SMSPref";
-                    this.headerCaption = "SMS Preferences";
-                    this.pagingNumber = "Page 4 of 5";
-                } else if (flag == "PayrollDtls") {
-                    this.selectedTab = "PayrollDtls";
-                    this.headerCaption = "Employee Payroll Details";
-                    this.pagingNumber = "Page 5 of 5";
-                }
-
-                if (this.selectedTab == "SelfSchPrefDefault" && this.ssdCounter != 0) {
-                    this.ssdCounter = 0;
-                }
-            }
-            else {
-                if (flag == "EmpDtls") {
-                    this.selectedTab = "EmpDtls";
-                    this.headerCaption = "My Employment Details";
-                    this.pagingNumber = "Page 1 of 4";
-                } else if (flag == "SchPref") {
-                    this.selectedTab = "SchPref";
-                    this.headerCaption = "Scheduling Preferences";
-                    this.pagingNumber = "Page 2 of 4";
-                } else if (flag == "SMSPref") {
-                    this.selectedTab = "SMSPref";
-                    this.headerCaption = "SMS Preferences";
-                    this.pagingNumber = "Page 3 of 4";
-                } else if (flag == "PayrollDtls") {
-                    this.selectedTab = "PayrollDtls";
-                    this.headerCaption = "Employee Payroll Details";
-                    this.pagingNumber = "Page 4 of 4";
-                }
-            }
-
-            //else if (flag == "NtfMgmt") {
-            //    this.selectedTab = "NtfMgmt";
-            //    this.headerCaption = "Notification Management";
-            //    this.pagingNumber = "Page 4 of 4";
-            //}
-            //---Need to add code for Notification Management
-        }
-
-        isSelected(selectedTabVal: string) {
-            return this.selectedTab === selectedTabVal;
-        }
-
-        callPreviousPage() {
-            if (this.isSelfScheduleAllowed) {
-                if (this.selectedTab === "SelfSchPrefDefault") {
-                    this.clickTab("EmpDtls");
-                } else if (this.selectedTab === "SchPref") {
-                    this.clickTab("SelfSchPrefDefault");
-                } else if (this.selectedTab === "SMSPref") {
-                    this.clickTab("SchPref");
-                } else if (this.selectedTab === "PayrollDtls") {
-                    this.clickTab("SMSPref");
-                }
-            }
-            else {
-                if (this.selectedTab === "SchPref") {
-                    this.clickTab("EmpDtls");
-                } else if (this.selectedTab === "SMSPref") {
-                    this.clickTab("SchPref");
-                } else if (this.selectedTab === "PayrollDtls") {
-                    this.clickTab("SMSPref");
-                }
-            }
-
-        }
-
-        callNextPage() {
-            if (this.isSelfScheduleAllowed) {
-                if (this.selectedTab === "EmpDtls") {
-                    this.clickTab("SelfSchPrefDefault");
-                } else if (this.selectedTab === "SelfSchPrefDefault") {
-                    this.clickTab("SchPref");
-                } else if (this.selectedTab === "SchPref") {
-                    this.clickTab("SMSPref");
-                } else if (this.selectedTab === "SMSPref") {
-                    this.clickTab("PayrollDtls");
-                }
-            }
-            else {
-                if (this.selectedTab === "EmpDtls") {
-                    this.clickTab("SchPref");
-                } else if (this.selectedTab === "SchPref") {
-                    this.clickTab("SMSPref");
-                } else if (this.selectedTab === "SMSPref") {
-                    this.clickTab("PayrollDtls");
-                }
-            }
-
-        }
-
-        showSidePanel(options:any) {
-            this.isSharedPanelOpen = options.sharedToggle;
-            this.calenderSelectedDates = options.calSelectedDates;
-            this.currentShifts = options.currentShift;
-            this.counter = this.counter + 1;
-        }
-
-        closeModal() {
-            this.isSharedPanelOpen = false;
-            if (this.ssdCounter >= 0) {
-                this.ssdCounter = -1;
-            }
-            else {
-                this.ssdCounter = this.ssdCounter - 1;
-            }
-        }
-
-        showSMPModal(successFlag: boolean = true, msgValue: string = '') {
-            window.scrollTo(0, 0);
-            if (msgValue != '') {
-                this.msgValue = successFlag ? msgValue : "Failed to save your changes";
-            }
-            else {
-                this.msgValue = successFlag ? "Your changes have been saved." : "Failed to save your changes";
-            }
-            this.classFlag = successFlag ? "success" : "error";
-            this.isNotificationMessageVisible = true;
-            
-            if (this.ssdCounter <= 0) {
-                this.ssdCounter = 1;
-            }
-            else {
-                this.ssdCounter = this.ssdCounter + 1;
-            }
-            this.isSharedPanelOpen = false;
-        }
-
-        closeSMPModal() {
-            this.isNotificationMessageVisible = false;
-        }
-
-        showNotificationModal(options:any) {
-            if (options.msgValue != '') {
-                this.msgValue = options.msgValue;
-            }
-            else {
-                this.msgValue = options.successFlag ? "Your changes have been saved." : "Failed to save your changes";
-            }
-            this.classFlag = options.successFlag ? "success" : "error";
-            this.isNotificationMessageVisible = true;
-        }
-    }
-</script>
+            },
+        });
+    </script>
 <style scoped>
     .div-cursor {
         cursor: pointer;

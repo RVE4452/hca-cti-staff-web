@@ -56,54 +56,56 @@
     </div>
   </div>
 </template>
-// <script lang="ts">
-// import { Component, Vue, Prop } from "vue-property-decorator";
-// import ErrorNotification from "./ErrorNotification.vue";
-// import { namespace } from "vuex-class";
-// const schedule = namespace("schedule");
-// import moment from 'moment';
-// const profile = namespace("profile");
+<script lang="ts">
+import ErrorNotification from "./ErrorNotification.vue";
+import { Options, Vue } from 'vue-class-component';
+import { mapState } from "vuex";
+import moment from "moment";
 
-//  @Component({
-//     components: {
-//             ErrorNotification
-//         },
-//     })
-// export default class AssignmentDetail extends Vue {
-//     @schedule.State 
-//     public assignmentDetail!: any;
+class Props{
+  currentEvent: any;
+  enableField: any;
+}
+ @Options({
+   computed: {
+        ...mapState('oidcStore',['oidcUser']),
+         ...mapState('schedule',['assignmentDetail']),
+        ...mapState('profile', ['profileData', 'appInsightEventData'])
+    },
+    components: {
+            ErrorNotification
+        },
+    })
+export default class AssignmentDetail extends Vue.with(Props) {
+    public assignmentDetail!: any;
+    public profileData!: any;
 
-//     @profile.State
-//     public profileData!: any;
+    isLoaded: boolean = false;
+    showErrorMsg: boolean = false;
+     errorMsg: string = '';
+     errorType: string = 'error';
 
-//     isLoaded: boolean = false;
-//     showErrorMsg: boolean = false;
-//      errorMsg: string = '';
-//      errorType: string = 'error';
-//     @Prop() currentEvent: any;
-//     @Prop() enableField: any;
+    async mounted() {
+        this.getEventDetail();
+    }
 
-//     async mounted() {
-//         this.getEventDetail();
-//     }
+    getEventDetail() {
+        var payload = { 
+            username: this.profileData.username, 
+            id: this.currentEvent.id
+        };  
 
-//     getEventDetail() {
-//         var payload = { 
-//             username: this.profileData.username, 
-//             id: this.currentEvent.id
-//         };  
-
-//         this.$store
-//         .dispatch("schedule/getAssignmentDetail", payload)
-//         .then(() => {
-//             this.isLoaded = true;
-//         });
-//     }
-//   get getDept() {
-//             return this.assignmentDetail.departmentCode + " (" + this.assignmentDetail.departmentName + ")";
-//         }
-//   formatDate(date: Date): string {
-//     return moment(date).format("dddd, MMM DD YYYY");
-//   }
-// }
-// </script>
+        this.$store
+        .dispatch("schedule/getAssignmentDetail", payload)
+        .then(() => {
+            this.isLoaded = true;
+        });
+    }
+  get getDept() {
+            return this.assignmentDetail.departmentCode + " (" + this.assignmentDetail.departmentName + ")";
+        }
+  formatDate(date: Date): string {
+    return moment(date).format("dddd, MMM DD YYYY");
+  }
+}
+</script>

@@ -106,65 +106,69 @@
 </template>
 
 
-// <script lang="ts">
-// import { Component, Vue, Prop } from "vue-property-decorator";
-// import { namespace } from "vuex-class";
-// import moment from "moment";
-// import ErrorNotification from "./ErrorNotification.vue";
-// const schedule = namespace("schedule"); 
-// const profile = namespace("profile");
+<script lang="ts">
+import { Options, Vue } from 'vue-class-component';
+import { mapState } from "vuex";
+import moment from "moment";
+import ErrorNotification from "./ErrorNotification.vue";
 
-// @Component({
-//     components: {
-//             ErrorNotification
-//         },
-//     })
-// export default class AssignmentDetail extends Vue {
-//     @schedule.State 
-//     public assignmentDetail!: any;
-//     @profile.State
-//     public profileData!: any;
+class Props{
+  currentEvent: any;
+}
+@Options({
+    components: {
+            ErrorNotification
+        },
+        computed: {
+        ...mapState('oidcStore',['oidcUser']),
+         ...mapState('schedule',['assignmentDetail']),
+        ...mapState('profile', ['profileData', 'appInsightEventData'])
+    },
+    })
+export default class AssignmentDetail extends Vue.with(Props) {
+   
+    public assignmentDetail!: any;
+    public profileData!: any;
 
-//     isLoaded: boolean = false;
-//     @Prop() currentEvent: any;
-//     errorMsg: string = '';
-//     errorType: string = 'error';
-//     showErrorMsg: boolean = false;
+    isLoaded: boolean = false;   
+    errorMsg: string = '';
+    errorType: string = 'error';
+    showErrorMsg: boolean = false;
     
-//     async mounted() {
-//         this.getEventDetail();
-//     }
+    async mounted() {
+        this.getEventDetail();
+    }
 
-//     getEventDetail() {   
-//       var payload = { 
-//           username: this.profileData.username, 
-//           id: this.currentEvent.id
-//       };  
+    getEventDetail() {   
+      var payload = { 
+          username: this.profileData.username, 
+          id: this.currentEvent.id
+      };  
       
-//       this.$store
-//         .dispatch("schedule/getAssignmentDetail", payload)
-//         .then(() => {
-//             this.isLoaded = true;            
-//         })
-//         .catch((err: any) => {
-//             if (err) {
-//                 console.log(err); // Handle errors any way you want
-//                 this.showErrorMsg = true;
-//                 this.errorMsg = "An error has occurred. Please try again. If the error persists, contact Facility Scheduler support.";
-//             }
-//         });
-//     }
+      this.$store
+        .dispatch("schedule/getAssignmentDetail", payload)
+        .then(() => {
+            this.isLoaded = true;            
+        })
+        .catch((err: any) => {
+            if (err) {
+                console.log(err); // Handle errors any way you want
+                this.showErrorMsg = true;
+                this.errorMsg = "An error has occurred. Please try again. If the error persists, contact Facility Scheduler support.";
+            }
+        });
+    }
       
-//         get getDept() {
-//             return this.assignmentDetail.departmentCode + " (" + this.assignmentDetail.departmentName + ")";
-//         }
+        get getDept() {
+            return this.assignmentDetail.departmentCode + " (" + this.assignmentDetail.departmentName + ")";
+        }
 
-//   formatDate(date: Date): string {
-//     return moment(date).format("ddd, MMM D");
-//   }
-//   formatTime(t: Date): string {
-//     return moment(t).format("h:mm a");
-//   }
+  formatDate(date: Date): string {
+    return moment(date).format("ddd, MMM D");
+  }
+  formatTime(t: Date): string {
+    return moment(t).format("h:mm a");
+  }
 
-// }
-// </script>
+}
+</script>

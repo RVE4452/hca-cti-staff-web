@@ -39,54 +39,54 @@
     </div>
   </div>
 </template>
-// <script lang="ts">
-// import { Component, Vue, Prop } from "vue-property-decorator";
-// import { namespace } from "vuex-class";
-// const schedule = namespace("schedule");
-// import moment from "moment";
-// const profile = namespace("profile");
+<script lang="ts">
+import { Options, Vue } from 'vue-class-component';
+import { mapState } from "vuex";
+import moment from "moment";
 
-// @Component
-// export default class AssignmentDetail extends Vue {
-//   @schedule.State
-//   public assignmentDetail!: any;
+class Props{
+  currentEvent: any;
+}
+@Options({
+   computed: {
+        ...mapState('oidcStore',['oidcUser']),
+         ...mapState('schedule',['assignmentDetail','scheduleId']),
+        ...mapState('profile', ['profileData', 'appInsightEventData'])
+    },
+})
+export default class AssignmentDetail extends Vue.with(Props) {
+ public assignmentDetail!: any;
+ public scheduleId!: string;
+  public profileData!: any;
+  isLoaded: boolean = false;
+  
+  async mounted() {
+    this.getEventDetail();
+  }
 
-//   @schedule.State
-//   public scheduleId!: string;
+  getEventDetail() {
+    var payload = { 
+        username: this.profileData.username, 
+        id: this.currentEvent.id
+    };  
 
-//   @profile.State
-//   public profileData!: any;
+    this.$store
+      .dispatch("schedule/getAssignmentDetail", payload)
+      .then(() => {
+        this.isLoaded = true;
+      })
+      .catch((err: any) => {
+        if (err) {
+          console.log(err); // Handle errors any way you want
+        }
+      });
+  }
 
-//   isLoaded: boolean = false;
-//   @Prop() currentEvent: any;
-
-//   async mounted() {
-//     this.getEventDetail();
-//   }
-
-//   getEventDetail() {
-//     var payload = { 
-//         username: this.profileData.username, 
-//         id: this.currentEvent.id
-//     };  
-
-//     this.$store
-//       .dispatch("schedule/getAssignmentDetail", payload)
-//       .then(() => {
-//         this.isLoaded = true;
-//       })
-//       .catch((err: any) => {
-//         if (err) {
-//           console.log(err); // Handle errors any way you want
-//         }
-//       });
-//   }
-
-//   formatDate(date: Date): string {
-//     return moment(date).format("ddd, MMM D");
-//   }
-//   formatTime(t: Date): string {
-//     return moment(t).format("h:mm a");
-//   }
-// }
-// </script>
+  formatDate(date: Date): string {
+    return moment(date).format("ddd, MMM D");
+  }
+  formatTime(t: Date): string {
+    return moment(t).format("h:mm a");
+  }
+}
+</script>

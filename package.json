@@ -19,6 +19,7 @@
     "@microsoft/signalr": "^5.0.5",
     "@neutron/vue": "^2.1.0-4",
     "axios": "^0.21.1",
+    "bootstrap-vue": "^2.23.1",
     "core-js": "^3.26.1",
     "mitt": "^3.0.0",
     "moment": "^2.29.1",
