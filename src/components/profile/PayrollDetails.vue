@@ -179,7 +179,7 @@ export default class PayrollDetails extends Vue {
                 endDate: this.toDateVal,
                 username: this.profileData.username,
             };
-
+            await this.$store.dispatch('profile/getProfileDetails','') ;
             await this.$store.dispatch('schedule/getPayrollDetails', payload)
                 .then((res: any) => {
 

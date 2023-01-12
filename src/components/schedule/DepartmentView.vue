@@ -179,7 +179,7 @@
         async mounted() { 
             if(this.profileData.first == null || this.profileData.first == undefined)
             {
-                await this.$store.dispatch('profile/getProfileDetails','') ;
+                await this.$store.dispatch('profile/getProfileDetails','');
                 await this.getFiltersData();
                 await this.showScheduleDays();
                 await this.getDepartmentSchedule();

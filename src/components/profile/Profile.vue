@@ -113,7 +113,6 @@ export default defineComponent({
             profileData: {} as any,
             userName: "",
             nameInitials: "",
-
             selectedTab: "EmpDtls",
             headerCaption: "My Employment Details",
             pagingNumber: "Page 1 of 3",
@@ -287,7 +286,7 @@ export default defineComponent({
             this.isNotificationMessageVisible = true;
         },
         routeNavigation(path: string) {
-            debugger;
+            // debugger;
             if (path === "EmployeeDetails") {
                 this.clickTab("EmpDtls");
             } else if (path === "SchedulerPreference") {
