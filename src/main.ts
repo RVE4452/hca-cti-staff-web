@@ -6,8 +6,6 @@ import router from "./router";
 import store from "./store";
 import mitt from 'mitt';
 import { NeutronVue } from '@neutron/vue';
-import "bootstrap/dist/css/bootstrap.min.css"
-import "bootstrap"
 //Add all icons to the library so you can use it in your pag
 //library.add(fas, far, fab);
 const emitter = mitt();
