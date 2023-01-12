@@ -12,7 +12,8 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "webpack-env"
+      "webpack-env",
+      "jest"
     ],
     "paths": {
       "@/*": [
@@ -28,7 +29,7 @@
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": false,
-    "useDefineForClassFields":true
+    "useDefineForClassFields": true
   },
   "include": [
     "src/**/*.ts",

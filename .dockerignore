@@ -1,0 +1,13 @@
+# directories
+/.git/
+/.github/
+/.idea/
+/.vs/
+/.vscode/
+/dist/
+/node_modules/
+/tmp/
+
+# files
+**/*.md
+npm-debug.log
