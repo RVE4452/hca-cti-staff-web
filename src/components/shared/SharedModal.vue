@@ -252,7 +252,7 @@
     .sideNavPanel{
         position: absolute;
         right: 0;
-        top: 70px;
+        top: 0px;
         background-color: #f4f4f4;
         bottom: 92px;
         z-index: 99;
@@ -296,7 +296,7 @@
      .sideNavPanel{
         position: absolute;
         right: 0;
-        top: 70px;
+        top: 0px;
         background-color: #f4f4f4;
         bottom: 92px;
         z-index: 99;
@@ -331,7 +331,7 @@
      .sideNavPanel{
         position: absolute;
         right: 0;
-        top: 70px;
+        top: 0;
         background-color: #f4f4f4;
         bottom: 92px;
         z-index: 99;
@@ -367,11 +367,11 @@
      .sideNavPanel{
         position: absolute;
         right: 0;
-        top: 70px;
+        top: 0;
         width: 30%;
         display: block;
         background-color: #f4f4f4;
-        bottom: 92px;
+        bottom: 0;
         overflow-x: hidden;
         overflow-y: auto;
     }
@@ -398,7 +398,7 @@
     .sideNavPanel{
         position: absolute;
         right: 0;
-        top: 60px;
+        top: 0px;
         width: 25%;
         display: block;
         background-color: #f4f4f4;
