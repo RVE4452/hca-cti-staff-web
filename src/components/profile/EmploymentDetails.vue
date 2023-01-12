@@ -3,7 +3,7 @@
         <div class="neu-margin--bottom-20 neu-margin--top-10 neu-text--caption">
             To update the information below, contact your manager or FSA, or call HCA
             HR Answers at
-            <b>1-844-HR-ANSWR(472-6797)</b>.
+            <b>1-844-(472-6797)</b>.
         </div>
         <div class="row neu-margin--top-20 neu-margin--bottom-20">
             <div class="col-sm-12">
