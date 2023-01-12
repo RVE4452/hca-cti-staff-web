@@ -4,7 +4,7 @@
             <neu-row cols="12">
                 <neu-col cols="4" class="profile-desktop-header profile-nav flex40 no-print">
                     <neu-card-content  class="vh-100 vw-20" color="plain-0" col="3">
-                        <neu-sub-left-nav name="NAVIGATION" color="plain" side="left"  class="flex justify-content-center">
+                        <neu-sub-left-nav name={{userName}} color="plain" side="left">
                             <neu-item :selected="isSelected('EmpDtls')" class="pl-3" @click="routeNavigation('EmployeeDetails')">
                             <neu-stepper slot="start"> <neu-icon slot="start">manage_accounts</neu-icon></neu-stepper>
                             <neu-label>Employee Info</neu-label>
@@ -20,12 +20,12 @@
                             <neu-label > Payroll Details </neu-label>
                             <neu-icon slot="end" v-if="isSelected('PayrollDtls')"  >navigate_next</neu-icon>
                             </neu-item>
-                            </neu-sub-left-nav>
+                        </neu-sub-left-nav>
                     </neu-card-content>
                 </neu-col>
                 <neu-col cols="4" class="mobile-menu profile-mobile-header no-print">
                     <neu-card-content  class="vh-100 vw-100" color="plain-0" col="3" >
-                        <neu-sub-left-nav name="NAVIGATION" color="plain" side="left" >
+                        <neu-sub-left-nav name="{{userName}}" color="plain" side="left" overlay="true" >
                             <neu-item class="pl-3"  @click="routeNavigation('EmployeeDetails')">
                             <neu-stepper slot="start"> <neu-icon slot="start">manage_accounts</neu-icon></neu-stepper>
                             </neu-item>
@@ -80,26 +80,20 @@
     </div>
 </template>
 <script lang="ts">
-          import { Options, Vue } from 'vue-class-component';
-        import moment from "moment";
+        import { NeuContainer } from '@neutron/vue';
+        import { defineComponent } from '@vue/runtime-core';
         import { mapState } from "vuex";
         import EmploymentDetails from "./EmploymentDetails.vue";
         // import SchedulingPref from "./SchedulingPref.vue";
         // import PayrollDetails from "./PayrollDetails.vue";
-       
-        
-        import { NeuContainer } from '@neutron/vue'
-        import { defineComponent } from '@vue/runtime-core' 
-    
         export default defineComponent({
             name: 'ProfileComponent',
             data : () =>{
                 return { 
-                    oidcUser: '',
-                    profileData: {} as any,
+                    // oidcUser: '',
+                    // profileData: {} as any,
                     userName: "",
                     nameInitials: "",
-    
                     selectedTab: "EmpDtls",
                     headerCaption: "My Employment Details",
                     pagingNumber: "Page 1 of 3",
@@ -133,8 +127,7 @@
             methods: {
                 setDefaultValue(){
                     if (this.profileData) {
-                        this.userName = this.profileData.first + " " + this.profileData.last;
-                            
+                        this.userName = this.profileData.first + " " + this.profileData.last; 
                         if (this.profileData.first != undefined && this.profileData.last != undefined) {
                             this.nameInitials = this.profileData.first.charAt(0).toUpperCase() + this.profileData.last.charAt(0).toUpperCase();
                         }

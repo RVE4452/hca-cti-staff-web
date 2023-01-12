@@ -27,7 +27,7 @@
       </neu-row>
       
       <neu-user-controls slot="end" class="d-none d-md-flex"
-        :user="oidcUser.firstName.toUpperCase() + ' ' + oidcUser.lastName.toUpperCase()" @click="routeNavigation('profile')">
+        :user="oidcUser.firstName.toUpperCase() + ' ' + oidcUser.lastName.toUpperCase()">
         <neu-link nav @click="routeNavigation('profile')">
         <neu-avatar class="icon-padding-person" color="plain-0">
           <neu-icon>person</neu-icon>
