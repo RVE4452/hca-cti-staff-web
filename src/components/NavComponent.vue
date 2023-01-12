@@ -168,7 +168,6 @@ export default defineComponent({
       this.$router.push('/' + event.target.innerText.split(' ')[0])
     },
     routeNavigation(path:string){
-        debugger;
         this.$router.push('/' +path);
       },
   }
