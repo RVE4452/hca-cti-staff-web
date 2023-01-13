@@ -1886,7 +1886,7 @@
         }
 
         handleEvents(events: any) {
-            this.currentEvents = events;
+            //this.currentEvents = events;
         }
 
         
