@@ -27,11 +27,46 @@
             </div>
         </template> 
          </div>
+          <template v-if="sharedRequest.type === 2">
             <neu-tablist color="primary-100"  value="assignment">
-        <neu-tab tab="assignment" navy="true">Details</neu-tab>
-        <neu-tab tab="request" navy="true">Request</neu-tab>
-        <neu-tab tab="unavailablity" navy="true">Unavailability</neu-tab>
-      </neu-tablist>
+                <neu-tab v-if="sharedRequest.event" tab="assignment" navy="true">Event</neu-tab>
+                <neu-tab v-if="sharedRequest.assignmentDetail" tab="assignment" navy="true">Details</neu-tab>
+                <neu-tab tab="request" navy="true">Request</neu-tab>
+                <neu-tab tab="unavailablity" navy="true">Unavailability</neu-tab>
+            </neu-tablist>
+          </template>
+          <template v-if="sharedRequest.type === 2">
+            <div class="pb3 row" v-if="activeTab == 0 && sharedRequest.isSymphonyUser == true && sharedRequest.status == 'Posted'">
+                <SymphonyOperatingRooms :key="counter" :currentEvent="currentEvent" @closeSharedModal="close" />
+            </div>
+            <div class="pb3 row" v-if="activeTab == 1">
+                <Detail :enableField="[]" :currentEvent="currentEvent" :key="counter" />
+                <PotentialTrade :key="counter + 1" />
+                <ShiftDetail :currentEvent="currentEvent" :key="counter + 2" />
+                <div class="container-fluid">
+                    <div>
+                        <div class="col-12">
+                            <button name="btnSwapShift" class="d-block mb4 mt4 neu-background--denim neu-button w-100 white">
+                                Swap Shift
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pb3 row" v-if="activeTab == 2">
+                <!-- <AssignmentDetail :currentEvent="currentEvent" /> -->
+                <Detail :enableField="[]" :currentEvent="currentEvent" :key="counter" />
+                <ShiftDetail :currentEvent="currentEvent" :key="counter + 1" />
+                <div class="container-fluid tc">
+                    <div>
+                        <div class="col-12">
+                            <h6>Cannot be Modified</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        
        
       
     </div>
@@ -252,7 +287,7 @@
     .sideNavPanel{
         position: absolute;
         right: 0;
-        top: 70px;
+        top: 0px;
         background-color: #f4f4f4;
         bottom: 92px;
         z-index: 99;
@@ -296,7 +331,7 @@
      .sideNavPanel{
         position: absolute;
         right: 0;
-        top: 70px;
+        top: 0px;
         background-color: #f4f4f4;
         bottom: 92px;
         z-index: 99;
@@ -331,7 +366,7 @@
      .sideNavPanel{
         position: absolute;
         right: 0;
-        top: 70px;
+        top: 0;
         background-color: #f4f4f4;
         bottom: 92px;
         z-index: 99;
@@ -367,11 +402,11 @@
      .sideNavPanel{
         position: absolute;
         right: 0;
-        top: 70px;
+        top: 0;
         width: 30%;
         display: block;
         background-color: #f4f4f4;
-        bottom: 92px;
+        bottom: 0;
         overflow-x: hidden;
         overflow-y: auto;
     }
@@ -398,7 +433,7 @@
     .sideNavPanel{
         position: absolute;
         right: 0;
-        top: 60px;
+        top: 0px;
         width: 25%;
         display: block;
         background-color: #f4f4f4;
