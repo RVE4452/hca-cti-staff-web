@@ -122,6 +122,11 @@ export default class PayrollDetails extends Vue {
 
     async mounted() {
         this.getCurrentPayperiod();
+
+        if(this.profileData?.first == null || this.profileData?.first == undefined){
+            await this.$store.dispatch('profile/getProfileDetails', '');
+        }
+
         useAppInsights().trackEvent({
             name: 'ViewPayrollDetails', properties:
                 JSON.parse(JSON.stringify(this.appInsightEventData))
@@ -179,8 +184,8 @@ export default class PayrollDetails extends Vue {
                 endDate: this.toDateVal,
                 username: this.profileData.username,
             };
-            await this.$store.dispatch('profile/getProfileDetails','') ;
-            await this.$store.dispatch('schedule/getPayrollDetails', payload)
+            // await this.$store.dispatch('profile/getProfileDetails','') ;
+            await this.$store.dispatch('Schedules/PayrollDetails', payload)
                 .then((res: any) => {
 
                 })
