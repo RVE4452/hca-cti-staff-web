@@ -8,12 +8,12 @@
         <div class="col-12 neu-margin--top-20">
           <neu-label color="primary" content="Facility" position="fixed" >
           </neu-label>
-          <neu-input
+          <neu-input inputmode="search"
             type="text"
             name="Facility"
             id="txtFacility"
             :value="assignmentDetail.facilityName"
-            :disabled="enableField.indexOf('facilityName') === -1"            
+            :readonly="enableField.indexOf('facilityName') === -1"            
           />
         </div>
         <div class="col-12 neu-margin--top-20">
@@ -24,7 +24,7 @@
             id="txtDepartment"
             v-model="getDept"
             :value="getDept"
-            :disabled="enableField.indexOf('departmentName') < 0"           
+            :readonly="enableField.indexOf('departmentName') < 0"           
           />
         </div>
         <div class="col-12 neu-margin--top-20">
@@ -35,7 +35,7 @@
             id="txtSkill"
             v-model="assignmentDetail.skill"
             :value="assignmentDetail.skill"
-            :disabled="enableField.indexOf('skill') < 0"
+            :readonly="enableField.indexOf('skill') < 0"
           />
         </div>
         <div class="col-12 neu-margin--top-20">
@@ -46,7 +46,7 @@
             id="txtShift"
             v-model="assignmentDetail.shift"
             :value="assignmentDetail.shift"
-            :disabled="enableField.indexOf('shift') < 0"
+            :readonly="enableField.indexOf('shift') < 0"
           />
         </div>
       </div>
