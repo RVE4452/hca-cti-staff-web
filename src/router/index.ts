@@ -28,13 +28,15 @@ const routes = [
         path: '/Department',
         component: MySchedule,
         props: { viewFlag: 'DeptView' }
-    },    
+    }, 
     {
         path: '/profile',
-        component: Profile
-    },  
+        name: 'Profile',
+        component: Profile,
+        meta: {key: 'profile', title: 'Schedule Management - Profile'}
+    }, 
     {
-        path: '/SchedulerPreference',
+        path: '/SchedulePreference',
         component: Profile
     },
     {

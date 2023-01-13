@@ -4,15 +4,17 @@
             <neu-row cols="12">
                 <neu-col cols="4" class="profile-desktop-header profile-nav flex40 no-print">
                     <neu-card-content  class="vh-100 vw-20" color="plain-0" col="3">
-                        <neu-sub-left-nav name={{userName}} color="plain" side="left">
+                        <neu-sub-left-nav  color="plain" side="left">
+                            <neu-input type="text" readonly="true"  enterkeyhint="search" :value="userName" id="txtUsername" >
+                            </neu-input>
                             <neu-item :selected="isSelected('EmpDtls')" class="pl-3" @click="routeNavigation('EmployeeDetails')">
                             <neu-stepper slot="start"> <neu-icon slot="start">manage_accounts</neu-icon></neu-stepper>
                             <neu-label>Employee Info</neu-label>
                             <neu-icon v-if="isSelected('EmpDtls')" slot="end">navigate_next</neu-icon>
                             </neu-item>
-                            <neu-item :selected="isSelected('SchPref')" class="pl-3"  @click="routeNavigation('SchedulerPreference')" >
+                            <neu-item :selected="isSelected('SchPref')" class="pl-3"  @click="routeNavigation('SchedulePreference')" >
                             <neu-stepper slot="start"> <neu-icon slot="start">calendar_month</neu-icon></neu-stepper>
-                            <neu-label> Scheduler Preference </neu-label>
+                            <neu-label> Schedule Preference </neu-label>
                             <neu-icon v-if="isSelected('SchPref')" slot="end">navigate_next</neu-icon>
                             </neu-item>
                             <neu-item :selected="isSelected('PayrollDtls')" class="pl-3" @click="routeNavigation('PayrollDetails')">
@@ -25,11 +27,13 @@
                 </neu-col>
                 <neu-col cols="4" class="mobile-menu profile-mobile-header no-print">
                     <neu-card-content  class="vh-100 vw-100" color="plain-0" col="3" >
-                        <neu-sub-left-nav name="{{userName}}" color="plain" side="left" overlay="true" >
+                        <neu-sub-left-nav color="plain" side="left" overlay="true" >
+                            <neu-input type="text" readonly="true"  enterkeyhint="search" :value="userName" id="txtUsername" >
+                            </neu-input>
                             <neu-item class="pl-3"  @click="routeNavigation('EmployeeDetails')">
                             <neu-stepper slot="start"> <neu-icon slot="start">manage_accounts</neu-icon></neu-stepper>
                             </neu-item>
-                            <neu-item selected="true" class="pl-3"  @click="routeNavigation('SchedulerPreference')">
+                            <neu-item selected="true" class="pl-3"  @click="routeNavigation('SchedulePreference')">
                             <neu-stepper slot="start"> <neu-icon slot="start">calendar_month</neu-icon></neu-stepper>
                             </neu-item>
                             <neu-item selected="true" class="pl-3"  @click="routeNavigation('PayrollDetails')">
@@ -44,20 +48,14 @@
                             <!-- MOBILE NAV -->
                             <header class="row neu-margin--bottom-30 flex flex-row w-100 mobile-header ml0">
                                 <div class="row neu-margin--top-20 center">
-                                    
-                                
                                     <neu-card-content center="true">
                                             <h5>
                                                 {{ headerCaption }}
                                             </h5>
-                                            <div class="neu-text--support small">
-                                                {{ pagingNumber }}
-                                            </div>
                                     </neu-card-content>
                                     
                                 </div>
                             </header>
-                            
                             <div v-if="isSelected('EmpDtls')">
                                 <EmploymentDetails />
                             </div>
@@ -127,7 +125,9 @@
             methods: {
                 setDefaultValue(){
                     if (this.profileData) {
+                        
                         this.userName = this.profileData.first + " " + this.profileData.last; 
+                        
                         if (this.profileData.first != undefined && this.profileData.last != undefined) {
                             this.nameInitials = this.profileData.first.charAt(0).toUpperCase() + this.profileData.last.charAt(0).toUpperCase();
                         }
@@ -225,7 +225,7 @@
                 routeNavigation(path:string){
                     if(path ==="EmployeeDetails" || path ==="profile"  ){
                         this.clickTab("EmpDtls");
-                    }else if(path ==="SchedulerPreference"){
+                    }else if(path ==="SchedulePreference"){
                         this.clickTab("SchPref");
                     }else if(path ==="PayrollDetails"){
                         this.clickTab("PayrollDtls"); 
@@ -496,4 +496,9 @@
             display: none;
         }
     }
+    /* .neu-stepper > .neu-item__content__inner__input-wrapper .sc-neu-item.sc-neu-item-s ::v-deep {
+    display: flex !important;
+    align-items: center !important;
+    } */
+    
 </style>

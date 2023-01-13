@@ -49,179 +49,172 @@
         <div class="row neu-margin--top-20 neu-margin--bottom-20">
             <div class="col-sm-12">
                 <h6 class="neu-text--transform-uppercase">
-                    EMPLOYMENT
+                  TALENT PROFILE
                 </h6>
             </div>
             <div class="col-sm-7 neu-margin--top-20">
-                <neu-label for="txtFacility">Facility</neu-label>
+                <neu-label for="txtFacility">Proficiency </neu-label>
                 
-                <neu-input type="text" autocomplete="off" readonly="true"   name="Facility"
-                id="txtFacility"  :value="getFacility" >
-                </neu-input>
-            </div>
-            <div class="col-sm-5 neu-margin--top-20">
-                <neu-label for="txtDepartment">Department</neu-label>
-                
-                <neu-input type="text" autocomplete="off" readonly="true"   name="Department"
-                  id="txtDepartment" :value="getDept" >
-                </neu-input>
-            </div>
-            <div class="col-sm-5 neu-margin--top-20">
-                <neu-label for="txtWorkSchedule">Work Schedule</neu-label>
-                
-                <neu-input type="text" autocomplete="off" readonly="true" name="WorkSchedule"
-                  id="txtWorkSchedule" :value="profileData.workSchedule">
-                </neu-input>
-            </div>
-            <div class="col-sm-5 neu-margin--top-20">
-                <neu-label for="PartofDay">Part of Day</neu-label>
-                
-                <neu-input type="text" autocomplete="off" readonly="true" id="txtPartofDay"
-                       :value="profileData.partOfDay">
-                </neu-input>
-            </div>
-            <div class="col-sm-5 neu-margin--top-20  marTop1">
-                <neu-label for="txtHireDate">Hire Date</neu-label>
-                
-                <neu-input type="text" autocomplete="off" readonly="true" name="HireDate"
-                       id="txtHireDate" :value="getHireDate">
-                </neu-input>
-            </div>
-            <div class="col-sm-5 neu-margin--top-20 marTop1">
-                <neu-label for="PartofDay">Guaranteed Hours (Per Week)</neu-label>
-                
-                <neu-input type="text" autocomplete="off" readonly="true"  id="txtGuaranteedHours" :value="profileData.guarenteedHours">
-                </neu-input>
+              <neu-tooltip>
+                <neu-label slot="tooltip" >{{ proficinecyDetails }}</neu-label>
+                <neu-icon color="primary" fill="raised"  slot="content">info </neu-icon>
+                <!-- <neu-lable id="trash-desc"> {{ proficinecyDetails }}</neu-lable> -->
+              </neu-tooltip>
+                <neu-select interface="popover" :value="proficiency"  @v-neu-change="selectionChange">
+                  <neu-option value="1">Level 1 Beginner </neu-option>
+                  <neu-option value="2">Level 2 Intermediate</neu-option>
+                  <neu-option value="3">Level 3 Advanced</neu-option>
+                </neu-select>
             </div>
         </div>
-
         <div class="row neu-margin--top-20 neu-margin--bottom-20">
-            <div class="col-sm-12">
-                <h6 class="neu-text--transform-uppercase">
-                    DEPARTMENTAL SETTINGS
-                </h6>
-            </div>
-            <div class="col-sm-5 neu-margin--top-20">
-                <neu-label>Primary Skill</neu-label>
-               
-                <neu-input type="text" autocomplete="off" readonly="true" id="txtPrimarySkill" :value="getPrimarySkill">
-                </neu-input>
-            </div>
-            <div class="col-sm-5 neu-margin--top-20">
-                <neu-label>Primary Shift</neu-label>
-        
-                <neu-input type="text" autocomplete="off" readonly="true" id="txtPrimaryShift"
-                :value="profileData.primaryShift" >
-                </neu-input>
-            </div>
-            <div class="col-sm-5 neu-margin--top-20">
-                <neu-label>Weekend</neu-label>
-                
-                <neu-input type="text" autocomplete="off" readonly="true" id="txtWeekend"
-                       :value="profileData.weekend"  >
-                </neu-input>
-            </div>
-            <div class="col-sm-5 neu-margin--top-20">
-                <neu-label>Group</neu-label>
-                
-                <neu-input type="text" autocomplete="off" readonly="true" id="txtGroup"
-                :value="profileData.group"   >
-                </neu-input>
-            </div>
-            <div class="col-sm-5 neu-margin--top-20">
-                <neu-label>Holiday</neu-label>
-                <neu-input type="text" autocomplete="off" readonly="true" id="txtHoliday"
-                :value="profileData.holiday" >
-                </neu-input>
-            </div>
-            <div class="col-sm-5 neu-margin--top-20">
-                <neu-label>Disaster</neu-label>
-                <neu-input type="text" autocomplete="off" readonly="true" id="txtDisaster"
-                :value="profileData.disaster" >
-                </neu-input>
+            <div class="col-sm-4 neu-margin--top-20">
+              <neu-button color="primary"   name="cancel" type="reset" value="Cancel" fill="flat">
+                Cancel
+                </neu-button>
+                <neu-button color="green-50"  name="submit" type="submit"  fill="raised">
+                Save
+                </neu-button>
             </div>
         </div>
+                      
     </div>
 </template>
 
 <script lang="ts">
-    import { Options, Vue } from 'vue-class-component';
-    import moment from "moment";
-    import { mapState } from "vuex";
 
-    @Options({computed: {
-            ...mapState('profile', ['profileData']),
-        },})
-    export default class EmploymentDetails extends Vue {
-       
-        public profileData!: any;
+import { NeuContainer } from '@neutron/vue';
+import { defineComponent } from '@vue/runtime-core';
+import { mapState } from "vuex";
+import moment from "moment";
 
-        mounted() {
-            localStorage.setItem("guarenteedHours", this.profileData.guarenteedHours);
-            localStorage.setItem("UserName", this.profileData.first + " " + this.profileData.last);
+export default defineComponent({
+  name: 'EmploymentDetails',
+  data : () =>{
+      return { 
+          //  profileData: {} as any,
+            ProficienceData: [] as any,
+            proficiency:'',
+            proficinecyDetails:'',
+      }
+  },
+  props: {},
+  components: {},
+  computed: {
+      ...mapState('profile',["profileData"]),
+      getName():any  {
+          return (this.profileData.first + " " + this.profileData.last);
+      },
+      getFullHomeAddress():any {
+          let fulladdress = "";
+          fulladdress =
+              this.profileData.address1 != "" ? this.profileData.address1 + "," : "";
+          fulladdress =
+              this.profileData.address2 != ""
+                  ? fulladdress != ""
+                      ? fulladdress + " " + this.profileData.address2 + ","
+                      : this.profileData.address2 + ","
+                  : fulladdress;
+          fulladdress =
+              this.profileData.city != ""
+                  ? fulladdress != ""
+                      ? fulladdress + " " + this.profileData.city
+                      : this.profileData.city
+                  : fulladdress;
+          fulladdress =
+              this.profileData.state != ""
+                  ? fulladdress != ""
+                      ? fulladdress + " " + this.profileData.state
+                      : this.profileData.state
+                  : fulladdress;
+          fulladdress =
+              this.profileData.zip != ""
+                  ? fulladdress != ""
+                      ? fulladdress + " " + this.profileData.zip
+                      : this.profileData.zip
+                  : fulladdress;
+          return fulladdress;
+      },
+      getPrimarySkill() {
+          let primarySkill = "";
+          if (typeof this.profileData.skills !== "undefined") {
+              for (var i = 0; i < this.profileData.skills.length; i++) {
+                  if (this.profileData.skills[i].primary === true) {
+                      primarySkill = this.profileData.skills[i].description;
+                      break;
+                  }
+              }
+          }
+          return primarySkill;
+      },
+  },
+  mounted() {
+  this.selectionChange({detail:{value:"1"}});
+  localStorage.setItem("guarenteedHours", this.profileData.guarenteedHours);
+  localStorage.setItem("UserName", this.profileData.first + " " + this.profileData.last);
+  },
+  methods: {
+      // computed
+      selectionChange(ev:any){
+        if(ev.detail.value ==="1"){
+          this.proficiency = ev.detail.value;
+          this.proficinecyDetails = "An individual with a level of experience and clinical judgement gained in a classroom or orientation but is limited in caring for patients on the unit. Will have questions on clinical conditions and is expected to need consultation from a more advanced nurse with decision-making when patients are unstable or under rapidly changing conditions."
+        }else if(ev.detail.value ==="2"){
+          this.proficiency = ev.detail.value;
+          this.proficinecyDetails = "An individual with clinical judgement of a patient's condition and situational awareness of the current unit status. Anticipates patient care needs and promptly assesses and intervenes with minimal consultation and support in rapidly changing conditions. Emerging teacher and coach."
+        }else{
+          this.proficiency = ev.detail.value;
+          this.proficinecyDetails = "An individual recognized within the organization as a person for recognizing early clinical changes and for making wise clinical judgements when difficult questions arise regarding patient care, particularly when unusual, complex, emergent, or high-risk situations require clinical reasoning and rapid intervention."
         }
-
-        // computed
-
-        get getName() {
-            return (this.profileData.first + " " + this.profileData.last);
-        }
-        get getFullHomeAddress() {
-            let fulladdress = "";
-            fulladdress =
-                this.profileData.address1 != "" ? this.profileData.address1 + "," : "";
-            fulladdress =
-                this.profileData.address2 != ""
-                    ? fulladdress != ""
-                        ? fulladdress + " " + this.profileData.address2 + ","
-                        : this.profileData.address2 + ","
-                    : fulladdress;
-            fulladdress =
-                this.profileData.city != ""
-                    ? fulladdress != ""
-                        ? fulladdress + " " + this.profileData.city
-                        : this.profileData.city
-                    : fulladdress;
-            fulladdress =
-                this.profileData.state != ""
-                    ? fulladdress != ""
-                        ? fulladdress + " " + this.profileData.state
-                        : this.profileData.state
-                    : fulladdress;
-            fulladdress =
-                this.profileData.zip != ""
-                    ? fulladdress != ""
-                        ? fulladdress + " " + this.profileData.zip
-                        : this.profileData.zip
-                    : fulladdress;
-            return fulladdress;
-        }
-        
-        get getPrimarySkill() {
-            let primarySkill = "";
-            if (typeof this.profileData.skills !== "undefined") {
-                for (var i = 0; i < this.profileData.skills.length; i++) {
-                    if (this.profileData.skills[i].primary === true) {
-                        primarySkill = this.profileData.skills[i].description;
-                        break;
-                    }
-                }
-            }
-            return primarySkill;
-        }
-
-        get getHireDate() {
-            return this.profileData.hired != null
-                ? moment(String(this.profileData.hired)).format("MM/DD/YYYY")
-                : "";
-        }
-        get getFacility() {
-            return "(" + this.profileData.coid + ") " + this.profileData.facilityName;
-        }
-        get getDept() {
-            return "(" + this.profileData.deptCode + ") " + this.profileData.deptName;
-        }
-    }
+      },
+      // getName() {
+      //     return (this.profileData.first + " " + this.profileData.last);
+      // },
+      // getFullHomeAddress() {
+      //     let fulladdress = "";
+      //     fulladdress =
+      //         this.profileData.address1 != "" ? this.profileData.address1 + "," : "";
+      //     fulladdress =
+      //         this.profileData.address2 != ""
+      //             ? fulladdress != ""
+      //                 ? fulladdress + " " + this.profileData.address2 + ","
+      //                 : this.profileData.address2 + ","
+      //             : fulladdress;
+      //     fulladdress =
+      //         this.profileData.city != ""
+      //             ? fulladdress != ""
+      //                 ? fulladdress + " " + this.profileData.city
+      //                 : this.profileData.city
+      //             : fulladdress;
+      //     fulladdress =
+      //         this.profileData.state != ""
+      //             ? fulladdress != ""
+      //                 ? fulladdress + " " + this.profileData.state
+      //                 : this.profileData.state
+      //             : fulladdress;
+      //     fulladdress =
+      //         this.profileData.zip != ""
+      //             ? fulladdress != ""
+      //                 ? fulladdress + " " + this.profileData.zip
+      //                 : this.profileData.zip
+      //             : fulladdress;
+      //     return fulladdress;
+      // },
+      
+      // getPrimarySkill() {
+      //     let primarySkill = "";
+      //     if (typeof this.profileData.skills !== "undefined") {
+      //         for (var i = 0; i < this.profileData.skills.length; i++) {
+      //             if (this.profileData.skills[i].primary === true) {
+      //                 primarySkill = this.profileData.skills[i].description;
+      //                 break;
+      //             }
+      //         }
+      //     }
+      //     return primarySkill;
+      // },
+  }
+})
 </script>
 <style scoped>
     .readonly_text_field {
@@ -259,4 +252,5 @@
             margin-top: 1em !important;
         }
     }
+    
 </style>
