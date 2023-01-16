@@ -31,7 +31,8 @@
                 </neu-row>
             </neu-container>
         </div>
-        <div class="neu-container neu-margin--top-20 neu-margin--bottom-20">
+        
+        <!-- <div class="neu-container neu-margin--top-20 neu-margin--bottom-20">
                 <template v-if="payrollDetails.length > 0">
                 <table class="neu-table">
                     <tr class="th_HeaderRow">
@@ -77,6 +78,15 @@
             <template v-else>
                 <div class="neu-input__label text-center">No data exist</div>
             </template>
+        </div> -->
+
+        <div class="neu-container neu-margin--top-20 neu-margin--bottom-20">
+                <template v-if="payrollDetails">
+                   <PayrollDetailsTable></PayrollDetailsTable>
+                </template>
+            <template v-else>
+                <div class="neu-input__label text-center">No data exist</div>
+            </template>
         </div>
     </div>
 
@@ -95,6 +105,7 @@ import { mapState } from "vuex";
 import { ScheduleActualCIOD } from "@/models";
 import ErrorNotification from "@/components/shared/ErrorNotification.vue";
 import { useAppInsights } from '../../store/modules/AppInsights'
+import PayrollDetailsTable  from '../profile/PayrollDetailsTable.vue'
 
 @Options({
     components: {
@@ -102,7 +113,8 @@ import { useAppInsights } from '../../store/modules/AppInsights'
         NeuButton,
         NeuApp,
         NeuContent,
-        ErrorNotification
+        ErrorNotification,
+        PayrollDetailsTable
     },
     computed: {
         ...mapState('profile', ['profileData', 'appInsightEventData']),
@@ -184,8 +196,7 @@ export default class PayrollDetails extends Vue {
                 endDate: this.toDateVal,
                 username: this.profileData.username,
             };
-            // await this.$store.dispatch('profile/getProfileDetails','') ;
-            await this.$store.dispatch('Schedules/PayrollDetails', payload)
+            await this.$store.dispatch('schedule/getPayrollDetails', payload)
                 .then((res: any) => {
 
                 })
