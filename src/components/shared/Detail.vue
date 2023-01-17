@@ -4,52 +4,49 @@
       <div class="row">
           <div class="col-12 neu-margin--bottom-20" v-if="showErrorMsg">                    
           <ErrorNotification  :errorMsg="errorMsg" :errorType="errorType" />
-          </div>
-        <div class="col-12 fs-26 fw-bold">
-            {{ formatDate(this.currentEvent.date) }}
-        </div>
-        <div class="col-12 neu-margin--top-20 neu-input">
-          <label for="txtFacility" class="neu-input__label">Facility</label>
-          <input
+          </div>       
+        <div class="col-12 neu-margin--top-20">
+          <neu-label color="primary" content="Facility" position="fixed" >
+          </neu-label>
+          <neu-input inputmode="search"
             type="text"
             name="Facility"
             id="txtFacility"
-            v-model="assignmentDetail.facilityName"
-            :readonly="enableField.indexOf('facilityName') === -1"
-            class="neu-input__text-field readonly_text_field bg-transparent"
+            :value="assignmentDetail.facilityName"
+            :readonly="enableField.indexOf('facilityName') === -1"            
           />
         </div>
-        <div class="col-12 neu-margin--top-20 neu-input">
-          <label for="txtDepartment" class="neu-input__label">Department</label>
-          <input
+        <div class="col-12 neu-margin--top-20">
+          <neu-label for="txtDepartment"  color="primary" content="Department" position="fixed" ></neu-label>
+          <neu-input
             type="text"
             name="Department"
             id="txtDepartment"
             v-model="getDept"
-            :readonly="enableField.indexOf('departmentName') < 0"
-            class="neu-input__text-field readonly_text_field bg-transparent"
+            :value="getDept"
+            :readonly="enableField.indexOf('departmentName') < 0"           
           />
         </div>
-        <div class="col-12 neu-margin--top-20 neu-input">
-          <label for="txtSkill" class="neu-input__label">Skill</label>
-          <input
+        <div class="col-12 neu-margin--top-20">
+          <neu-label for="txtSkill" color="primary" content="Skill" position="fixed"></neu-label>
+          <neu-input
             type="text"
             name="Skill"
             id="txtSkill"
             v-model="assignmentDetail.skill"
+            :value="assignmentDetail.skill"
             :readonly="enableField.indexOf('skill') < 0"
-            class="neu-input__text-field readonly_text_field bg-transparent"
           />
         </div>
-        <div class="col-12 neu-margin--top-20 neu-input">
-          <label for="txtShift" class="neu-input__label">Shift</label>
-          <input
+        <div class="col-12 neu-margin--top-20">
+          <neu-label for="txtShift" color="primary" content="Shift" position="fixed"></neu-label>
+          <neu-input
             type="text"
-            name="Shit"
+            name="Shift"
             id="txtShift"
             v-model="assignmentDetail.shift"
+            :value="assignmentDetail.shift"
             :readonly="enableField.indexOf('shift') < 0"
-            v-bind:class="enableField.indexOf('shift') < -1 ? 'neu-input__text-field' : 'neu-input__text-field readonly_text_field bg-transparent'"
           />
         </div>
       </div>
