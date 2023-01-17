@@ -1,5 +1,31 @@
 @import 'global';
 
+.neu-input {
+    background: transparent;
+    border: none;
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    font-family: HCA-Mark,Arial,sans-serif!important;
+  }
+  .neu-input__label {
+    font-size: .875rem;
+  }
+  
+  .neu-input__text-field {
+    display: block;
+    width: 100%;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    background-color: #fff;
+    border: 1px solid #d9d9d6;
+    border-radius: 5px;
+    padding: 0 0.938rem;
+    font-size: 1em;
+    color: #1f2532;
+  }
+
 /* vue-multiselect style start  */
 .multiselect__tag{
     background-image: none !important;

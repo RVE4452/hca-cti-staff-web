@@ -7,21 +7,30 @@
                         <neu-sub-left-nav  color="plain" side="left">
                             <neu-input type="text" readonly="true"  enterkeyhint="search" :value="userName" id="txtUsername" >
                             </neu-input>
+                            <!-- Nav: Employee Details -->
                             <neu-item :selected="isSelected('EmpDtls')" class="pl-3" @click="routeNavigation('EmployeeDetails')">
                             <neu-stepper slot="start"> <neu-icon slot="start">manage_accounts</neu-icon></neu-stepper>
                             <neu-label>Employee Info</neu-label>
                             <neu-icon v-if="isSelected('EmpDtls')" slot="end">navigate_next</neu-icon>
                             </neu-item>
+                            <!-- END Nav: Employee Details -->
+
+                            <!-- Nav: Schedule Preference -->
                             <neu-item :selected="isSelected('SchPref')" class="pl-3"  @click="routeNavigation('SchedulePreference')" >
                             <neu-stepper slot="start"> <neu-icon slot="start">calendar_month</neu-icon></neu-stepper>
                             <neu-label> Schedule Preference </neu-label>
                             <neu-icon v-if="isSelected('SchPref')" slot="end">navigate_next</neu-icon>
                             </neu-item>
+                            <!-- END Nav: Schedule Preference -->
+
+                            <!-- Nav: Payroll Details -->
                             <neu-item :selected="isSelected('PayrollDtls')" class="pl-3" @click="routeNavigation('PayrollDetails')">
                             <neu-stepper slot="start"> <neu-icon slot="start">timer</neu-icon></neu-stepper>
                             <neu-label > Payroll Details </neu-label>
-                            <neu-icon slot="end" v-if="isSelected('PayrollDtls')"  >navigate_next</neu-icon>
-                            </neu-item>
+                            <neu-icon v-if="isSelected('PayrollDtls')" slot="end">navigate_next</neu-icon>
+                            <!-- END Nav: Payroll Details -->
+                        </neu-item>
+                        
                         </neu-sub-left-nav>
                     </neu-card-content>
                 </neu-col>
@@ -66,8 +75,7 @@
                             </div>
                             
                             <div v-else-if="isSelected('PayrollDtls')">
-                                <!-- <PayrollDetails /> -->
-                                <neu-lable>PayrollDetails</neu-lable>
+                                <PayrollDetails />
                             </div>
                             
                         </main>
@@ -83,7 +91,7 @@
         import { mapState } from "vuex";
         import EmploymentDetails from "./EmploymentDetails.vue";
         // import SchedulingPref from "./SchedulingPref.vue";
-        // import PayrollDetails from "./PayrollDetails.vue";
+        import PayrollDetails from "./PayrollDetails.vue";
         export default defineComponent({
             name: 'ProfileComponent',
             data : () =>{
@@ -108,11 +116,12 @@
             },
             props: {},
             components: { 
-                EmploymentDetails, 
+                EmploymentDetails,
+                NeuContainer,
                 // SchedulingPref, 
                 // SMSPref, 
                 // NotificationMgmt,
-                //  PayrollDetails,
+                 PayrollDetails,
                 //  SaveMsgPopUp
                  },
             computed: {

@@ -8,7 +8,7 @@
   </neu-app>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue'
 import { NeuApp, NeuContent } from '@neutron/vue'
 import NavComponent from '@/components/NavComponent.vue'
