@@ -87,60 +87,12 @@
                         </neu-table-row>
                     </neu-table-body>
                 </neu-table>
-                <!-- <table class="neu-table">
-                    <tr class="th_HeaderRow">
-                        <th class="neu-input__label  purpleColor">Schedule</th>
-                        <th class="neu-input__label  redColor">Actual</th>
-                    </tr>
-
-                    <tr v-for="payrollDetail in payrollDetails" :key="payrollDetails.indexOf(payrollDetail)">
-                        <td class="silverBorder">
-                            <div class="div_centered neu-input__label" v-if="payrollDetail.departmentId != 0">
-                                {{ formatDate(payrollDetail.start) }}
-                                <br />
-                                <span class="purpleColor">{{ payrollDetail.shiftCode }}
-                                    {{ formatTime(payrollDetail.start) }} - {{ formatTime(payrollDetail.end) }} </span>
-                                <br />
-                                Dept : {{ payrollDetail.departmentCode }}
-                            </div>
-                        </td>
-                        <td class="silverBorder">
-                            <div class="div_centered neu-input__label" v-for="clockInOut in payrollDetail.clockInOuts"
-                                :key="payrollDetail.clockInOuts.indexOf(clockInOut)">
-                                {{ formatDate(clockInOut.inDateTime) }}
-                                <br />
-                                <span style="font-weight:bold;">{{ clockInOut.code }}</span>
-                                <br />
-                                <span class="redColor">
-                                    {{ formatTime(clockInOut.inDateTime) }} - {{
-                                        clockInOut.outDateTime != null ?
-                                            formatTime(clockInOut.outDateTime) : ''
-                                    }}
-                                </span>
-                                <span style="font-weight:bold;">
-                                    [ {{ totalHours(clockInOut.inDateTime, clockInOut.outDateTime) }} hrs ]
-                                </span>
-                                <br />
-                                Dept : {{ clockInOut.departmentCode }}
-                            </div>
-
-                        </td>
-                    </tr>
-                </table> -->
+               
             </template>
             <template v-else>
                 <div class="neu-input__label text-center">No data exist</div>
             </template>
         </div>
-
-        <!-- <div class="neu-container neu-margin--top-20 neu-margin--bottom-20">
-                <template v-if="payrollDetails">
-                   <PayrollDetailsTable></PayrollDetailsTable>
-                </template>
-            <template v-else>
-                <div class="neu-input__label text-center">No data exist</div>
-            </template>
-        </div> -->
     </div>
 
 </template>
