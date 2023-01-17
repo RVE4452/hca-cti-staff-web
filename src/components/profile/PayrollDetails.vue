@@ -18,9 +18,8 @@
                     </neu-col>
 
                     <neu-col xxl="2" xl="2" lg="2" md="2" sm="6" cols="12" class="text-right">
-                        <neu-button color="primary"
-                            class="neu-margin--top-20 w-100 no-print"
-                            fill="raised" @click="getPayrollDetails">
+                        <neu-button color="primary" class="neu-margin--top-20 w-100 no-print" fill="raised"
+                            @click="getPayrollDetails">
                             Go
                         </neu-button>
                     </neu-col>
@@ -31,10 +30,64 @@
                 </neu-row>
             </neu-container>
         </div>
-        
-        <!-- <div class="neu-container neu-margin--top-20 neu-margin--bottom-20">
-                <template v-if="payrollDetails.length > 0">
-                <table class="neu-table">
+
+        <div class="neu-container neu-margin--top-20 neu-margin--bottom-20">
+            <template v-if="payrollDetails.length > 0">
+                <neu-table>
+                    <neu-table-row columns="{'Schedule': '50%', 'Actual': '50%'}" header="true">
+                        <neu-table-heading icon="none" slot="Schedule">
+                            <div class="tHeading">Schedule</div>
+                        </neu-table-heading>
+                        <neu-table-heading slot="Actual" icon="none" active="false">
+                            <div class="tHeading actual">Actual</div>
+                        </neu-table-heading>
+                    </neu-table-row>
+
+                    <neu-table-body>
+                        <neu-table-row columns="{'Schedule': '50%', 'Actual': '50%'}"
+                            size="small" v-for="payrollDetail in payrollDetails"
+                            :key="payrollDetails.indexOf(payrollDetail)"> 
+                            <neu-label slot="Schedule">                              
+                                <neu-container class="borderLine boxWidth">
+                                    <div class="neu-input__label" v-if="payrollDetail.departmentId != 0">
+                                        {{ formatDate(payrollDetail.start) }}
+                                        <br />
+                                        <span class="purpleColor">{{ payrollDetail.shiftCode }}
+                                            {{ formatTime(payrollDetail.start) }} - {{ formatTime(payrollDetail.end) }}
+                                        </span>
+                                        <br />
+                                        Dept : {{ payrollDetail.departmentCode }}
+                                    </div>
+                                </neu-container>
+                            </neu-label>
+
+                            <neu-label slot="Actual">
+                            <neu-container class="borderLine boxWidth">
+                                <div class="neu-input__label"
+                                    v-for="clockInOut in payrollDetail.clockInOuts"
+                                    :key="payrollDetail.clockInOuts.indexOf(clockInOut)">
+                                    {{ formatDate(clockInOut.inDateTime) }}
+                                    <br />
+                                    <span style="font-weight:bold;">{{ clockInOut.code }}</span>
+                                    <br />
+                                    <span class="redColor">
+                                        {{ formatTime(clockInOut.inDateTime) }} - {{
+                                            clockInOut.outDateTime != null ?
+                                                formatTime(clockInOut.outDateTime) : ''
+                                        }}
+                                    </span>
+                                    <span style="font-weight:bold;">
+                                        [ {{ totalHours(clockInOut.inDateTime, clockInOut.outDateTime) }} hrs ]
+                                    </span>
+                                    <br />
+                                    Dept : {{ clockInOut.departmentCode }}
+                                </div>
+                            </neu-container>
+                            </neu-label>
+                        </neu-table-row>
+                    </neu-table-body>
+                </neu-table>
+                <!-- <table class="neu-table">
                     <tr class="th_HeaderRow">
                         <th class="neu-input__label  purpleColor">Schedule</th>
                         <th class="neu-input__label  redColor">Actual</th>
@@ -73,21 +126,21 @@
 
                         </td>
                     </tr>
-                </table>
+                </table> -->
             </template>
             <template v-else>
                 <div class="neu-input__label text-center">No data exist</div>
             </template>
-        </div> -->
+        </div>
 
-        <div class="neu-container neu-margin--top-20 neu-margin--bottom-20">
+        <!-- <div class="neu-container neu-margin--top-20 neu-margin--bottom-20">
                 <template v-if="payrollDetails">
                    <PayrollDetailsTable></PayrollDetailsTable>
                 </template>
             <template v-else>
                 <div class="neu-input__label text-center">No data exist</div>
             </template>
-        </div>
+        </div> -->
     </div>
 
 </template>
@@ -97,7 +150,11 @@ import {
     NeuApp,
     NeuContent,
     NeuInput,
-    NeuButton
+    NeuButton,
+    NeuTableRow,
+    NeuTable,
+    NeuTableBody,
+    NeuTableHeading
 } from '@neutron/vue'
 import { Options, Vue } from 'vue-class-component';
 import moment from "moment";
@@ -105,7 +162,7 @@ import { mapState } from "vuex";
 import { ScheduleActualCIOD } from "@/models";
 import ErrorNotification from "@/components/shared/ErrorNotification.vue";
 import { useAppInsights } from '../../store/modules/AppInsights'
-import PayrollDetailsTable  from '../profile/PayrollDetailsTable.vue'
+// import PayrollDetailsTable  from '../profile/PayrollDetailsTable.vue'
 
 @Options({
     components: {
@@ -114,7 +171,11 @@ import PayrollDetailsTable  from '../profile/PayrollDetailsTable.vue'
         NeuApp,
         NeuContent,
         ErrorNotification,
-        PayrollDetailsTable
+        NeuTableRow,
+        NeuTable,
+        NeuTableBody,
+        NeuTableHeading
+        // PayrollDetailsTable
     },
     computed: {
         ...mapState('profile', ['profileData', 'appInsightEventData']),
@@ -135,7 +196,7 @@ export default class PayrollDetails extends Vue {
     async mounted() {
         this.getCurrentPayperiod();
 
-        if(this.profileData?.first == null || this.profileData?.first == undefined){
+        if (this.profileData?.first == null || this.profileData?.first == undefined) {
             await this.$store.dispatch('profile/getProfileDetails', '');
         }
 
@@ -263,18 +324,22 @@ export default class PayrollDetails extends Vue {
 </script>
 
 <style scoped>
-.bg-transparent{
+.bg-transparent {
     background: transparent;
 }
-.text-left{
-    text-align:left
+
+.text-left {
+    text-align: left
 }
-.text-center{
-    text-align:center
+
+.text-center {
+    text-align: center
 }
-.text-right{
+
+.text-right {
     text-align: right;
 }
+
 .neu-table,
 :host.neu-table {
     display: table;
@@ -290,8 +355,12 @@ export default class PayrollDetails extends Vue {
     padding: 20px;
 }
 
-.silverBorder {
-    border: 1px solid silver;
+.borderLine {
+    border: 1px solid #a8a8a8 !important;
+}
+.boxWidth{
+    margin: 2em 0;
+    width: 275px;
 }
 
 .purpleColor {

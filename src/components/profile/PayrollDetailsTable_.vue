@@ -41,15 +41,14 @@
     </table> -->
 
     <neu-table class="tableSection">
-        <neu-table-row columns="{'Schedule': '50%', 'Actual': '50%'}">
+        <neu-tx table-row columns="{'Schedule': '50%', 'Actual': '50%'}">
             <neu-table-heading icon="none" active="false" slot="Schedule">
                 <div class="tHeading">Schedule</div>
             </neu-table-heading>
             <neu-table-heading icon="none" active="false" slot="Actual">
                 <div class="tHeading actual">Actual</div>
             </neu-table-heading>
-        </neu-table-row>
-
+        </neu-tx>
         <neu-table-body>
             <neu-table-row columns="{'Schedule': '50%', 'Actual': '50%'}" size="small">
                 <neu-label slot="Schedule">
