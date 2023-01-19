@@ -2,7 +2,7 @@ import http from "@/store/axios";
 import { Module, ActionTree, MutationTree } from 'vuex'
 import { RootState } from "../types";
 import { AxiosError, AxiosResponse } from "axios";
-import { ORSchedule,  Event, UnavailabilityModel, DepartmentStaff, ScheduleActualCIOD, SelfScheduleDefault } from '@/models';
+import { Event, UnavailabilityModel, DepartmentStaff, ScheduleActualCIOD } from '@/models';
 import router from '@/router';
 // import store from '@/store'
 const namespaced = true
@@ -59,7 +59,7 @@ const mutations: MutationTree<Schedule> = {
     },
 
    
-    setAllMySchedules(state,schedules: ORSchedule[]) {
+    setAllMySchedules(state,schedules: any) {
         state.userSchedules = schedules;
         state.isLoading = false;
     },
@@ -616,21 +616,6 @@ const actions: ActionTree<Schedule, RootState> = {
                 router.push('/erroraccount');
             })
 
-    },
-
-    
-     saveDefaultSelfSchedules({ commit, rootState },ssdData: SelfScheduleDefault){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/DefaultSchedules`;
-
-        return http
-            .post(apiUrl, ssdData)
-            .then((res: AxiosResponse) => {
-                commit("setDefaultSelfSchedules", ssdData);
-            })
-            .catch((err: AxiosError) => {
-                console.log(err)
-                throw err;
-            });
     },
 
     
