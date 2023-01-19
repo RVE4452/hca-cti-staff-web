@@ -1,14 +1,14 @@
 <template>
 <div  class="col-12" v-if="isLoaded">     
-  <div class="bg-black-05 container-fluid neu-margin--bottom-20 pb4 pt3" >
+  <div class="container-fluid neu-margin--bottom-20 pb4 pt3" >
       <div class="row">
           <div class="col-12 neu-margin--bottom-20" v-if="showErrorMsg">                    
           <ErrorNotification  :errorMsg="errorMsg" :errorType="errorType" />
           </div>       
         <div class="col-12 neu-margin--top-20">
-          <neu-label color="primary" content="Facility" position="fixed" >
+          <neu-label content="Facility" position="fixed" >
           </neu-label>
-          <neu-input inputmode="search"
+          <neu-input 
             type="text"
             name="Facility"
             id="txtFacility"
@@ -17,7 +17,7 @@
           />
         </div>
         <div class="col-12 neu-margin--top-20">
-          <neu-label for="txtDepartment"  color="primary" content="Department" position="fixed" ></neu-label>
+          <neu-label for="txtDepartment"  content="Department" position="fixed" ></neu-label>
           <neu-input
             type="text"
             name="Department"
@@ -28,7 +28,7 @@
           />
         </div>
         <div class="col-12 neu-margin--top-20">
-          <neu-label for="txtSkill" color="primary" content="Skill" position="fixed"></neu-label>
+          <neu-label for="txtSkill" content="Skill" position="fixed"></neu-label>
           <neu-input
             type="text"
             name="Skill"
@@ -39,7 +39,7 @@
           />
         </div>
         <div class="col-12 neu-margin--top-20">
-          <neu-label for="txtShift" color="primary" content="Shift" position="fixed"></neu-label>
+          <neu-label for="txtShift" content="Shift" position="fixed"></neu-label>
           <neu-input
             type="text"
             name="Shift"

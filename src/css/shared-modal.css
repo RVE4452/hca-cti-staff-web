@@ -2,7 +2,7 @@
   font-family: "HCA-Mark";
 } */
 .readonly_text_field {
-  background-color: whitesmoke;
+  background-color: whitesmoke !important;
   border: 1px solid #d9d9d6;
   color: #1f2532;
 }
@@ -106,12 +106,7 @@ input[type="checkbox"]:before {
 .user-name {
   color: #1f2532;
 }
-.initial-name {
-  line-height: 2.5;
-  height: 33px;
-  width: 33px;
-  border-radius: 50%;
-  font-size: 13px;
+
 }
 .progress > div:nth-child(1) {
   border-top-left-radius: 10px;
