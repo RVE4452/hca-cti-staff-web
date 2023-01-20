@@ -210,7 +210,6 @@
         confirmMsgValue = "You have not submitted your shift requests. Are you sure you want to navigate away?";
         isConfirmModalVisible: boolean = false;
         profile: any = null;
-        private allocatedHours: number = 0;
         private backDate = new Date();
         private forwardDate = new Date();
         private selectedDates: Array<string | string> = [];
@@ -234,31 +233,20 @@
         isUnavailabilityAllowed!: boolean;
 
         employeeType: string = "";
-        guranteedHrs: number = 0;
-        otHrs: number = 0;
-        maxSelfScheduleHours: number = 0;
-        displayWSC: boolean = true;
-
-        reqCountWSC: number = 0;
         objCommitmentSubmit: any = {};
-        calenderStartforCSD!: Date;
         scheduleId!: string;
         weeksInSchedule: number = 4;
         currentShceduleIndex: number = 0;
         scheduleStartDate!: Date;
         scheduleEndDate!: Date;
-        isSelfScheduleAllowed: boolean = false;
         isTierOpen: boolean = false;
-        allowSelfScheduleToCommitment: boolean = false;
         needFV = true;
         isWelcomeModalVisible: boolean = false;
         isAllFilterChecked: boolean = true;
         localNextVar: any;
         navForward: any;
         navBackward: any;
-        hasSelfScheduleNeedsInPrimaryDept: boolean = false;
         isShiftTradeAllowed: boolean = false;
-        defaultSelfScheduleState: string = "";
         isNotificationSuccessModalVisible: boolean = false;
         isNotificationErrorModalVisible: boolean = false;
         successMsgValue: string = "";
@@ -883,14 +871,11 @@
         }
 
         setCalendarEvents(index: number) {
-             this.hasSelfScheduleNeedsInPrimaryDept = false;
             this.events = [];
-            this.allocatedHours = 0;
             if (this.viewFlag == 'CalView') {
                 this.currentMonthCalendarApi.removeAllEvents();
             }
             this.scheduleStatus = this.userSchedules[index].status;
-            this.isSelfScheduleAllowed = this.profileData.selfSchedule;
             this.isTierOpen = this.userSchedules[index].tierOpen;
             this.currentDate =
                 moment(this.userSchedules[index].startDate).format("ll") +
@@ -898,11 +883,7 @@
                 moment(this.userSchedules[index].endDate).format("ll");
             let count = index + 1;
 
-            if(this.scheduleStatus == "Plan Sheet")
-            {
-                this.defaultSelfScheduleState = this.userSchedules[index].defaultSelfScheduleState;
-            }
-
+           
             while (count >= index - 1) {
                 if (this.userSchedules[count] != undefined) {
                      this.userSchedules[count].events.forEach((event: Event) => {
@@ -942,16 +923,7 @@
                     });
                 }
                 count -= 1;
-            }
-
-            //--Calcuate Commitment Submit Details in UI
-            if (this.isSelfScheduleAllowed) {
-                this.calenderStartforCSD = new Date(
-                    this.userSchedules[index].startDate
-                );
-                 
-                this.scheduleId = this.userSchedules[index].id;               
-            }
+            }           
             if (this.viewFlag == 'CalView') {
                 if (this.leftNavBar) {
                     if (!this.$refs.calendarfilter.checkSchedEventsOption) {
@@ -1357,15 +1329,8 @@
             if (localStorage.getItem("sIndex") != null) {
                 this.currentShceduleIndex = Number(localStorage.getItem("sIndex"));
             }
-            
-            this.isUnavailabilityAllowed = this.profileData.isUnavailabilityAllowed;
-            this.guranteedHrs = this.profileData.guarenteedHours;
-            this.otHrs = this.profileData.otHours;
-            this.maxSelfScheduleHours = this.profileData.maxSelfScheduleHours;
+            this.isUnavailabilityAllowed = this.profile.isUnavailabilityAllowed;
             this.employeeType = this.profileData.employeeType;
-            this.displayWSC =
-                this.profileData.weekendShiftCommitment != 0 ? true : false;
-            this.reqCountWSC = this.profileData.weekendShiftCommitment;
             this.weeksInSchedule = this.profileData.weeksInSchedule;
 
             let payload = {
@@ -1474,7 +1439,7 @@
             ) {
                 this.isUnavailabilityAllowed = false;
             } else {
-                this.isUnavailabilityAllowed = this.profileData.isUnavailabilityAllowed;
+                this.isUnavailabilityAllowed = this.profile.isUnavailabilityAllowed;
             }
 
             this.calSelectedDates =  { startDate: selectInfo.start, endDate: selectInfo.end };
@@ -1567,7 +1532,7 @@
         async raiseShiftTradeViewEvent(eventDate: any, shiftTradeOfferId: any)
         {
             var payload = { 
-                username: this.profileData.username, 
+                username: this.profile.username, 
                 shiftTradeOfferId: shiftTradeOfferId,
             };
 
@@ -1777,7 +1742,7 @@
                         this.isUnavailabilityAllowed = false;
                     }
                     else {
-                        this.isUnavailabilityAllowed = this.profileData.isUnavailabilityAllowed;
+                        this.isUnavailabilityAllowed = this.profile.isUnavailabilityAllowed;
                     }
                     if (moment(event.date) > moment().add(48,'hours')) {
                         this.isShiftTradeAllowed = true;
@@ -1796,7 +1761,7 @@
                         calSelectedDates: this.calSelectedDates,
                         isSelfScheduledEvent: false,
                         assignmentDetail: !this.isShiftTradeAllowed,
-                        isSymphonyUser: this.profileData.useMySchedulerOperatingRoom? true :false
+                        isSymphonyUser: this.profile.useMySchedulerOperatingRoom? true :false
                     };
                     return;
                 }
@@ -1811,7 +1776,7 @@
                         this.isUnavailabilityAllowed = false;
                     }
                     else {
-                        this.isUnavailabilityAllowed = this.profileData.isUnavailabilityAllowed;
+                        this.isUnavailabilityAllowed = this.profile.isUnavailabilityAllowed;
                     }
 
                     this.calSelectedDates ={ startDate: eventStart, endDate: clickEventNextDate };

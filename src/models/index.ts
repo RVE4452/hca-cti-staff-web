@@ -12,8 +12,6 @@ import {DepartmentStaff} from './department-staff.model';
 import {DepartmentAssignment} from './department-assignment.model';
 import {CIOD} from './CIOD.model';
 import {ScheduleActualCIOD} from './schedule-actual-CIOD.model';
-import {SelfScheduleDefault} from './self-schedule-default.model';
-import {SelfScheduleDefaultShift} from './self-schedule-default-shift.model';
 export {
     Event,
     ORSchedule,
@@ -28,7 +26,5 @@ export {
     DepartmentStaff,
     DepartmentAssignment,
     CIOD,
-    ScheduleActualCIOD,
-    SelfScheduleDefault,
-    SelfScheduleDefaultShift
+    ScheduleActualCIOD
 }

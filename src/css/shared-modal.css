@@ -106,8 +106,6 @@ input[type="checkbox"]:before {
 .user-name {
   color: #1f2532;
 }
-
-}
 .progress > div:nth-child(1) {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
