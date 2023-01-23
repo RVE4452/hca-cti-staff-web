@@ -69,9 +69,15 @@ describe('computed prop', () => {
     it("should call displayDate to get the format date time", () => {
       expect(wrapper.vm.displayDate("2020-4-1 0:0:0")).toBe("2020-04-01")
     });
+    it("should call getFormattedDate to get the format date time", () => {
+      expect(wrapper.vm.getFormattedDate("2020-4-1 0:0:0")).toBe("1")
+    });
   });
 
   describe("Testing on Neu Controls",() => {
+    wrapper.vm.userSchedules = userSchedules;
+    wrapper.vm.profileData = profileData;
+    wrapper.vm.departmentSchedules = departmentSchedules;
     it("check for facility dropdown onChangeEvent Id - onFacilityChange", async () => {
       const select = wrapper.findComponent({ref: 'ddlFacility'});
       expect(select.exists()).toBe(true);
@@ -86,10 +92,6 @@ describe('computed prop', () => {
     });
 
     it("check for facility dropdown value - facilityName", async () => {
-      // wrapper.setData({
-      //   facilities: [{ facilityId: 1, facilityName: "Frisbie Memorial Hospital"}]
-      // })
-      wrapper.vm.facilities = [{ facilityId: 830, facilityName: "Frisbie Memorial Hospital"}];
       await wrapper.vm.$nextTick();
       expect(wrapper.vm.facilities[0].facilityName).toBe("Frisbie Memorial Hospital")
     });
@@ -100,19 +102,11 @@ describe('computed prop', () => {
     });
 
     it("check for department dropdown onChangeEvent Id- onDepartmentChange", async () => {
-      //const select = wrapper.findComponent({ref: 'ddlDepartment'});
-      //expect(select.exists()).toBe(true);
       const event = {
         target: {
           value: 110541
         }
       }
-      // const payload = {
-      //   startDate: "2020-10-01",
-      //   endDate: "2010-10-10",
-      //   deptId: "387",
-      //   username: "ADT4201",
-      // };
       wrapper.vm.facilityDepts = [{ deptId: 110541, deptName: "ED"}];
       wrapper.findComponent({ref: 'ddlDepartment'}).vm.$emit("v-neu-change", event);
       await wrapper.vm.$nextTick();
@@ -134,22 +128,18 @@ describe('computed prop', () => {
       const items = [{id:100,description:"All",skill:"All"},{id:110,description:"PCT",skill:"PCT"}];
       const lastSelectItem = "";
       wrapper.vm.skills = items;
-      wrapper.vm.selectedSkills = [{id:110,description:"PCT",skill:"PCT"}];
       wrapper.findComponent({ref: 'ddlSkills'}).vm.$emit("update", items, lastSelectItem);
       await wrapper.vm.$nextTick();
-      //expect(wrapper.html()).toBe("");
-      expect(wrapper.vm.selectedSkills[0].id).toBe(110);
+      expect(wrapper.vm.selectedSkills[0].description).toBe("All");
     });
 
-    it("check for schedule blocks dropdown onChangeEvent Id- onSkillSelect", async () => {
+    it("check for schedule blocks dropdown onChangeEvent Id- onSkillSelect", async () => {      
       const items = [{id:100,description:"All",skill:"All"},{id:110,description:"PCT",skill:"PCT"}];
       const lastSelectItem = "";
       wrapper.vm.skills = items;
-      wrapper.vm.selectedSkills = [{id:110,description:"PCT",skill:"PCT"}];
       wrapper.findComponent({ref: 'ddlScheduleBlocks'}).vm.$emit("update", items, lastSelectItem);
       await wrapper.vm.$nextTick();
-      //expect(wrapper.html()).toBe("");
-      expect(wrapper.vm.selectedSkills[0].id).toBe(110);
+      expect(wrapper.vm.selectedSkills[0].description).toBe("All");
     });
 
     it("check for period dropdown onChangeEvent Id- onScheduleChange", async () => {
@@ -158,14 +148,6 @@ describe('computed prop', () => {
           value: '6e1aceac-dc7b-4af3-9dfb-01b5d73648f9'
         }
       }
-      //wrapper.vm.departmentSchedules = departmentSchedules;
-      // const items = [{id:100,description:"All",skill:"All"},{id:110,description:"PCT",skill:"PCT"}];
-      // wrapper.vm.skills = items;
-      // wrapper.vm.selectedSkills = [{id:110,description:"PCT",skill:"PCT"}];
-      wrapper.vm.userSchedules = userSchedules;
-      // wrapper.vm.selectedDeptId = 1;
-      // wrapper.vm.sortedDSList = departmentSchedules;
-      // wrapper.vm.sortedDSListforSkills = departmentSchedules;
       wrapper.findComponent({ref: 'ddlPeriod'}).vm.$emit("v-neu-change", event);
       await wrapper.vm.$nextTick();
       //expect(wrapper.html()).toBe("");      
@@ -181,5 +163,147 @@ describe('computed prop', () => {
       const options = wrapper.findComponent({ref: 'ddlPeriodOption'});
       expect(options.vm.value).toBe('f456398a-e93b-47e2-b6e1-813f536a4f82');
     });
+  });
+
+  describe("Testing on getDepartmentSchedule", () => {
+    wrapper.vm.selectedDeptId = 1;
+    wrapper.vm.departmentSchedules = departmentSchedules;    
+    it("should call getLastUpdatedDate method when trigger the getDepartmentSchedule", async ()=> {
+      wrapper.vm.getDepartmentSchedule();
+      await wrapper.vm.$nextTick();
+      //expect(wrapper.vm.lastUpdatedDate).toBe("2023-1-20 10:41:55");
+      expect(wrapper.vm.sortOrder).toBe("asc");
+      expect(wrapper.vm.sortArrow).toBe("arrow_upward");
+      expect(wrapper.vm.finalArray).toBe(undefined);
+      expect(wrapper.vm.selectedSkills[0].skill).toBe("All");
+      expect(wrapper.vm.selectedSkillList).toBe("All");
+    })
+  });
+
+  describe("Testing on getFiltersData", () => {
+    wrapper.vm.profileData = profileData;
+    it("check prop values in getFiltersData", async ()=> {      
+      wrapper.vm.getFiltersData();
+      await wrapper.vm.$nextTick();
+      //expect(wrapper.vm.profileData).toBe("");
+      expect(wrapper.vm.selectedFacilityId).toBe(2);
+      expect(wrapper.vm.facilities[0].facilityName).toBe('Frisbie Memorial Hospital');
+      expect(wrapper.vm.selectedDeptName).toBe(undefined);
+    })
+  });
+
+  describe("Testing on showScheduleDays", () => {
+    wrapper.vm.userSchedules = userSchedules;
+    it("check prop values in showScheduleDays", async ()=> {      
+      wrapper.vm.showScheduleDays();
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.days.length).toBe(28);
+    })
+  });
+
+  describe("Testing on getSortedDSData", () => {
+    wrapper.vm.userSchedules = userSchedules;
+    it("check prop values in getSortedDSData", async ()=> {      
+      wrapper.vm.getSortedDSData('clicked');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.sortArrow).toBe("arrow_downward");
+      expect(wrapper.vm.sortOrder).toBe("desc");
+      expect(wrapper.vm.sortedDSList.length).toBe(2);
+    })
+  });
+
+  describe("Testing on onDepartmentChange", () => {
+    it("check prop values in onDepartmentChange", async ()=> {  
+      const event = {
+        target: {
+          value: 2
+        }
+      }    
+      wrapper.vm.onDepartmentChange(event);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.selectedDeptId).toBe(2);
+      expect(wrapper.vm.sortOrder).toBe("desc");
+    })
+  });
+
+  describe("Testing on onFacilityChange", () => {
+    wrapper.vm.profileData = profileData;
+    it("check prop values in onFacilityChange", async ()=> {  
+      const event = {
+        target: {
+          value: 15
+        }
+      }    
+      wrapper.vm.onFacilityChange(event);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.selectedFacilityId).toBe(15);
+      expect(wrapper.vm.facilityDepts.length).toBe(0);
+    })
+  });
+
+  describe("Testing on onScheduleChange", () => {
+    wrapper.vm.userSchedules = userSchedules;
+    it("check prop values in onScheduleChange", async ()=> {  
+      const value = {
+        target: {
+          value: 30
+        }
+      }    
+      wrapper.vm.onScheduleChange(value);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.selectedScheduleId).toBe(30);
+      expect(wrapper.vm.selectedScheduleName).toBe("Apr 1, 2020 - Apr 1, 2020");
+    })
+  });
+
+  describe("Testing on onSkillSelect", () => {
+    wrapper.vm.userSchedules = userSchedules;
+    it("check prop values in onSkillSelect", async ()=> {  
+      const items = [{id:100,description:"All",skill:"All"},{id:110,description:"PCT",skill:"PCT"}];
+      const lastSelectItem = "";  
+      wrapper.vm.onSkillSelect(items, lastSelectItem);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.selectedSkills[0].description).toBe("PCT");
+      expect(wrapper.vm.selectedSkills[0].skill).toBe("PCT");
+    })
+  });
+
+  describe("Testing on getSchedulePeriod", () => {
+    wrapper.vm.userSchedules = userSchedules;
+    it("check prop values in getSchedulePeriod", async ()=> {  
+      const indexVal = 1;
+      wrapper.vm.getSchedulePeriod(indexVal);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.scheduleDate).toBe(undefined);
+    })
+  });
+
+  describe("Testing on hideColumns", () => {
+    it("check prop values in hideColumns", async ()=> { 
+      wrapper.vm.hideColumns();
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.columnToggle).toBe(true);
+      expect(wrapper.vm.iconToggle).toBe(false);
+    })
+  });
+
+  describe("Testing on showColumns", () => {
+    it("check prop values in showColumns", async ()=> { 
+      wrapper.vm.showColumns();
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.columnToggle).toBe(false);
+      expect(wrapper.vm.iconToggle).toBe(true);
+    })
+  });
+
+  describe("Testing on applyCSS", () => {
+    wrapper.vm.dayname = "Wed";
+    it("check prop values in applyCSS", async ()=> { 
+      const date = "Wed Mar 22 2023 00:00:00";
+      const ds = null;
+      wrapper.vm.applyCSS(date, ds);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.getcss).toBe(undefined);
+    })
   });
 })

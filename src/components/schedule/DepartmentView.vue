@@ -406,7 +406,7 @@
             localStorage.setItem("selDepId", this.selectedDeptId?.toString());
             localStorage.removeItem("selSkills");
             this.selectedFacilityName =  this.facilities?.filter((x:any)=> x.facilityId == this.selectedFacilityId)[0]?.facilityName;
-            this.selectedDeptName = this.facilityDepts?.filter((y:any)=> y.deptId == this.selectedDeptId)[0].deptName;
+            this.selectedDeptName = this.facilityDepts?.filter((y:any)=> y.deptId == this.selectedDeptId)[0]?.deptName;
             await this.getDepartmentSchedule();
         }
 
@@ -464,15 +464,6 @@
                     this.sortArrow = 'arrow_upward';
                 }
             }
-        }
-        // deselect option
-        reset() {
-            this.selectedSkills = [] // reset
-            this.sortedDSList = this.sortedDSListforSkills;
-        }
-        // select option from parent component
-        selectFromParentComponent() {
-            //this.selectedSkills = _.unionWith(this.selectedSkills, [this.skills[0]], _.isEqual)
         }
 
         getSchedulePeriod(indexVal:number) {
