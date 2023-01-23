@@ -1,8 +1,8 @@
 <template>
    <neu-container class= "desktop-view">
-        <neu-sub-left-nav  color="plain" side="left" name="profile">
-            <neu-input type="text" readonly="true"  enterkeyhint="search" :value="userName" id="txtUsername" >
-            </neu-input>
+        <neu-sub-left-nav  color="plain" side="left" :name="userName">
+            <!-- <neu-input type="text" readonly="true"  enterkeyhint="search" :value="userName" id="txtUsername" >
+            </neu-input> -->
             
             <!-- Nav: Employee Details Starts -->
             <neu-item :selected="isSelected('EmpDtls')" class="pl-3" @click="routeNavigation('EmployeeDetails')">
@@ -49,8 +49,8 @@
             </div>
 
             <div v-else-if="isSelected('PayrollDtls')">
-            <!-- <PayrollDetails /> -->
-                <neu-lable>PayrollDetails</neu-lable>
+                <PayrollDetails />
+                <!-- <neu-lable>PayrollDetails</neu-lable> -->
             </div>
                             
             </main>
@@ -63,7 +63,7 @@
         import { mapState } from "vuex";
         import EmploymentDetails from "./EmploymentDetails.vue";
         // import SchedulingPref from "./SchedulingPref.vue";
-        // import PayrollDetails from "./PayrollDetails.vue";
+        import PayrollDetails from "./PayrollDetails.vue";
         export default defineComponent({
             name: 'ProfileComponent',
             data : () =>{
@@ -93,7 +93,7 @@
                 // SchedulingPref, 
                 // SMSPref, 
                 // NotificationMgmt,
-                //  PayrollDetails,
+                 PayrollDetails,
                 //  SaveMsgPopUp
                  },
             computed: {

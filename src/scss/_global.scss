@@ -32,3 +32,30 @@ body {
 .row-align-center {
   align-items: center !important;
 }
+.neu-table-heading.sc-neu-table-heading, .neu-table-heading.sc-neu-table-heading-h,
+.neu-table-row.sc-neu-table-row, .neu-table-row.sc-neu-table-row-h,
+.neu-table-heading.sc-neu-table-heading:hover, .neu-table-heading.sc-neu-table-heading-h:hover,
+.neu-table-row.sc-neu-table-row:hover, .neu-table-row.sc-neu-table-row-h:hover{
+    background: none !important;
+    cursor: auto !important;
+}
+.tHeading{
+    text-align: center;
+    width: 100%;
+}
+.tHeading.actual,
+.text-red{
+    color: red
+}
+.tableSection .neu-container.sc-neu-container-h{
+    border: 1px solid #a8a8a8 !important;
+    font-size: 1em;
+    margin: 1em auto;
+    min-width: 225px;
+}
+.text-bold{
+    font-weight: bold;
+}
+.text-black{
+    color: #a8a8a8;
+}

@@ -7,7 +7,7 @@
       <neu-row slot="start" class="row-align-center d-md-none" nav>
         <neu-link nav aria-label="Title Link to Homepage">
           <neu-title class="neu-text-center neu-text-md-left" color="plain-0">
-            Schedule Management
+            Staff Management
           </neu-title>
         </neu-link>
       </neu-row>
@@ -15,7 +15,7 @@
       <neu-row slot="start" class="row-align-center" nav>
         <neu-link nav aria-label="Title Link to Homepage" class="d-none d-md-block">
           <neu-title class="neu-text-center neu-text-md-left" color="plain-0">
-            Schedule Management
+            Staff Management
           </neu-title>
         </neu-link>
 

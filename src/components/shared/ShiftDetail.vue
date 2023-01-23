@@ -20,13 +20,11 @@
                 :key="shiftMember.username"
               >
                 <div class="d-flex">
-                  <div class="col-auto pa0">
-                    <h6 class="bg-gray tc white mr2 initial-name">
-                      {{ shiftMember.firstName[0] + shiftMember.lastName[0] }}
-                    </h6>
+                  <div>                          
+                       <neu-avatar color="gray-60" :initials="shiftMember.firstName[0] + shiftMember.lastName[0]"></neu-avatar>                              
                   </div>
-                  <div class="col-auto pa0">
-                    <div class="row">
+                  <div >
+                    <div>
                       <div class="col-12" v-bind:title="shiftMember.name"><span class="fw6">{{shiftMember.name}}</span></div>
                       <div class="col-12"><span class="gray">{{shiftMember.skill}}</span></div>
                     </div>

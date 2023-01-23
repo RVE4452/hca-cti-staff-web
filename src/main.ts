@@ -1,4 +1,4 @@
-
+import Vue from 'vue'
 import "./router/componentHooks" // <-- Needs to be first
 import { createApp } from "vue";
 import App from './App.vue';
