@@ -65,10 +65,10 @@ jobs:
         node-version: ${{ env.NODE_VERSION }}
 
     - name: 'Install Web'
-      run: npm --prefix install
+      run: npm install
 
     - name: 'Build Web'
-      run: npm --prefix run build:prod 
+      run: npm run build:prod 
 
     - uses: actions/upload-artifact@v3
       with:
