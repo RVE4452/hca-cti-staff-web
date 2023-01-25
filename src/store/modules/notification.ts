@@ -29,7 +29,7 @@ const state: Notification = {
     //actions
     const actions: ActionTree<Notification, RootState> = {
      getAllNotifications({commit},userId: string) {
-        const api = `${process.env.VUE_APP_BASE_API_URL}/Notifications/${userId}`;
+        const api = `${process.env.VUE_APP_APIURL}/Notifications/${userId}`;
 
         return http
             .get(api)
@@ -44,7 +44,7 @@ const state: Notification = {
 
    
     statusUpdate(notification: any){
-        const api = `${process.env.VUE_APP_BASE_API_URL}/Notifications`;
+        const api = `${process.env.VUE_APP_APIURL}/Notifications`;
         return http
             .post(api, notification.data)
             .then((res: any) => {
@@ -59,7 +59,7 @@ const state: Notification = {
     
     deleteNotification({commit},notificationId: string){
         
-        const api = `${process.env.VUE_APP_BASE_API_URL}/Notifications/${notificationId}`;
+        const api = `${process.env.VUE_APP_APIURL}/Notifications/${notificationId}`;
 
         return http
             .delete(api)

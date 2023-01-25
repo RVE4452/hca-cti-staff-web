@@ -195,7 +195,7 @@ const mutations: MutationTree<Schedule> = {
     //actions
 const actions: ActionTree<Schedule, RootState> = {
     getAllUserSchedules({ commit, rootState },payload: any){
-        const api = `${process.env.VUE_APP_BASE_API_URL}/Schedules/${payload.username}?index=${payload.index}`
+        const api = `${process.env.VUE_APP_APIURL}/Schedules/${payload.username}?index=${payload.index}`
 
         return http
             .get(api)
@@ -210,7 +210,7 @@ const actions: ActionTree<Schedule, RootState> = {
     },
    
      getAssignmentDetail({ commit, rootState }, payload: any) {
-        const api = `${process.env.VUE_APP_BASE_API_URL}/Schedules/Assignments/${payload.id}/${payload.username}`
+        const api = `${process.env.VUE_APP_APIURL}/Schedules/Assignments/${payload.id}/${payload.username}`
 
         return http
             .get(api)
@@ -224,7 +224,7 @@ const actions: ActionTree<Schedule, RootState> = {
     },
     
      GetRequestDetails({ commit, rootState }, payload: any) {
-        const api = `${process.env.VUE_APP_BASE_API_URL}/Schedules/Requests/${payload.id}/${payload.username}`;
+        const api = `${process.env.VUE_APP_APIURL}/Schedules/Requests/${payload.id}/${payload.username}`;
 
         return http
             .get(api)
@@ -238,7 +238,7 @@ const actions: ActionTree<Schedule, RootState> = {
     },
 
     GetSelfScheduleNeedsDetails({ commit, rootState },payload: any) {
-        const api = `${process.env.VUE_APP_BASE_API_URL}/Schedules/SelfScheduleNeeds/${payload.date}/${payload.username}?departmentIds=${payload.departmentIds}`;
+        const api = `${process.env.VUE_APP_APIURL}/Schedules/SelfScheduleNeeds/${payload.date}/${payload.username}?departmentIds=${payload.departmentIds}`;
 
         return http
             .get(api)
@@ -254,7 +254,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
    
     GetPendingShiftDetails({ commit, rootState },payload) {
-        const api = `${process.env.VUE_APP_BASE_API_URL}/Schedules/PendingShifts/${payload.id}/${payload.username}`;
+        const api = `${process.env.VUE_APP_APIURL}/Schedules/PendingShifts/${payload.id}/${payload.username}`;
 
         return http
             .get(api)
@@ -268,7 +268,7 @@ const actions: ActionTree<Schedule, RootState> = {
     },
 
     GetNeedsDetails({ commit, rootState }, payload: any) {
-        const api = `${process.env.VUE_APP_BASE_API_URL}/Schedules/Needs/${payload.date}/${payload.id}`;
+        const api = `${process.env.VUE_APP_APIURL}/Schedules/Needs/${payload.date}/${payload.id}`;
 
         return http
             .get(api)
@@ -282,7 +282,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      WithdrawEvent(payload:any) {
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/OpenNeedRequest/${payload.needid}?assignmentId=${payload.assignementid}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/OpenNeedRequest/${payload.needid}?assignmentId=${payload.assignementid}`;
 
         return http
             .delete(apiUrl)
@@ -296,7 +296,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      WithdrawRequestEvent({ commit, rootState },requestId: string){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/Requests/${requestId}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Requests/${requestId}`;
 
         return http
             .delete(apiUrl)
@@ -309,7 +309,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      getShiftTradeRequested({ commit, rootState }, payload: any){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/ShiftTradeRequested/${payload.shiftTradeOfferId}/${payload.username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/ShiftTradeRequested/${payload.shiftTradeOfferId}/${payload.username}`;
 
         return http
             .get(apiUrl)
@@ -324,7 +324,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      ScheduleOpenNeedRequest({ commit, rootState },payload){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/OpenNeedRequest`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/OpenNeedRequest`;
 
         return http
             .post(apiUrl, payload)
@@ -338,7 +338,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      getOpenNeeds({ commit, rootState },data: any){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/OpenNeeds/${data.selectedDate}/${data.username}/${data.includePartials}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/OpenNeeds/${data.selectedDate}/${data.username}/${data.includePartials}`;
 
         return http
             .get(apiUrl)
@@ -356,7 +356,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      SavePendingShiftDetails({ commit, rootState },psData: any[]){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/PendingShifts`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/PendingShifts`;
 
         return http
             .post(apiUrl, psData)
@@ -371,7 +371,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      RequestSchedule({ commit, rootState },psData){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/Requests`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Requests`;
 
         return http
             .post(apiUrl, psData)
@@ -386,7 +386,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      DeletePendingShiftDetails({ commit, rootState },payload){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/PendingShifts/${payload.id}/${payload.username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/PendingShifts/${payload.id}/${payload.username}`;
 
         return http
             .delete(apiUrl)
@@ -400,7 +400,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      SaveUnavailabilityDetails({ commit, rootState },uaData: UnavailabilityModel[]) {
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/Unavailabilities`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Unavailabilities`;
 
         return http
             .post(apiUrl, uaData)
@@ -415,7 +415,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      DeleteUnavailabilityDetails({ commit, rootState },id: string){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/Unavailabilities/${id}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Unavailabilities/${id}`;
 
         return http
             .delete(apiUrl)
@@ -429,7 +429,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      getShiftTradeOffer({ commit, rootState },payload: any) {
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/ShiftTradeOffers/${payload.shiftTradeOfferId}/${payload.username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/ShiftTradeOffers/${payload.shiftTradeOfferId}/${payload.username}`;
 
         return http
             .get(apiUrl)
@@ -443,7 +443,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      createShiftTradeOffers({ commit, rootState },payload: any) {
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/ShiftTradeOffers`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/ShiftTradeOffers`;
 
         return http
             .post(apiUrl, payload)
@@ -457,7 +457,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      deleteShiftTradeOffer({ commit, rootState },payload: any){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/ShiftTradeOffers/${payload.shiftTradeOfferId}/${payload.username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/ShiftTradeOffers/${payload.shiftTradeOfferId}/${payload.username}`;
 
         return http
             .delete(apiUrl)
@@ -470,7 +470,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      acceptShiftTradeOffer({ commit, rootState },payload: object){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/ShiftTradeOffers`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/ShiftTradeOffers`;
 
         return http
             .post(apiUrl, payload)
@@ -483,7 +483,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      getPotetialTradeAssignment({ commit, rootState },payload: any){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/ShiftTradeOffers/PotentialTrades/${payload.assignmentId}?currentPage=${payload.currentPage}&pageSize=6&autoApprovableOnly=${payload.autoApprovableOnly}&searchFirstNameLike=${payload.searchFirstNameLike}&searchLastNameLike=${payload.searchLastNameLike}&searchStartDate=${payload.searchStartDate}&searchEndDate=${payload.searchEndDate}&primaryDeptOnly=${payload.primaryDeptOnly}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/ShiftTradeOffers/PotentialTrades/${payload.assignmentId}?currentPage=${payload.currentPage}&pageSize=6&autoApprovableOnly=${payload.autoApprovableOnly}&searchFirstNameLike=${payload.searchFirstNameLike}&searchLastNameLike=${payload.searchLastNameLike}&searchStartDate=${payload.searchStartDate}&searchEndDate=${payload.searchEndDate}&primaryDeptOnly=${payload.primaryDeptOnly}`;
 
         return http
             .get(apiUrl)
@@ -497,7 +497,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      withdrawPotentialTrade({ commit, rootState },shiftTradeOfferId: string){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/ShiftTradeOffers/${shiftTradeOfferId}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/ShiftTradeOffers/${shiftTradeOfferId}`;
 
         return http
             .delete(apiUrl)
@@ -512,7 +512,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
    
      SubmitCommitmentDetails({ commit, rootState },scheduleId: string){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/PendingShifts/${scheduleId}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/PendingShifts/${scheduleId}`;
 
         return http
             .post(apiUrl)
@@ -527,7 +527,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
    
      SaveSelfScheduleAsAssignment({ commit, rootState },assignmentData: any[]){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/Assigment`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Assigment`;
 
         return http
             .post(apiUrl, assignmentData)
@@ -542,7 +542,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
    
      DeleteSelfScheduleAssignment({ commit, rootState },assignmentId: string){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/Assigment/${assignmentId}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Assigment/${assignmentId}`;
 
         return http
             .delete(apiUrl)
@@ -556,7 +556,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      GetScheduleAssignmentDetail({ commit, rootState },id: string){
-        const api = `${process.env.VUE_APP_BASE_API_URL}/Schedules/Assignments/${id}`
+        const api = `${process.env.VUE_APP_APIURL}/Schedules/Assignments/${id}`
 
         return http
             .get(api)
@@ -571,7 +571,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      getDepartmentSchedule({ commit, rootState },payload: any){
-        const api = `${process.env.VUE_APP_BASE_API_URL}/Schedules/DepartmentSchedules/${payload.deptId}/${payload.startDate}/${payload.endDate}/${payload.username}`;
+        const api = `${process.env.VUE_APP_APIURL}/Schedules/DepartmentSchedules/${payload.deptId}/${payload.startDate}/${payload.endDate}/${payload.username}`;
 
         return http
             .get(api)
@@ -588,7 +588,7 @@ const actions: ActionTree<Schedule, RootState> = {
     // ACTIONS
     
      getPayrollDetails({ commit, rootState },payload: any) {
-        const api = `${process.env.VUE_APP_BASE_API_URL}/Schedules/PayrollDetails/${payload.startDate}/${payload.endDate}/${payload.username}`;
+        const api = `${process.env.VUE_APP_APIURL}/Schedules/PayrollDetails/${payload.startDate}/${payload.endDate}/${payload.username}`;
 
         return http
             .get(api)
@@ -604,7 +604,7 @@ const actions: ActionTree<Schedule, RootState> = {
     // ACTIONS
    
      getDefaultSelfSchedules({ commit, rootState },payload){
-        const api = `${process.env.VUE_APP_BASE_API_URL}/Schedules/DefaultSchedules/${payload.username}`;
+        const api = `${process.env.VUE_APP_APIURL}/Schedules/DefaultSchedules/${payload.username}`;
 
         return http
             .get(api)
@@ -620,7 +620,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      UpdateDefaultSelfScheduleAppliedStatus({ commit, rootState },scheduleId: string){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Schedules/DefaultSchedules/DefaultSelfScheduleApplied/${scheduleId}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/DefaultSchedules/DefaultSelfScheduleApplied/${scheduleId}`;
 
         return http
             .post(apiUrl)
@@ -633,7 +633,7 @@ const actions: ActionTree<Schedule, RootState> = {
     },
    
      getORAssignmentDetails({ commit, rootState },payload: any){
-        const api = `${process.env.VUE_APP_BASE_API_URL}/Symphony/Procedures/${payload.date}/${payload.username}`
+        const api = `${process.env.VUE_APP_APIURL}/Symphony/Procedures/${payload.date}/${payload.username}`
 
         return http
             .get(api)

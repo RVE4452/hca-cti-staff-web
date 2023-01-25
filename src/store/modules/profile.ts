@@ -129,7 +129,7 @@ const state: Profile = {
     // ACTIONS
      const actions: ActionTree<Profile, RootState> = {
      getProfileDetails({commit},username: string){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/${username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/${username}`;
         return http
             .get(apiUrl)
             .then((res) => {
@@ -155,7 +155,7 @@ const state: Profile = {
 
     
     getSchedulingPrefDetails({commit},username: string){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/Schedule/${username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/Schedule/${username}`;
 
         return http
             .get(apiUrl)
@@ -170,7 +170,7 @@ const state: Profile = {
 
     
     saveSchedulingPrefDetails({commit},payload:any){        
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/Schedule/${payload.username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/Schedule/${payload.username}`;
 
         return http
             .post(apiUrl, payload.schPrefData)
@@ -185,7 +185,7 @@ const state: Profile = {
 
     
     getSMSPrefDetails({commit},username: string){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/Sms/${username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/Sms/${username}`;
 
         return http
             .get(apiUrl)
@@ -200,7 +200,7 @@ const state: Profile = {
 
     
     saveSMSPrefDetails({commit}, payload:any) {
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/sms/${payload.username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/sms/${payload.username}`;
 
         return http
             .post(apiUrl, payload.smsData)
@@ -215,7 +215,7 @@ const state: Profile = {
 
     
     activateMobileNumber({commit}, payload:any){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/Sms/Activate/${payload.username}?phoneNumber=${payload.phoneNumber}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/Sms/Activate/${payload.username}?phoneNumber=${payload.phoneNumber}`;
 
         return http
             .get(apiUrl)
@@ -230,7 +230,7 @@ const state: Profile = {
 
     
     reactivateMobileNumber({commit}, payload:any){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/Sms/Reactivate/${payload.username}?phoneNumber=${payload.phoneNumber}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/Sms/Reactivate/${payload.username}?phoneNumber=${payload.phoneNumber}`;
 
         return http
             .get(apiUrl)
@@ -244,7 +244,7 @@ const state: Profile = {
     },
 
     validateActivationCode({commit}, payload:any) {
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/Sms/Validate/${payload.username}?activationCode=${payload.activationCode}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/Sms/Validate/${payload.username}?activationCode=${payload.activationCode}`;
 
         return http
             .get(apiUrl)
@@ -258,7 +258,7 @@ const state: Profile = {
     },
 
     getNotificationPrefDetails({commit}, username: string) {
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/Notification/${username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/Notification/${username}`;
 
         return http
             .get(apiUrl)
@@ -272,7 +272,7 @@ const state: Profile = {
     },
 
     saveNotificationPrefDetails({commit}, payload:any ) {
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/Notification/${payload.username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/Notification/${payload.username}`;
 
         return http
             .post(apiUrl, payload.ntfData)
@@ -286,7 +286,7 @@ const state: Profile = {
     },
     
     updateWelcomePopupstatus({commit}, payload:any) {
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/UpdateWelcomePopupStatus`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/UpdateWelcomePopupStatus`;
 
         return http
             .post(apiUrl, payload)
@@ -300,7 +300,7 @@ const state: Profile = {
     },
 
      checkStaffManager({commit}, impersonateUsername: string){
-         const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/CheckStaffManager/${impersonateUsername}`;
+         const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/CheckStaffManager/${impersonateUsername}`;
  
          return http
              .get(apiUrl)
