@@ -72,7 +72,7 @@
               <neu-button color="primary"   name="cancel" type="reset" value="Cancel" fill="flat">
                 Cancel
                 </neu-button>
-                <neu-button color="green-50"  name="submit" type="submit"  fill="raised">
+                <neu-button color="green-50"  name="submit" type="submit"  fill="raised" @click="saveProficiency()">
                 Save
                 </neu-button>
             </div>
@@ -96,6 +96,7 @@ export default defineComponent({
             ProficienceData: [] as any,
             proficiency:'',
             proficinecyDetails:'',
+            enableSave :false,
       }
   },
   props: {},
@@ -156,6 +157,7 @@ export default defineComponent({
   methods: {
       // computed
       selectionChange(ev:any){
+        this.enableSave = true;
         if(ev.detail.value ==="1"){
           this.proficiency = ev.detail.value;
           this.proficinecyDetails = "An individual with a level of experience and clinical judgement gained in a classroom or orientation but is limited in caring for patients on the unit. Will have questions on clinical conditions and is expected to need consultation from a more advanced nurse with decision-making when patients are unstable or under rapidly changing conditions."
@@ -167,52 +169,24 @@ export default defineComponent({
           this.proficinecyDetails = "An individual recognized within the organization as a person for recognizing early clinical changes and for making wise clinical judgements when difficult questions arise regarding patient care, particularly when unusual, complex, emergent, or high-risk situations require clinical reasoning and rapid intervention."
         }
       },
-      // getName() {
-      //     return (this.profileData.first + " " + this.profileData.last);
-      // },
-      // getFullHomeAddress() {
-      //     let fulladdress = "";
-      //     fulladdress =
-      //         this.profileData.address1 != "" ? this.profileData.address1 + "," : "";
-      //     fulladdress =
-      //         this.profileData.address2 != ""
-      //             ? fulladdress != ""
-      //                 ? fulladdress + " " + this.profileData.address2 + ","
-      //                 : this.profileData.address2 + ","
-      //             : fulladdress;
-      //     fulladdress =
-      //         this.profileData.city != ""
-      //             ? fulladdress != ""
-      //                 ? fulladdress + " " + this.profileData.city
-      //                 : this.profileData.city
-      //             : fulladdress;
-      //     fulladdress =
-      //         this.profileData.state != ""
-      //             ? fulladdress != ""
-      //                 ? fulladdress + " " + this.profileData.state
-      //                 : this.profileData.state
-      //             : fulladdress;
-      //     fulladdress =
-      //         this.profileData.zip != ""
-      //             ? fulladdress != ""
-      //                 ? fulladdress + " " + this.profileData.zip
-      //                 : this.profileData.zip
-      //             : fulladdress;
-      //     return fulladdress;
-      // },
       
-      // getPrimarySkill() {
-      //     let primarySkill = "";
-      //     if (typeof this.profileData.skills !== "undefined") {
-      //         for (var i = 0; i < this.profileData.skills.length; i++) {
-      //             if (this.profileData.skills[i].primary === true) {
-      //                 primarySkill = this.profileData.skills[i].description;
-      //                 break;
-      //             }
-      //         }
-      //     }
-      //     return primarySkill;
-      // },
+      async saveProficiency(){
+        if (this.enableSave) {
+            var payload = {
+                ...this.profileData,
+                proficiency: this.proficiency,
+            };
+            await this.$store.dispatch('schedule/getPayrollDetails', payload)
+                .then((res: any) => {
+
+                })
+                .catch((err: any) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+        }
+      },
   }
 })
 </script>
