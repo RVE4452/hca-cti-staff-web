@@ -1,0 +1,118 @@
+name: DEV
+  
+env:
+  # Build Variables
+  NODE_VERSION: '16'  
+
+  # Environment Variables
+  APP_VERSION: 0.2.0.0
+  IDP_URL: https://pfqa.idf.medcity.net
+  IDP_LOGOUT: https://pfqa.idf.medcity.net/SSOLogout/logout.jsp
+  IDP_CLIENT_ID: StaffPortal
+  IDP_REDIRECT_URL: https://localhost:8080/callback
+  IDP_SILENT_REDIRECT_URL: https://localhost:8080/oidc-popup-callback
+  API_URL: https://scheduler-api-qa-hws-facsched-qa.apps.np2.paas.medcity.net/api
+
+  # Deploy Variables
+  AZURE_CLIENT_ID: 53c01bcf-a767-487b-9941-96cd33df8284
+  AZURE_TENANT_ID: 335a6d75-c3eb-4b1a-ac08-d49338816ca0
+  AZURE_SUBSCRIPTION_ID: b55ff9cd-3cdd-4713-93d4-796b4e626204
+  AZURE_APP_NAME: ht-fps-cti-dev-appservice-scheduler-portal
+
+on:
+  workflow_dispatch:
+
+permissions:
+      id-token: write
+      contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: development
+    
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+
+    steps:
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@master
+
+    - name: Determine tag
+      if: env.TAG == ''
+      run: |
+        echo "TAG=${GITHUB_SHA}" | tee -a $GITHUB_ENV
+    
+    - id: tag
+      run: echo "::set-output name=tag::${{ env.TAG }}"
+
+    - name: Get short SHA
+      id: short_sha
+      run: 
+        echo "::set-output name=sha8::$(echo ${GITHUB_SHA} | cut -c1-8)"
+    
+    - id: tag
+      run: echo "::set-output name=tag::${{steps.short_sha.outputs.sha8}}"
+
+    - name: 'Update Web Environment Variable File'
+      shell: bash
+      run: |
+        sed -i 's,##APP_VER##,${{ env.APP_VERSION }}.${{steps.short_sha.outputs.sha8}},g' .env.production
+        sed -i 's,##IDP_URL##,${{ env.IDP_URL }},g' .env.production
+        sed -i 's,##IDP_LOGOUT##,${{ env.IDP_LOGOUT }},g' .env.production
+        sed -i 's,##IDP_CLIENT_ID##,${{ env.IDP_CLIENT_ID }},g' .env.production
+        sed -i 's,##IDP_REDIRECT_URL##,${{ env.IDP_REDIRECT_URL }},g' .env.production
+        sed -i 's,##IDP_SILENT_REDIRECT_URL##,${{ env.IDP_SILENT_REDIRECT_URL }},g' .env.production
+        sed -i 's,##API_URL##,${{ env.API_URL }},g' .env.production
+
+    - name: 'Setup NPM ${{ env.NODE_VERSION }}'
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: 'Install Web'
+      run: npm --prefix install
+
+    - name: 'Build Web'
+      run: npm --prefix run build:prod 
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Web-Artifact-${{ env.APP_VERSION }}-${{steps.short_sha.outputs.sha8}}
+        path: dist
+
+  release:
+    runs-on: [self-hosted, Windows, X64, enterprise, onprem]
+    environment: development
+    needs: build
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/download-artifact@v3
+      with:
+        name: Web-Artifact-${{ env.APP_VERSION }}-${{ needs.build.outputs.tag }}
+        path: ./dist
+
+    - name: 'Az CLI login'
+      uses: azure/login@v1
+      with:
+        client-id: ${{ env.AZURE_CLIENT_ID }}
+        tenant-id: ${{ env.AZURE_TENANT_ID }}
+        subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+        
+    - name: 'Configure Api'
+      uses: azure/appservice-settings@v1
+      with:
+        app-name: ${{ env.AZURE_APP_NAME }}
+            - name: 'Configure Web'
+      uses: azure/appservice-settings@v1
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        general-settings-json: '{"linuxFxVersion": "NODE|16-lts", "alwaysOn": true, "startupCommand": "npx serve -s"}'
+  
+    - name: 'Deploy API to Azure'
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_APP_NAME }}
+        package: ./dist
