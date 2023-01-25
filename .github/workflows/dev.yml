@@ -40,14 +40,6 @@ jobs:
     - name: 'Checkout GitHub Action'
       uses: actions/checkout@master
 
-    - name: Determine tag
-      if: env.TAG == ''
-      run: |
-        echo "TAG=${GITHUB_SHA}" | tee -a $GITHUB_ENV
-    
-    - id: tag
-      run: echo "::set-output name=tag::${{ env.TAG }}"
-
     - name: Get short SHA
       id: short_sha
       run: 
