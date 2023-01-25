@@ -10,7 +10,7 @@ env:
   IDP_LOGOUT: https://pfqa.idf.medcity.net/SSOLogout/logout.jsp
   IDP_CLIENT_ID: StaffPortal
   IDP_REDIRECT_URL: https://ht-fps-cti-dev-appservice-staff-portal.azurewebsites.net/callback
-  IDP_SILENT_REDIRECT_URL: https://ht-fps-cti-dev-appservice-staff-portal.azurewebsites.net/oidc-popup-callback
+  IDP_SILENT_REDIRECT_URL: https://ht-fps-cti-dev-appservice-staff-portal.azurewebsites.net/callback-silent
   API_URL: https://scheduler-api-qa-hws-facsched-qa.apps.np2.paas.medcity.net/api
 
   # Deploy Variables
@@ -68,7 +68,7 @@ jobs:
       run: npm install
 
     - name: 'Build Web'
-      run: npm run build:prod 
+      run: npm run build 
 
     - uses: actions/upload-artifact@v3
       with:
