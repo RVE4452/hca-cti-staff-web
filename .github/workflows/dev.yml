@@ -105,7 +105,8 @@ jobs:
       uses: azure/appservice-settings@v1
       with:
         app-name: ${{ env.AZURE_APP_NAME }}
-            - name: 'Configure Web'
+            
+    - name: 'Configure Web'
       uses: azure/appservice-settings@v1
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
