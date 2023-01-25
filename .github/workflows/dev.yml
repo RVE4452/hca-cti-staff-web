@@ -20,6 +20,8 @@ env:
   AZURE_APP_NAME: ht-fps-cti-dev-appservice-scheduler-portal
 
 on:
+  push:
+    branches: [ main ]
   workflow_dispatch:
 
 permissions:
