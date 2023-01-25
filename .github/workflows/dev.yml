@@ -9,8 +9,8 @@ env:
   IDP_URL: https://pfqa.idf.medcity.net
   IDP_LOGOUT: https://pfqa.idf.medcity.net/SSOLogout/logout.jsp
   IDP_CLIENT_ID: StaffPortal
-  IDP_REDIRECT_URL: https://localhost:8080/callback
-  IDP_SILENT_REDIRECT_URL: https://localhost:8080/oidc-popup-callback
+  IDP_REDIRECT_URL: https://ht-fps-cti-dev-appservice-staff-portal.azurewebsites.net/callback
+  IDP_SILENT_REDIRECT_URL: https://ht-fps-cti-dev-appservice-staff-portal.azurewebsites.net/oidc-popup-callback
   API_URL: https://scheduler-api-qa-hws-facsched-qa.apps.np2.paas.medcity.net/api
 
   # Deploy Variables
@@ -30,7 +30,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Windows, X64, enterprise, onprem]
     environment: development
     
     outputs:
