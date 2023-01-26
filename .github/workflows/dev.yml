@@ -30,7 +30,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: [self-hosted, Windows, X64, enterprise, onprem]
+    runs-on: [self-hosted, Linux, X64, enterprise, onprem]
     environment: development
     
     outputs:
