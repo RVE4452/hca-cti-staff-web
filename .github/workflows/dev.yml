@@ -17,7 +17,7 @@ env:
   AZURE_CLIENT_ID: 53c01bcf-a767-487b-9941-96cd33df8284
   AZURE_TENANT_ID: 335a6d75-c3eb-4b1a-ac08-d49338816ca0
   AZURE_SUBSCRIPTION_ID: b55ff9cd-3cdd-4713-93d4-796b4e626204
-  AZURE_APP_NAME: ht-fps-cti-dev-appservice-scheduler-portal
+  AZURE_APP_NAME: ht-fps-cti-dev-appservice-staff-portal
 
 on:
   push:
