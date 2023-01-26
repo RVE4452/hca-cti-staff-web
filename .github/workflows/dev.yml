@@ -76,7 +76,7 @@ jobs:
         path: dist
 
   release:
-    runs-on: [self-hosted, Windows, X64, enterprise, onprem]
+    runs-on: [self-hosted, Linux, X64, enterprise, onprem]
     environment: development
     needs: build
     
@@ -94,16 +94,11 @@ jobs:
         client-id: ${{ env.AZURE_CLIENT_ID }}
         tenant-id: ${{ env.AZURE_TENANT_ID }}
         subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
-        
-    - name: 'Configure Api'
-      uses: azure/appservice-settings@v1
-      with:
-        app-name: ${{ env.AZURE_APP_NAME }}
             
     - name: 'Configure Web'
       uses: azure/appservice-settings@v1
       with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        app-name: ${{ env.AZURE_APP_NAME }}
         general-settings-json: '{"linuxFxVersion": "NODE|16-lts", "alwaysOn": true, "startupCommand": "npx serve -s"}'
   
     - name: 'Deploy API to Azure'
