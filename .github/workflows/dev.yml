@@ -101,7 +101,7 @@ jobs:
         app-name: ${{ env.AZURE_APP_NAME }}
         general-settings-json: '{"linuxFxVersion": "NODE|16-lts", "alwaysOn": true, "appCommandLine": "npx serve -s"}'
   
-    - name: 'Deploy API to Azure'
+    - name: 'Deploy Web to Azure'
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_APP_NAME }}
