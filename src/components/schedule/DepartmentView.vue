@@ -165,7 +165,7 @@
         selectedDeptId: number = 0;
         skills: any = [];
         selectedSkillId: number = 0;
-        facilityName: string = '';
+        facilityYName: string = '';
         departmentName: string = '';
         skillName!: string;
         lastUpdatedDate: string = '';

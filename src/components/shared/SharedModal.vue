@@ -28,14 +28,28 @@
         </template> 
          </div>
          <template v-if="sharedRequest.type === 1">
-            <neu-tablist color="primary-100"  value="openneed">
+            <!-- <neu-tablist color="primary-100"  value="openneed">
                 <neu-tab v-if="currentEvent.status !='0 Needs'" tab="openneed" navy="true">Open Need</neu-tab>
                 <neu-tab tab="request" v-if="sharedRequest.request" navy="true">Request</neu-tab>
                 <neu-tab tab="unavailablity" v-if="sharedRequest.availability" navy="true">Unavailability</neu-tab>
+            </neu-tablist> -->
+            <neu-tablist v-model="tabCurrent" color="primary-100" value="one">
+                <neu-tab
+                    v-for="(tab, tabId) in tabList"
+                    :key="tabId"
+                    @click="tabCurrent = tab.id"
+                    @keyup.space="tabCurrent = tab.id"
+                    @keyup.enter="tabCurrent = tab.id"
+                    navy="true"
+                >
+                    {{tab.title}}
+                </neu-tab>
             </neu-tablist>
+
           </template>
+
           <template v-if="sharedRequest.type === 2">
-            <neu-tablist color="primary-100"  value="assignment">
+            <neu-tablist color="primary-100" value="assignment">
                 <neu-tab v-if="sharedRequest.event" tab="assignment" navy="true">Event</neu-tab>
                 <neu-tab v-if="sharedRequest.assignmentDetail" tab="assignment" navy="true">Details</neu-tab>
                 <neu-tab tab="request" v-if="sharedRequest.request" navy="true">Request</neu-tab>
@@ -47,11 +61,12 @@
                 <neu-tab  v-if="sharedRequest.isSymphonyUser" tab="assignment" navy="true">Procedures</neu-tab>
                 <neu-tab  v-if="sharedRequest.tradeShift" tab="assignment" navy="true">Trade Event</neu-tab>
                 <neu-tab v-if="sharedRequest.assignmentDetail" tab="assignment" navy="true">Details</neu-tab>
-                <neu-tab tab="request" v-if="sharedRequest.request" navy="true">Request</neu-tab>
+                <neu-tab v-if="sharedRequest.request" tab="request" navy="true">Request</neu-tab>
                 <neu-tab tab="unavailablity" v-if="sharedRequest.availability" navy="true">Unavailability</neu-tab>
             </neu-tablist>
           </template>
            
+          <!-- Details -->
           <template v-if="sharedRequest.type === 2">
             <div class="pb3 row" v-if="activeTab == 0 && sharedRequest.isSymphonyUser == true && sharedRequest.status == 'Posted'">
                 <SymphonyOperatingRooms :key="counter" :currentEvent="currentEvent" @closeSharedModal="close" />
@@ -83,23 +98,39 @@
                 </div>
             </div>
         </template>
+        <!-- END Details tab contents-->
+
         
-       
+        <!-- <div v-if="tabCurrent === 'openneed'">
+            <h3>Open Need</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          </div> -->
+          
+          <div v-if="tabCurrent == 'request' && sharedRequest.type == 1">                                
+                <Request />
+          </div>
+          
       
+          <!-- <div v-if="tabCurrent === 'unavailablity'">
+            <h3>Unavailability</h3>
+          </div> -->
     </div>
 </template>
 
 <script lang="ts">
     //import plugins and modules
+    import {NeuApp, NeuTablist, NeuTab} from '@neutron/vue';
     import { Options, Vue } from 'vue-class-component';
     import { mapState } from "vuex";
     import AssignmentDetail from "./AssignmentDetail.vue";
     import ShiftMemberDetail from "./ShiftMemberDetail.vue";
     import Detail from "./Detail.vue";
+    import Request from './Request.vue';
+    // import RequestedTrade from "./RequestedTrade.vue";
     /*import Approval from "./Approval.vue";*/
     // import PotentialTrade from "./PotentialTrades.vue";
-    // import Request from './Request.vue';
-    // import RequestedTrade from "./RequestedTrade.vue";
+    
+   
     // import Unavailability from './Unavailability.vue';
     // import OpenNeed from './OpenNeed.vue';
     // import TradeShift from './TradeShift.vue';
@@ -130,13 +161,16 @@
     // },
         components: {
              AssignmentDetail,
+             NeuApp, 
+             NeuTablist, 
+             NeuTab,
             /*Approval,*/
             // PotentialTrade,
              Detail,
+             Request,
+            //  RequestedTrade,
              ShiftMemberDetail,
             // // SelfSchedule,
-            // Request,
-            // RequestedTrade,
             // Unavailability,
             // OpenNeed,
             // TradeShift,
@@ -145,9 +179,19 @@
             NeuRow,
             NeuCol,
         },
+        data() {
+            return {
+                tabCurrent: 'request',
+                tabList: [
+                    // {id: 'openneed', title: 'Open Need'},
+                    {id: 'request', title: 'Request'},
+                    // {id: 'unavailablity', title: 'Unavailability'}
+                ]
+            };
+        },
          computed: {
                 ...mapState('schedule', ['assignmentDetail']),
-            },
+        },
     })
     export default class SharedModal extends Vue.with(Props) {
         
