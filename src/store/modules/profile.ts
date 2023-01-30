@@ -3,7 +3,7 @@ import http from "@/store/axios";
 import { Module, ActionTree, MutationTree } from 'vuex'
 import { RootState } from "../types";
 import { AxiosError, AxiosResponse } from "axios";
-import { NotificationPreferences, SchedulingPreferences, SMSPreferences } from "@/models";
+import { Staff, NotificationPreferences, SchedulingPreferences, SMSPreferences } from "@/models";
 import router from '@/router';
 //import bus from '../../../src/eventBus'
 
@@ -12,7 +12,7 @@ const namespaced = true
 
 interface Profile {
      //STATE
-     profileData: any,
+    profileData: Staff,
     isAdmin: boolean,
     schedulingPrefData: any,
     notificationPrefData: any,
@@ -24,7 +24,51 @@ interface Profile {
  }
  //state
 const state: Profile = {
-    profileData: {},
+    profileData: {
+        username: '',
+        staffId: 0,
+        tenantId: '',
+        tenantName: '',
+        tenantUrl: '',
+        email: '',
+        first: '',
+        last: '',
+        birth: new Date(),
+        address1: '',
+        address2: '',
+        city: '',
+        state: '',
+        zip: '',
+        facilityId: 0,
+        cOID: '',
+        facilityName: '',
+        deptId: 0,
+        deptCode: '',
+        deptName: '',
+        employeeType: '',
+        workSchedule: '',
+        PTOBalance: 0,
+        primaryShift: '',
+        isUnavailabilityAllowed: false,
+        maxUnavailableDays: 0,
+        homePhoneNumber: '',
+        weeksInSchedule: 0,
+        profilePic: '',
+        staffAssignmentToSecondaryDepartments: '',
+        staffRequestOpenNeedsInSecondaryDepartments: '',
+        staffReceiveTradeAssignmentsInSecondaryDepartments: '',
+        secondaryStaffAssignmentToThisDepartment: '',
+        secondaryStaffSelfScheduleInThisDepartment: '',
+        secondaryStaffRequestOpenNeedsInThisDepartment: '',
+        secondaryStaffReceiveTradeAssignmentsInThisDepartment: '',
+        isFirstTimeLogin: false,
+        isAdmin: false,
+        isDisabled: false,
+        isStaffHasAdminAccount: false,
+        useMySchedulerOperatingRoom: false,
+        skill: '',
+        charge: false
+    },
     isAdmin: false,
     schedulingPrefData: null,
     notificationPrefData: null,
