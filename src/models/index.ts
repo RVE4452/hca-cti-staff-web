@@ -1,6 +1,6 @@
 import {Event} from "./event.model";
 import {ORSchedule} from "./or-schedule.model";
-// import {Procedure} from "./procedure.model";
+import {Staff} from "./profile.model";
 import {SchedulingPreferences} from './scheduling-preferences.model';
 import {DayOfWeekPreferences} from './dow-preferences.model';
 import {NotificationPreferences} from "./notification-preferences.model";
@@ -15,7 +15,7 @@ import {ScheduleActualCIOD} from './schedule-actual-CIOD.model';
 export {
     Event,
     ORSchedule,
-    // Procedure,
+    Staff,
     SchedulingPreferences,
     DayOfWeekPreferences,
     NotificationPreferences,

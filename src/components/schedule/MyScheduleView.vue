@@ -1,6 +1,6 @@
 <template>
 <div>
-    <neu-container class="mw-100">
+    <neu-container class="mw-100">         
         <div class="schedulerMainDiv"  v-bind:class="{ 'panel-open': sharedToggle, 'posNone': isWelcomeModalVisible }">
             <neu-row v-if="viewFlag == 'CalView'">
                 <neu-col md="3" style="margin-left:-45px;">
@@ -22,7 +22,7 @@
                                     <h5>
                                         <neu-icon @click="beforeMonthNavigate(false)"  style="position: relative; top: 4px" class="m-3 neu-icon pointer neu-icon--large hydrated">chevron_left</neu-icon>
                                         <span>
-                                            {{ this.currentDate }}
+                                            {{ currentDate }}
                                         </span>                                  
                                         <neu-icon @click="beforeMonthNavigate(true)" style="position: relative; top: 4px" class="m-3 neu-icon pointer neu-icon--large hydrated" >chevron_right</neu-icon>
                                     </h5>
@@ -75,7 +75,8 @@
                         <!-- MODAL -->
                     </div>
                     <div v-else>
-                        <vcl-facebook></vcl-facebook>                   
+                       <neu-spinner class="div-center" color="primary" >
+                       </neu-spinner>                 
                     </div>
                     <!-- END MODAL -->
                 </div>
@@ -87,7 +88,8 @@
                         </div>
                     </div>
                     <div v-else>
-                        <vcl-facebook></vcl-facebook>                   
+                        <neu-spinner class="div-center" color="primary" >
+                       </neu-spinner>                   
                     </div>
                 </div>
             </neu-row>       
@@ -206,18 +208,18 @@
         isAdmin!: boolean;        
         isImpersonating!: boolean;       
         appInsightEventData!: any;
-        private currentDate: string = "March, 2021";
+        currentDate: string = "March, 2021";
         confirmMsgValue = "You have not submitted your shift requests. Are you sure you want to navigate away?";
         isConfirmModalVisible: boolean = false;
         profile: any = null;
         private backDate = new Date();
         private forwardDate = new Date();
-        private selectedDates: Array<string | string> = [];
-        private isModalVisible = false;
+        selectedDates: Array<string | string> = [];
+        isModalVisible = false;
 
         currentMonthCalendarApi: any = null;
-        private schedules: any;
-        private scheduleStatus = "Unknown";
+        schedules: any;
+        scheduleStatus = "Unknown";
         currentEvent: any =null;
 
         updateData: string = "";
@@ -312,7 +314,7 @@
             }
         }
 
-        private calendarOptions: any = {
+        calendarOptions: any = {
             schedulerLicenseKey: '0712583610-fcs-1643842135',
             plugins: [
                 adaptivePlugin,
@@ -712,11 +714,11 @@
             },
         };
         
-        public userSchedules!: any;        
-        private isLoading!: Boolean;
-        public events: any = [];
-        private sharedToggle: boolean = false;
-        public counter: any = 0;
+        userSchedules!: any;        
+        isLoading!: Boolean;
+        events: any = [];
+        sharedToggle: boolean = false;
+        counter: any = 0;
 
         //constructor() {
            // super();
@@ -1394,11 +1396,10 @@
                 username: this.profileData.username,
                 index: index,
             };
-
             await this.$store
                 .dispatch("schedule/getAllUserSchedules", payload)
                 .then((res: any) => {
-                    return res.data;
+                    return res.data;                     
                 })
                 .catch((err: any) => {
                     if (err) {
