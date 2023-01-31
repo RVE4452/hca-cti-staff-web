@@ -1,5 +1,5 @@
 <template>
-   <div class="no-print modal" v-bind:class="isPanelOpen ? 'sideNavPanel' : 'sideNavPanelClose'">
+   <div class="modal" v-bind:class="isPanelOpen ? 'sideNavPanel' : 'sideNavPanelClose'">
         <div  style="text-align:center">
         <neu-header class="fs-22 fw-bold modal-header relative" id="modalTitle">           
             <f5><span>{{ requestTypeArray[sharedRequest.type - 1]}} </span></f5>            
@@ -15,7 +15,7 @@
                             chevron_left
                         </neu-icon>
                         <span>
-                            {{ this.sharedRequest && this.sharedRequest.calSelectedDates && this.sharedRequest.calSelectedDates.startDate ? formatDate(this.sharedRequest.calSelectedDates.startDate) : formatDate(currentEvent.date)  }}
+                            {{ sharedRequest && sharedRequest.calSelectedDates && sharedRequest.calSelectedDates.startDate ? formatDate(sharedRequest.calSelectedDates.startDate) : formatDate(currentEvent.date)  }}
                         </span>
                         <neu-icon @click="nextDay"
                            class="material-icons pointer calendar-navigation"
@@ -130,10 +130,28 @@
                 </div>
             </div>
         </template>
-        
-        <template v-if="sharedRequest.type === 2 && (sharedRequest.availability)">
+        <template v-if="sharedRequest.type === 4">
+            <div class="pb3 row" v-if="activeTab == 0 && sharedRequest.isSymphonyUser == true">
+                <SymphonyOperatingRooms :key="counter" :currentEvent="currentEvent" @closeSharedModal="close" />
+            </div>
+            <div class="pb3 row" v-if="activeTab == 1">
+                <TradeShift :key="counter" :currentEvent="currentEvent" @showSuccessMsgPopUp="showSuccessModal" @closeSharedModal="close" />
+            </div>
+             <div class="pb3 row" id="tab" v-if="activeTab == 2">
+                <Detail :enableField="[]" :currentEvent="currentEvent" :key="counter" />
+                <ShiftDetail :currentEvent="currentEvent" :key="counter + 1" />
+                <div class="container-fluid tc">
+                    <div>
+                        <div class="col-12">
+                            <h6>Cannot be Modified</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pb3 row" id="tab" v-if="activeTab == 3">
+                <Request :key="counter" :currentEvent="currentEvent" :additionalRequestEvent="false" :calSelectedDates="sharedRequest.calSelectedDates" @closeSharedModal="close" @showSuccessMsgPopUp="showSuccessModal" />
+            </div>           
         </template>
-        
        
       
     </div>
@@ -154,6 +172,7 @@
     // import OpenNeed from './OpenNeed.vue';
     // import TradeShift from './TradeShift.vue';
     import DayPreferenceView from './DayPreference.vue'
+    import TradeShift from './TradeShift.vue';
     
     import moment from "moment";
     import {NeuApp, NeuTablist, NeuTab} from '@neutron/vue';
@@ -192,7 +211,7 @@
             // RequestedTrade,
             // Unavailability,
             // OpenNeed,
-            // TradeShift,
+            TradeShift,
             // SymphonyOperatingRooms,
             DayPreferenceView,
             NeuHeader,
@@ -397,7 +416,7 @@
         }
     }
 </script>
-<style src="@/css/shared-modal.css" />
+<style src="@/scss/shared-modal.css" />
 <style scoped>
 .padding-right1{
     padding-right: 0.4rem;
@@ -567,7 +586,7 @@
         right: 0;
         top: 0px;
         width: 25%;
-        display: block;
+        display: flex;
         background-color: #f4f4f4;
         bottom: 92px;
         overflow-x: hidden;
