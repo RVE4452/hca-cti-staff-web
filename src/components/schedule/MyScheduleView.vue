@@ -1711,7 +1711,6 @@
         }
 
         processClickEvent(cellTitle:string, eventStart:any, eventId:string, needFV:boolean) {
-            
              //this.currentMonthCalendarApi = this.$refs.fullCalendarCurrentMonth.getApi();
             const event = cellTitle.includes("NEEDS") || cellTitle.includes("SHIFT")
                 ? this.events.find(
@@ -1830,7 +1829,8 @@
                         event: this.checkIf48hour(event),
                         assignmentDetail: true,
                         status: this.scheduleStatus,
-                        isSymphonyUser: this.profile.useMySchedulerOperatingRoom? true :false
+                        isSymphonyUser: this.profile.useMySchedulerOperatingRoom? true :false,
+                        availability:true
                     };
                 }
             }
