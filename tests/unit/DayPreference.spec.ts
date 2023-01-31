@@ -29,7 +29,7 @@ const store = new Vuex.Store({
     },
   })
   let wrapper: any;
-  wrapper = mount(DayPreference, {
+  wrapper = shallowMount (DayPreference, {
     store,
     data: () => {
       return {
