@@ -40,24 +40,51 @@
                         <div class="col-12">
                             <label for="approval_code" class="neu-input__label">Select Shift</label>
 
-                            <neu-select-native :options="availableShifts" name="ddlShift" v-bind:class="[
+                            <!-- <neu-select-native :options="availableShifts" name="ddlShift" v-bind:class="[
                                 'dropdown dropdown-input',
                                 { 'readonly_text_field bg-transparent': widthdrawMode(additionalRequestEvent) },
                             ]" :isDisabled="widthdrawMode(additionalRequestEvent)"
-                                @input="shiftChange(additionalRequestEvent)" :value="shift" option-value="id"
+                                @input="shiftChange(additionalRequestEvent)" v-bind="shift" option-value="id"
                                 option-text="name" placeholder="select item">
-                            </neu-select-native>
+                            </neu-select-native> -->
 
-                            <div v-if="additionalRequestEvent">
+                            <model-list-select :list="availableShifts"
+                                                name="ddlShift"
+                                                   v-bind:class="[
+                  'dropdown dropdown-input',
+                  { 'readonly_text_field bg-transparent': widthdrawMode(additionalRequestEvent) },
+                ]"
+                                                   :isDisabled="widthdrawMode(additionalRequestEvent)"
+                                                   @input="shiftChange(additionalRequestEvent)"
+                                                   v-model="shift"
+                                                   option-value="id"
+                                                   option-text="name"
+                                                   placeholder="select item">
+                                </model-list-select>
+
+                            <template v-if="additionalRequestEvent">
                                 Another Select Goes here
-                                <neu-select-native :list="availableShifts" name="ddlShift" v-bind:class="[
+                                <!-- <neu-select-native :list="availableShifts" name="ddlShift" v-bind:class="[
                                     'dropdown dropdown-input',
                                     { 'readonly_text_field bg-transparent': widthdrawMode(additionalRequestEvent) },
                                 ]" :isDisabled="widthdrawMode(additionalRequestEvent)"
                                     @input="shiftChange(additionalRequestEvent)" :value="defaultShift"
                                     option-value="id" option-text="name" placeholder="select item">
-                                </neu-select-native>
-                            </div>
+                                </neu-select-native> -->
+                                <model-list-select :list="availableShifts"
+                                                name="ddlShift"
+                                                   v-bind:class="[
+                  'dropdown dropdown-input',
+                  { 'readonly_text_field bg-transparent': widthdrawMode(additionalRequestEvent) },
+                ]"
+                                                   :isDisabled="widthdrawMode(additionalRequestEvent)"
+                                                   @input="shiftChange(additionalRequestEvent)"
+                                                   v-model="defaultShift"
+                                                   option-value="id"
+                                                   option-text="name"
+                                                   placeholder="select item">
+                                </model-list-select>
+                            </template>
                         </div>
                     </div>
 
@@ -67,7 +94,7 @@
                                 <div class="d-inline-flex w-100">
                                     <div class="col-6">
                                         <label for="partof_day" class="neu-input__label">Start Time</label>
-                                        <div v-if="!additionalRequestEvent">
+                                        <!-- <div v-if="!additionalRequestEvent">
                                             <input :disabled="getDisableDuration(additionalRequestEvent)"
                                                 name="txtStartTime" :inpur="startTime" v-bind:class="[
                                                     'neu-input__text-field',
@@ -75,8 +102,8 @@
                                                         'readonly_text_field starttimecolor': getDisableDuration(additionalRequestEvent),
                                                     },
                                                 ]" type="time" />
-                                        </div>
-                                        <div v-if="additionalRequestEvent">
+                                        </div> -->
+                                        <!-- <div v-if="additionalRequestEvent">
                                             <input :disabled="getDisableDuration(additionalRequestEvent)"
                                                 name="txtStartTime" :input="defaultStartTime" v-bind:class="[
                                                     'neu-input__text-field',
@@ -84,12 +111,12 @@
                                                         'readonly_text_field starttimecolor': getDisableDuration(additionalRequestEvent),
                                                     },
                                                 ]" type="time" />
-                                        </div>
+                                        </div> -->
                                     </div>
                                     <div class="col-6">
                                         <label for="partof_day" class="neu-input__label">Duration</label>
 
-                                        <div v-if="!additionalRequestEvent">
+                                        <!-- <div v-if="!additionalRequestEvent">
                                             <neu-select-native :list="durationList" name="ddlDuration"
                                                 v-bind:class="[
                                                     'neu-input__text-field',
@@ -100,7 +127,7 @@
                                                 :input="duration" option-value="value" option-text="label"
                                                 placeholder="select item">
                                             </neu-select-native>
-                                        </div>
+                                        </div> -->
                                         <!-- <template v-if="additionalRequestEvent">
                                             <model-list-select :list="data.durationList"
                                                             name="ddlDuration"
@@ -248,9 +275,10 @@ export default class Request extends Vue.with(Props) {
     durationList = [];
     availableShifts = [];
     comment: string = "";
-    defaultComment: string = ""
+    defaultComment: string = "";
 
     async mounted() {
+        debugger
         await this.loadData();
     }
 
@@ -281,7 +309,17 @@ export default class Request extends Vue.with(Props) {
             this.defaultShift = "";
             this.availableShifts = [];
             this.defaultComment = "";
+            this.profileData = "";
 
+            debugger
+            for (var i = 0; i < this.profileData.departmentShifts.length; i++) {
+                debugger
+                if ((this.profileData.departmentShifts[i].effective === null)
+                && (this.profileData.departmentShifts[i].expires === null)) {
+                    debugger
+                    this.availableShifts.push(this.profileData.departmentShifts[i]);
+                }                    
+            }
 
             // for (var i = 0; i < this.profileData.departmentShifts.length; i++) {
             //     let selectedDate = moment(new Date(
@@ -346,12 +384,13 @@ export default class Request extends Vue.with(Props) {
         this.selectedDate = JSON.parse(JSON.stringify(this.availiableDates));
     }
 
-
-
     getRequestEvent() {
         var payload = {
             username: this.profileData.username,
-            id: "def0a6ac-609c-44cb-90d7-421725a33d27" //this.currentEvent?.id
+           // id: "def0a6ac-609c-44cb-90d7-421725a33d27" //this.currentEvent?.id
+           // bed1116d-cd91-41b9-bc60-edb0c42596b4
+           //bed1116d-cd91-41b9-bc60-edb0c42596b4
+            id: this.currentEvent?.id
         };
 
         this.$store
