@@ -1,0 +1,627 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Request.vue should match snapshot 1`] = `
+<div
+  class="col-12"
+>
+  <div
+    class="bg-black-05 container-fluid"
+  >
+    <div
+      class="row"
+    >
+      <div
+        class="col-12 pt3"
+      >
+        <p>
+          
+          Estimated PTO Balance:
+          
+          <strong>
+            92.68
+          </strong>
+        </p>
+      </div>
+       
+      <!---->
+       
+      <div
+        class="col-12 pb4"
+      >
+        <h4>
+          Dates
+        </h4>
+      </div>
+       
+      <div
+        class="col-12"
+      >
+        <div
+          class="row"
+        />
+      </div>
+       
+      <div
+        class="col-12"
+      >
+        <div
+          class="hr-line"
+        />
+      </div>
+       
+      <div
+        class="col-md-12 pb4"
+      >
+        <div
+          class="row"
+        >
+          <div
+            class="col-6"
+          >
+            <label
+              class="neu-input__label"
+              for="approval_code"
+            >
+              Select Shift
+            </label>
+             
+            <select
+              class="neu-input__text-field"
+              id="shift-change"
+            >
+              <option
+                value=""
+              >
+                Select
+              </option>
+               
+              <!---->
+              <!---->
+              <!---->
+              <!---->
+              <!---->
+              <!---->
+              <!---->
+              <!---->
+              <!---->
+              <!---->
+              <option
+                data-test="shift-change"
+                value="31965"
+              >
+                
+                  ED Education
+                
+              </option>
+              <option
+                data-test="shift-change"
+                value="31966"
+              >
+                
+                  EIB Extended illness
+                
+              </option>
+              <option
+                data-test="shift-change"
+                value="31967"
+              >
+                
+                  FML Family Medical Leave
+                
+              </option>
+              <option
+                data-test="shift-change"
+                value="31969"
+              >
+                
+                  LOA Leave of Absence
+                
+              </option>
+              <option
+                data-test="shift-change"
+                value="31970"
+              >
+                
+                  MIL Military Leave
+                
+              </option>
+              <option
+                data-test="shift-change"
+                value="31972"
+              >
+                
+                  PTO Paid time off
+                
+              </option>
+              <option
+                data-test="shift-change"
+                value="32555"
+              >
+                
+                  VAC Vacation Day
+                
+              </option>
+              <!---->
+              <!---->
+              <!---->
+              <!---->
+              <!---->
+              <!---->
+              <!---->
+              <option
+                data-test="shift-change"
+                value="180923"
+              >
+                
+                  EDE EDUCATION 4 HR AM
+                
+              </option>
+              <option
+                data-test="shift-change"
+                value="180924"
+              >
+                
+                  EDL EDUCATION 4HR PM
+                
+              </option>
+              <!---->
+              <!---->
+              <!---->
+              <!---->
+              <!---->
+              <!---->
+              <!---->
+              <option
+                data-test="shift-change"
+                value="184638"
+              >
+                
+                  UTO Unpaid Time Off
+                
+              </option>
+              <!---->
+            </select>
+          </div>
+           
+          <div
+            class="col-6"
+          >
+            <div
+              class="row"
+            >
+              <div
+                class="col-12 mt4"
+              >
+                <div
+                  class="neu-checkbox"
+                >
+                  <input
+                    checked="checked"
+                    class="neu-checkbox__input"
+                    id="entireshift"
+                    name="entireshift"
+                    type="checkbox"
+                  />
+                   
+                  <label
+                    class="neu-checkbox__label neu-text--caption  white-before"
+                    for="entireshift"
+                  >
+                    Entire Shift
+                  </label>
+                </div>
+              </div>
+               
+              <div
+                class="d-inline-flex mt4 w-100"
+              >
+                <div
+                  class="col-6"
+                >
+                  <label
+                    class="neu-input__label"
+                    for="partof_day"
+                  >
+                    Start Time
+                  </label>
+                  <select
+                    class="neu-input__text-field bg-transparent"
+                    disabled="disabled"
+                  >
+                    <option
+                      value=""
+                    >
+                      Select 🕔
+                    </option>
+                     
+                    <option
+                      value="0"
+                    >
+                      
+                      12:00 AM
+                    
+                    </option>
+                    <option
+                      value="1"
+                    >
+                      
+                      1:00 AM
+                    
+                    </option>
+                    <option
+                      value="2"
+                    >
+                      
+                      2:00 AM
+                    
+                    </option>
+                    <option
+                      value="3"
+                    >
+                      
+                      3:00 AM
+                    
+                    </option>
+                    <option
+                      value="4"
+                    >
+                      
+                      4:00 AM
+                    
+                    </option>
+                    <option
+                      value="5"
+                    >
+                      
+                      5:00 AM
+                    
+                    </option>
+                    <option
+                      value="6"
+                    >
+                      
+                      6:00 AM
+                    
+                    </option>
+                    <option
+                      value="7"
+                    >
+                      
+                      7:00 AM
+                    
+                    </option>
+                    <option
+                      value="8"
+                    >
+                      
+                      8:00 AM
+                    
+                    </option>
+                    <option
+                      value="9"
+                    >
+                      
+                      9:00 AM
+                    
+                    </option>
+                    <option
+                      value="10"
+                    >
+                      
+                      10:00 AM
+                    
+                    </option>
+                    <option
+                      value="11"
+                    >
+                      
+                      11:00 AM
+                    
+                    </option>
+                    <option
+                      value="12"
+                    >
+                      
+                      12:00 PM
+                    
+                    </option>
+                    <option
+                      value="13"
+                    >
+                      
+                      1:00 PM
+                    
+                    </option>
+                    <option
+                      value="14"
+                    >
+                      
+                      2:00 PM
+                    
+                    </option>
+                    <option
+                      value="15"
+                    >
+                      
+                      3:00 PM
+                    
+                    </option>
+                    <option
+                      value="16"
+                    >
+                      
+                      4:00 PM
+                    
+                    </option>
+                    <option
+                      value="17"
+                    >
+                      
+                      5:00 PM
+                    
+                    </option>
+                    <option
+                      value="18"
+                    >
+                      
+                      6:00 PM
+                    
+                    </option>
+                    <option
+                      value="19"
+                    >
+                      
+                      7:00 PM
+                    
+                    </option>
+                    <option
+                      value="20"
+                    >
+                      
+                      8:00 PM
+                    
+                    </option>
+                    <option
+                      value="21"
+                    >
+                      
+                      9:00 PM
+                    
+                    </option>
+                    <option
+                      value="22"
+                    >
+                      
+                      10:00 PM
+                    
+                    </option>
+                    <option
+                      value="23"
+                    >
+                      
+                      11:00 PM
+                    
+                    </option>
+                  </select>
+                </div>
+                 
+                <div
+                  class="col-6"
+                >
+                  <label
+                    class="neu-input__label"
+                    for="partof_day"
+                  >
+                    Duration
+                  </label>
+                  <select
+                    class="neu-input__text-field bg-transparent"
+                    disabled="disabled"
+                  >
+                    <option
+                      value=""
+                    >
+                      Select
+                    </option>
+                     
+                    <option
+                      value="1"
+                    >
+                      
+                      1 hour
+                    
+                    </option>
+                    <option
+                      value="2"
+                    >
+                      
+                      2 hour
+                    
+                    </option>
+                    <option
+                      value="3"
+                    >
+                      
+                      3 hour
+                    
+                    </option>
+                    <option
+                      value="4"
+                    >
+                      
+                      4 hour
+                    
+                    </option>
+                    <option
+                      value="5"
+                    >
+                      
+                      5 hour
+                    
+                    </option>
+                    <option
+                      value="6"
+                    >
+                      
+                      6 hour
+                    
+                    </option>
+                    <option
+                      value="7"
+                    >
+                      
+                      7 hour
+                    
+                    </option>
+                    <option
+                      value="8"
+                    >
+                      
+                      8 hour
+                    
+                    </option>
+                    <option
+                      value="9"
+                    >
+                      
+                      9 hour
+                    
+                    </option>
+                    <option
+                      value="10"
+                    >
+                      
+                      10 hour
+                    
+                    </option>
+                    <option
+                      value="11"
+                    >
+                      
+                      11 hour
+                    
+                    </option>
+                    <option
+                      value="12"
+                    >
+                      
+                      12 hour
+                    
+                    </option>
+                    <option
+                      value="13"
+                    >
+                      
+                      13 hour
+                    
+                    </option>
+                    <option
+                      value="14"
+                    >
+                      
+                      14 hour
+                    
+                    </option>
+                    <option
+                      value="15"
+                    >
+                      
+                      15 hour
+                    
+                    </option>
+                    <option
+                      value="16"
+                    >
+                      
+                      16 hour
+                    
+                    </option>
+                    <option
+                      value="17"
+                    >
+                      
+                      17 hour
+                    
+                    </option>
+                    <option
+                      value="18"
+                    >
+                      
+                      18 hour
+                    
+                    </option>
+                    <option
+                      value="19"
+                    >
+                      
+                      19 hour
+                    
+                    </option>
+                    <option
+                      value="20"
+                    >
+                      
+                      20 hour
+                    
+                    </option>
+                    <option
+                      value="21"
+                    >
+                      
+                      21 hour
+                    
+                    </option>
+                    <option
+                      value="22"
+                    >
+                      
+                      22 hour
+                    
+                    </option>
+                    <option
+                      value="23"
+                    >
+                      
+                      23 hour
+                    
+                    </option>
+                    <option
+                      value="24"
+                    >
+                      
+                      24 hour
+                    
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+   
+  <div
+    class="container-fluid"
+  >
+    <div
+      class="row"
+    >
+      <div
+        class="col-12"
+      >
+        <button
+          class="d-block mb4 mt4 neu-button w-100 neu-text--white neu-button--blue-disabled"
+          data-test="fire-action"
+          disabled="disabled"
+        >
+          
+          Add to Schedule
+        
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
