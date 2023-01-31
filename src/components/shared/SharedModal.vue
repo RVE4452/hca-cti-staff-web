@@ -105,7 +105,15 @@
                 <Request :key="counter" :currentEvent="currentEvent" :additionalRequestEvent="false" :calSelectedDates="sharedRequest.calSelectedDates" @closeSharedModal="close" @showSuccessMsgPopUp="showSuccessModal" />
             </div>           
         </template>
-       
+        <template v-if="sharedRequest.type === 1">
+            <div class="pb3 row" v-if="activeTab == 0 && currentEvent.status !='0 Needs'" id="tab">
+                <!--  -->
+                <div v-if="sharedRequest.status == 'Posted'">
+                    <OpenNeed :currentEvent="currentEvent" :scheduleStartDate="scheduleStartDate"
+                        :scheduleEndDate="scheduleEndDate" @closeSharedModal="close" @showSuccessMsgPopUp="showSuccessModal" /> 
+                </div>    
+            </div>
+        </template>
       
     </div>
 </template>
@@ -122,7 +130,7 @@
     // import Request from './Request.vue';
     // import RequestedTrade from "./RequestedTrade.vue";
     // import Unavailability from './Unavailability.vue';
-    // import OpenNeed from './OpenNeed.vue';
+    import OpenNeed from './OpenNeed.vue';
     import TradeShift from './TradeShift.vue';
     
     import moment from "moment";
@@ -159,7 +167,7 @@
             // Request,
             // RequestedTrade,
             // Unavailability,
-            // OpenNeed,
+            OpenNeed,
             TradeShift,
             // SymphonyOperatingRooms,
             NeuHeader,
