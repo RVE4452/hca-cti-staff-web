@@ -40,8 +40,7 @@
                     @click="tabCurrent = tab.id"
                     @keyup.space="tabCurrent = tab.id"
                     @keyup.enter="tabCurrent = tab.id"
-                    navy="true"
-                >
+                    navy="true">
                     {{tab.title}}
                 </neu-tab>
             </neu-tablist>
@@ -107,7 +106,7 @@
           </div> -->
           
           <div v-if="tabCurrent == 'request' && sharedRequest.type == 1">                                
-                <Request />
+                <Request :currentEvent="currentEvent"/>
           </div>
           
       

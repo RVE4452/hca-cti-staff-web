@@ -17,6 +17,7 @@
                       id="txtFacility"
                       v-model="assignmentDetail.facilityName"
                       readonly="readonly"
+                      
                       class="readonly_text_field"
                     />
                   </div>
