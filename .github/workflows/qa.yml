@@ -1,4 +1,4 @@
-name: DEV
+name: QA
   
 env:
   # Build Variables
