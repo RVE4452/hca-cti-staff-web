@@ -1,7 +1,7 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import DayPreference from '@/components/shared/DayPreference.vue';
 import Vuex from 'vuex';
-import { departmentSchedules, profileData, userSchedules } from '@/mocks/mockDeptData';
+import { departmentSchedules, profileData, userSchedules } from '../../src/mocks/mockSpecData';
 
 const store = new Vuex.Store({
     modules: {
