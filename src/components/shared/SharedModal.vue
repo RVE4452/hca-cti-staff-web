@@ -42,10 +42,7 @@
                         </neu-tab>
                     </span>
                 </span>
-            </neu-tablist>
-            <div class="pb3 row" v-if="sharedRequest.isSymphonyUser == true && sharedRequest.status == 'Posted'">
-                <SymphonyOperatingRooms :key="counter" :currentEvent="currentEvent" @closeSharedModal="close" />
-            </div>
+            </neu-tablist>           
             <div v-if="tabCurrent === 'Details'">
                 <detail :enableField="[]" :currentEvent="currentEvent" :key="counter" />
                 <shift-member-detail :currentEvent="currentEvent" :key="counter + 1" />
@@ -58,10 +55,8 @@
                 </div>
             </div>
 
-            <div v-if="tabCurrent === 'Trade'">
-                <h3>Trade</h3>
-                <!-- <TradeShift :key="counter" :currentEvent="currentEvent" @showSuccessMsgPopUp="showSuccessModal" @closeSharedModal="close" /> -->
-
+            <div v-if="tabCurrent === 'Trade'">                
+                <TradeShift :key="counter" :currentEvent="currentEvent" @showSuccessMsgPopUp="showSuccessModal" @closeSharedModal="close" />
             </div>
 
             <div v-if="tabCurrent === 'Request'">
@@ -71,11 +66,7 @@
 
             <div v-if="tabCurrent === 'DayPreference'">
                 <day-preference-view />
-            </div>
-            <div v-if="tabCurrent === 'Procedures'">
-                <h3>Procedures</h3>
-                <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-            </div>
+            </div>            
             <div v-if="tabCurrent === 'OpenNeed'">
                 <h3>Open Need</h3>
                 <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
@@ -96,7 +87,6 @@
     //import plugins and modules
     import { Options, Vue } from 'vue-class-component';
     import { mapState } from "vuex";
-    import AssignmentDetail from "./AssignmentDetail.vue";
     import ShiftMemberDetail from "./ShiftMemberDetail.vue";
     import Detail from "./Detail.vue";
     /*import Approval from "./Approval.vue";*/
@@ -105,7 +95,6 @@
     // import RequestedTrade from "./RequestedTrade.vue";
     // import Unavailability from './Unavailability.vue';
     // import OpenNeed from './OpenNeed.vue';
-    // import TradeShift from './TradeShift.vue';
     import DayPreferenceView from './DayPreference.vue'
     import OpenNeed from './OpenNeed.vue';
     import TradeShift from './TradeShift.vue';
@@ -138,7 +127,6 @@
     //     }
     // },
         components: {
-             AssignmentDetail,
             /*Approval,*/
             // PotentialTrade,
              Detail,
@@ -148,7 +136,7 @@
             // RequestedTrade,
             // Unavailability,
             //OpenNeed,
-            //TradeShift,
+            TradeShift,
             // SymphonyOperatingRooms,
             DayPreferenceView,
             NeuHeader,

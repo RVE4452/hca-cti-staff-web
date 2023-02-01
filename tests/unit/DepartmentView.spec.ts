@@ -32,7 +32,7 @@ let wrapper: any;
 
 describe('computed prop', () => {
   beforeAll(() => {
-    jest.useFakeTimers('modern');
+    //jest.useFakeTimers('modern');
     jest.setSystemTime(new Date(2020, 3, 1));
   });
   afterAll(() => {
