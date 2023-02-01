@@ -107,6 +107,7 @@
     // import OpenNeed from './OpenNeed.vue';
     // import TradeShift from './TradeShift.vue';
     import DayPreferenceView from './DayPreference.vue'
+    import OpenNeed from './OpenNeed.vue';
     import TradeShift from './TradeShift.vue';
     import Request from './Request.vue';
     
@@ -143,11 +144,11 @@
              Detail,
              ShiftMemberDetail,
             // // SelfSchedule,
-            // Request,
+            //Request,
             // RequestedTrade,
             // Unavailability,
-            // OpenNeed,
-            TradeShift,
+            //OpenNeed,
+            //TradeShift,
             // SymphonyOperatingRooms,
             DayPreferenceView,
             NeuHeader,
