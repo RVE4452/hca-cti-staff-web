@@ -31,7 +31,7 @@
         <div>
             <neu-tablist v-model="tabCurrent">
                 <span  v-for="(tab,tabId) in tabList" :key="tabId" >
-                    <span v-if="tab.show" class="neu-tab">
+                    <span v-if="tab.show">
                         <neu-tab
                         @click="tabSelected(tab.id)"
                         @keyup.space="tabSelected(tab.id)"
@@ -171,6 +171,7 @@
         isProductive: boolean = false;
         newTabList:any[] = [];
         tabCurrent:string=  'Details';
+        //Add Tab details you want to add to the list
         tabList:any[]= [
         {id: 'Details', title: 'Details',show:false,focused:false},
         {id: 'DayPreference', title: 'Day Preference',show:false,focused:false},
@@ -180,6 +181,7 @@
         {id: 'OpenNeed', title: 'Open Need',show:false,focused:false},
         {id: 'Event', title: 'Event',show:false,focused:false},
         ]
+        //Based on the sharedRequest type add the type and include the TabID from the Tablist
         TabId:any = {
             1:['OpenNeed','Request','DayPreference'],
             2:['Event','Details','Request','DayPreference'],
