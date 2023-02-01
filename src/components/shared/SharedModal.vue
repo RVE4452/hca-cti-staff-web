@@ -58,7 +58,9 @@
             <div v-if="tabCurrent === 'Trade'">                
                 <TradeShift :key="counter" :currentEvent="currentEvent" @showSuccessMsgPopUp="showSuccessModal" @closeSharedModal="close" />
             </div>
-
+             <div v-if="tabCurrent === 'OpenNeed'">
+               <open-need :currentEvent="currentEvent" @showSuccessMsgPopUp="showSuccessModal" @closeSharedModal="close"></open-need> 
+            </div>
             <div v-if="tabCurrent === 'Request'">
                 <h3>Request</h3>
                 <!-- <Request :key="counter" :currentEvent="currentEvent" :additionalRequestEvent="false" :calSelectedDates="sharedRequest.calSelectedDates" @closeSharedModal="close" @showSuccessMsgPopUp="showSuccessModal" /> -->
@@ -66,11 +68,7 @@
 
             <div v-if="tabCurrent === 'DayPreference'">
                 <day-preference-view />
-            </div>            
-            <div v-if="tabCurrent === 'OpenNeed'">
-                <h3>Open Need</h3>
-                <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-            </div>
+            </div> 
             <div v-if="tabCurrent === 'Event'">
                 <h3>Event</h3>
                 <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
@@ -93,8 +91,6 @@
     // import PotentialTrade from "./PotentialTrades.vue";
     // import Request from './Request.vue';
     // import RequestedTrade from "./RequestedTrade.vue";
-    // import Unavailability from './Unavailability.vue';
-    // import OpenNeed from './OpenNeed.vue';
     import DayPreferenceView from './DayPreference.vue'
     import OpenNeed from './OpenNeed.vue';
     import TradeShift from './TradeShift.vue';
@@ -102,8 +98,7 @@
     
     import moment from "moment";
     import {NeuApp, NeuTablist, NeuTab} from '@neutron/vue';
-    //import SymphonyOperatingRooms from './SymphonyOperatingRooms.vue'
-     import {
+    import {
                 NeuHeader,
                 NeuRow,
                 NeuCol
@@ -129,15 +124,12 @@
         components: {
             /*Approval,*/
             // PotentialTrade,
-             Detail,
-             ShiftMemberDetail,
-            // // SelfSchedule,
+            Detail,
+            ShiftMemberDetail,
             //Request,
             // RequestedTrade,
-            // Unavailability,
-            //OpenNeed,
+            OpenNeed,
             TradeShift,
-            // SymphonyOperatingRooms,
             DayPreferenceView,
             NeuHeader,
             NeuRow,
@@ -163,18 +155,17 @@
         //Add Tab details you want to add to the list
         tabList:any[]= [
         {id: 'Details', title: 'Details',show:false,focused:false},
-        {id: 'DayPreference', title: 'Day Preference',show:false,focused:false},
-        {id: 'Procedures', title: 'Procedures',show:false,focused:false},
+        {id: 'OpenNeed', title: 'Open Need',show:false,focused:false},          
         {id: 'Trade', title: 'Trade',show:false,focused:false},
-        {id: 'Request', title: 'Request',show:false,focused:false},
-        {id: 'OpenNeed', title: 'Open Need',show:false,focused:false},
         {id: 'Event', title: 'Event',show:false,focused:false},
+        {id: 'Request', title: 'Request',show:false,focused:false}, 
+        {id: 'DayPreference', title: 'Day Preference',show:false,focused:false}
         ]
         //Based on the sharedRequest type add the type and include the TabID from the Tablist
         TabId:any = {
             1:['OpenNeed','Request','DayPreference'],
             2:['Event','Details','Request','DayPreference'],
-            4:['Procedures','Trade','Details','Request','DayPreference'],
+            4:['Trade','Details','Request','DayPreference'],
         }
            
 
@@ -182,18 +173,7 @@
             //super(props);
             
             const sharedRequest = JSON.parse(JSON.stringify(this.sharedRequest));
-            const currentEvent = JSON.parse(JSON.stringify(this.currentEvent));
-            //delete sharedRequest.type;
-            //delete sharedRequest.calSelectedDates;
-            //const updatedArray = Object.entries(sharedRequest);
-            //this.activeTab = Number(
-            //    Object.keys(updatedArray).find((key) => {
-            //        return updatedArray[key][1];
-            //    })
-            //);  
-            //this.activeTab = this.getActiveTab(this.sharedRequest);
-            //this.setActiveTab(this.sharedRequest);
-            
+            const currentEvent = JSON.parse(JSON.stringify(this.currentEvent));  
             let tabfocused= 0;
             this.newTabList = this.tabList.filter((eachTab)=>{
                 return this.TabId[sharedRequest.type].includes(eachTab.id);
@@ -205,19 +185,21 @@
                     this.tabCurrent = item.focused?item.id:this.tabCurrent;
                     tabfocused++;
                 }
-                if(sharedRequest.isSymphonyUser && item.id ==="Procedures") {
-                    item.show= true;
-                    item.focused =tabfocused==0 ?true:false;
-                    this.tabCurrent = item.focused?item.id:this.tabCurrent;
-                    tabfocused++;
-                }
+               
                 if(sharedRequest.tradeShift && item.id ==="Trade") {
                     item.show= true;
                     item.focused =tabfocused==0 ?true:false;
                     this.tabCurrent = item.focused?item.id:this.tabCurrent;
                     tabfocused++;
                 }
-              
+                
+                if(currentEvent.status !='0 Needs' && item.id ==="OpenNeed") {
+                    item.show= true;
+                    item.focused =tabfocused== 0 ?true:false;
+                    this.tabCurrent = item.focused?item.id:this.tabCurrent;
+                    tabfocused++;
+                }
+
                 if(sharedRequest.request && item.id ==="Request") {
                     item.show= true;
                     item.focused =tabfocused==0 ?true:false;
@@ -225,18 +207,14 @@
                     tabfocused++;
                     
                 }
+
                 if(sharedRequest.availability && item.id ==="DayPreference") {
                     item.show= true;
                     item.focused =tabfocused== 0 ?true:false;
                     this.tabCurrent = item.focused?item.id:this.tabCurrent;
                     tabfocused++;
                 }
-                if(currentEvent.status !='0 Needs' && item.id ==="OpenNeed") {
-                    item.show= true;
-                    item.focused =tabfocused== 0 ?true:false;
-                    this.tabCurrent = item.focused?item.id:this.tabCurrent;
-                    tabfocused++;
-                }
+               
                 if(sharedRequest.event && item.id ==="Event") {
                     item.show= true;
                     item.focused =tabfocused== 0 ?true:false;
@@ -300,61 +278,7 @@
             }
             return ret;
         }
-        getActiveTab(sharedRequest:any) {
-            var activeTab = 10;
-            
-            if (sharedRequest.type === 1) {                
-                if (sharedRequest.selfSchedule && this.currentEvent.status !='0 Needs') {
-                    activeTab = 0;
-                }
-                else if (sharedRequest.request) {
-                    activeTab = 1;
-                }
-                else if (sharedRequest.availability) {
-                    activeTab = 2;
-                }
-                else if (sharedRequest.vacationBidding) {
-                    activeTab = 3;
-                }
-                else if (sharedRequest.additionalRequest) {
-                    activeTab = 4;
-                }
-                else {
-                    activeTab = 5;
-                }
-            }
-            else if (sharedRequest.type === 2) {
-                if (sharedRequest.isSymphonyUser) {
-                    activeTab = 0;
-                } 
-                else if (sharedRequest.event) {
-                    activeTab = 1;
-                }
-                else if (sharedRequest.assignmentDetail) {
-                    activeTab = 2;
-                }else if(sharedRequest.availablity) {
-                    activeTab = 11;
-                }
-                
-                
-            }
-            else if (sharedRequest.type === 4) {
-                if (sharedRequest.isSymphonyUser) {
-                    activeTab = 0;
-                }
-                else if (sharedRequest.tradeShift) {
-                    activeTab = 1;
-                }
-                else if (sharedRequest.assignmentDetail) {
-                    activeTab = 2;
-                } else if(sharedRequest.request){
-                    activeTab = 3;
-                } 
-            }
-            // return 9;
-           // this.setTabProperty(sharedRequest);
-            return activeTab;
-        }
+       
         tabSelected(tabId:any){
             this.tabCurrent = tabId;
             this.tabList.map(item=>{
