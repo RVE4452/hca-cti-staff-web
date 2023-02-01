@@ -18,55 +18,56 @@
                     </neu-label>
                     <neu-input inputmode="search" type="text" name="Facility" id="txtFacility" :value="facilityName" readonly v-if="currentEvent?.type != 'Need'"/>
                    
-                    <!-- <neu-select ref="ddlFacility" interface="popover" :value="selectedFacilityId" @v-neu-change="onOpenNeedFacilityChange" v-if="currentEvent?.type == 'Need'">
+                    <neu-select ref="ddlFacility" class="ddl-facility" interface="popover" :value="selectedFacilityId" @v-neu-change="onOpenNeedFacilityChange" v-if="currentEvent?.type == 'Need'">
                             <neu-option ref="ddlFacilityOption" v-for="facility in facilities" :value="facility.facilityId" :key="facility.facilityId">
                                 {{facility.facilityName}}
                             </neu-option>
-                        </neu-select> -->
-                    <select ref="ddlFacility" class="ddl-facility neu-input__text-field" v-model="selectedFacilityId" @change="onOpenNeedFacilityChange($event)" v-if="currentEvent?.type == 'Need'">
+                        </neu-select>
+                    <!-- <select ref="ddlFacility" class="ddl-facility neu-input__text-field" v-model="selectedFacilityId" @change="onOpenNeedFacilityChange($event)" v-if="currentEvent?.type == 'Need'">
                         <option ref="ddlFacilityOption" v-for="facility in facilities" :value="facility.facilityId" :key="facility.facilityId">
                             {{facility.facilityName}}
                         </option>
-                    </select>
+                    </select> -->
                 </div>
                 <div class="col-12 neu-margin--top-20">
                     <neu-label for="txtDepartment" content="Department" position="fixed" ></neu-label>
                     <neu-input type="text" name="Department" id="txtDepartment" v-model="departmentName" :value="departmentName" readonly v-if="currentEvent?.type != 'Need'"/>
-                    <!-- <neu-select ref="ddlDepartment" interface="popover" :value="selectedDeptId" @v-neu-change="onOpenNeedDepartmentChange"  v-if="currentEvent.type == 'Need'">
+                    <neu-select ref="ddlDepartment" class="ddl-department" interface="popover" :value="selectedDeptId" @v-neu-change="onOpenNeedDepartmentChange"  v-if="currentEvent?.type == 'Need'">
                         <neu-option v-for="department in facilityDepts" :value="department.departmentId" :key="department.departmentId">
                             {{'(' + department.departmentCode + ') ' + department.departmentName}}
                         </neu-option>
-                    </neu-select> -->
-                    <select ref="ddlDepartment" class="ddl-department neu-input__text-field" v-model="selectedDeptId" @change="onOpenNeedDepartmentChange($event)"  v-if="currentEvent?.type == 'Need'">
+                    </neu-select>
+                    <!-- <select ref="ddlDepartment" class="ddl-department neu-input__text-field" v-model="selectedDeptId" @change="onOpenNeedDepartmentChange($event)"  v-if="currentEvent?.type == 'Need'">
                         <option v-for="department in facilityDepts" :value="department.departmentId" :key="department.departmentId">
                             {{'(' + department.departmentCode + ') ' + department.departmentName}}
                         </option>
-                    </select>
+                    </select> -->
                 </div>
                 <div class="col-12 neu-margin--top-20">
                     <neu-label for="txtSkill" content="Skill" position="fixed"></neu-label>
                     <neu-input type="text" name="Skill" id="txtSkill" v-model="skillName" :value="skillName" readonly v-if="currentEvent?.type != 'Need'"/>
-                    <!-- <neu-select name="ddlSkill" interface="popover" :value="selectedSkillId" @v-neu-change="onOpenNeedSkillChange"  v-if="currentEvent.type == 'Need'">
+                    <neu-select name="ddlSkill" class="ddl-skill" interface="popover" :value="selectedSkillId" @v-neu-change="onOpenNeedSkillChange"  v-if="currentEvent?.type == 'Need'">
                         <neu-option v-for="skill in skills" :value="skill.id" :key="skill.id">
                             {{skill.description}}
                         </neu-option>
-                    </neu-select> -->
-                    <select name="ddlSkill" class="ddl-skill neu-input__text-field" v-model="selectedSkillId" @change="onOpenNeedSkillChange($event)" v-if="currentEvent?.type == 'Need'">
+                    </neu-select>
+                    <!-- <select name="ddlSkill" class="ddl-skill neu-input__text-field" v-model="selectedSkillId" @change="onOpenNeedSkillChange($event)" v-if="currentEvent?.type == 'Need'">
                         <option v-for="skill in skills" :value="skill.id" :key="skill.id">
                             {{skill.description}}
                         </option>
-                    </select>
+                    </select> -->
                 </div>
                 <div class="col-12 neu-margin--top-20">
                     <neu-label for="txtShift" content="Shift" position="fixed"></neu-label>
                     <neu-input type="text" name="shift" id="txtShift" v-model="deptShiftDesc" :value="deptShiftDesc" readonly
                     v-if="currentEvent?.type == 'Assignment' && currentEvent?.status  == 'Pending'" />
-                    <!-- <neu-select name="ddlShifts" interface="popover" :value="data.selectedShift" @v-neu-change="onOpenNeedShiftChanges"  v-if="currentEvent.type == 'Need' || (currentEvent.type == 'Assignment' && currentEvent.status  != 'Pending')">
-                        <neu-option v-for="shift in data.shifts" :value="shift.id" :key="shift.id">
+                    <neu-select name="ddlShifts" class="ddl-shift" interface="popover" :value="data.selectedShift" @v-neu-change="onOpenNeedShiftChanges"  
+                    v-if="currentEvent?.type == 'Need' || (currentEvent?.type == 'Assignment' && currentEvent?.status  != 'Pending')">
+                        <neu-option  v-for="shift in data.shifts" :value="shift.id" :key="shift.id">
                             {{ shift.description }} {{shift.premiumLaborLevel ? ' (Incentive)': ''}}
                         </neu-option>
-                    </neu-select> -->
-                    <select class="ddl-shift neu-input__text-field"
+                    </neu-select>
+                    <!-- <select class="ddl-shift neu-input__text-field"
                             name="ddlShifts" style="padding: 1px !important"
                             v-model="data.selectedShift"
                             @change="onOpenNeedShiftChanges()"
@@ -76,7 +77,7 @@
                                 :key="shift.id">
                             {{ shift.description }} {{shift.premiumLaborLevel ? ' (Incentive)': ''}}
                         </option>
-                    </select>
+                    </select> -->
 
                     <div class="mt3" v-if="deptPartialShifts && deptPartialShifts?.length">
                         <neu-input type="checkbox" name="showPartial" id="chkShowPartial" v-model="showPartial" :value="showPartial"
@@ -84,12 +85,13 @@
                         <neu-label for="chkShowPartial" content="Show Partial Shift Options" position="fixed"></neu-label>
                     </div>
 
-                    <!-- <neu-select name="ddlPartialShifts" interface="popover" :value="data.selectedPartialShift" @v-neu-change="onOpenNeedPartialShiftChanges"   v-if="deptPartialShifts && deptPartialShifts.length && showPartial">
+                    <neu-select name="ddlPartialShifts" class="ddl-partial-shift" interface="popover" :value="data.selectedPartialShift" @v-neu-change="onOpenNeedPartialShiftChanges" 
+                      v-if="deptPartialShifts && deptPartialShifts?.length && showPartial">
                         <neu-option v-for="shift in data.partialShifts" :value="shift.departmentShiftId" :key="shift.departmentShiftId">
                             {{ shift.description }} 
                         </neu-option>
-                    </neu-select> -->
-                    <select class="ddl-partial-shift neu-input__text-field mt3"
+                    </neu-select>
+                    <!-- <select class="ddl-partial-shift neu-input__text-field mt3"
                             name="ddlPartialShifts"
                             v-model="data.selectedPartialShift"
                             @change="onOpenNeedPartialShiftChanges()"
@@ -99,7 +101,7 @@
                                 :key="shift.departmentShiftId">
                             {{ shift.description }} 
                         </option>
-                    </select>
+                    </select> -->
                 </div>
             </div>
         </div>
@@ -180,7 +182,7 @@
     @Options({
         components: {
             ErrorNotification,
-            NeuSelect,NeuOption,NeuLabel,NeuInput,NeuButton
+            NeuButton
         },
          computed: {
         ...mapState(['oidcUser']),
