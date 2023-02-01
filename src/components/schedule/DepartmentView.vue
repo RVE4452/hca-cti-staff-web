@@ -130,9 +130,9 @@
     //@ts-ignore
     import { Multiselect } from 'vue-multiselect';
     import { useAppInsights } from '../../store/modules/AppInsights'
-    import {
-        NeuSelect,NeuOption,NeuRow,NeuCol,NeuDivider
-    } from '@neutron/vue'
+    // import {
+    //     NeuSelect,NeuOption,NeuRow,NeuCol,NeuDivider
+    // } from '@neutron/vue'
 
     class Props{
         readonly currentScheduleId!: string;
@@ -140,7 +140,7 @@
     @Options({
         components: { 
             VueMultiselect : Multiselect,
-            NeuSelect,NeuOption,NeuRow,NeuCol,NeuDivider
+            //NeuSelect,NeuOption,NeuRow,NeuCol,NeuDivider
          },
          computed: {
                 ...mapState('profile', ['profileData','appInsightEventData']),
@@ -181,7 +181,7 @@
         private iconToggle: boolean = true;
 
         async mounted() { 
-            if(this.profileData?.first == null || this.profileData?.first == undefined)
+            if(this.profileData?.first == "" || this.profileData?.first == null || this.profileData?.first == undefined)
             {
                 await this.$store.dispatch('profile/getProfileDetails','');
                 await this.getFiltersData();
@@ -189,7 +189,7 @@
                 await this.getDepartmentSchedule();
                 localStorage.setItem("visitedDepartmentView", "true");
                 useAppInsights().trackEvent({name:'ViewDepartment',properties: 
-                JSON.parse(JSON.stringify(this.appInsightEventData))});  
+                JSON.parse(JSON.stringify(this.appInsightEventData))}); 
             } else{
                 await this.getFiltersData();
                 await this.showScheduleDays();
@@ -212,15 +212,15 @@
                     effective: "",
                     expires: ""
                 }
-                const deptIndex = this.profileData.secondaryDepartments?.findIndex((x:any) => x.deptId == objPrimaryFacilityDepartment.deptId);
+                const deptIndex = this.profileData?.secondaryDepartments?.findIndex((x:any) => x.deptId == objPrimaryFacilityDepartment.deptId);
                 if (deptIndex > -1) {
-                    this.profileData.secondaryDepartments.splice(deptIndex, 1);
+                    this.profileData?.secondaryDepartments?.splice(deptIndex, 1);
                 }
-                this.profileData.secondaryDepartments.push(objPrimaryFacilityDepartment);
+                this.profileData?.secondaryDepartments?.push(objPrimaryFacilityDepartment);
 
                 this.facilities = this.removeDuplicatesFromArrayByProperty(this.profileData.secondaryDepartments, 'facilityId');                
                 this.selectedFacilityId = (localStorage.getItem("selFacId") == null ? this.profileData.facilityId : Number(localStorage.getItem("selFacId")));               
-                this.facilityDepts = this.profileData.secondaryDepartments.filter((x:any) => x.facilityId == this.selectedFacilityId);
+                this.facilityDepts = this.profileData?.secondaryDepartments?.filter((x:any) => x.facilityId == this.selectedFacilityId);
                 this.selectedDeptId = (localStorage.getItem("selDepId") == null ? this.profileData.deptId : Number(localStorage.getItem("selDepId")));               
 
                 if (this.userSchedules?.length  == 0 || this.userSchedules == undefined) {
@@ -243,14 +243,14 @@
             }
         }
 
-        removeDuplicatesFromArrayByProperty = (arr:any, prop:any) => arr.reduce((accumulator:any, currentValue:any) => {
+        removeDuplicatesFromArrayByProperty = (arr:any, prop:any) => arr?.reduce((accumulator:any, currentValue:any) => {
             if (!accumulator.find((obj:any) => obj[prop] === currentValue[prop])) {
                 accumulator.push(currentValue);
             }
             return accumulator;
         }, [])
 
-        removeDuplicatesSkillsFromArrayByProperty = (arr:any, prop:any) => arr.reduce((accumulator:any, currentValue:any) => {
+        removeDuplicatesSkillsFromArrayByProperty = (arr:any, prop:any) => arr?.reduce((accumulator:any, currentValue:any) => {
             if (accumulator.length == 0) {
                 accumulator.push({ "id": 0, "description": "All", "skill": "All" });
             }
