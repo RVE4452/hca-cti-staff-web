@@ -1,89 +1,61 @@
 <template>
-    <div class="container pheadingNavigation0 containerWidth">
-        <neu-container class="row profileMainDiv" v-bind:class="{ 'sidepanel-open': isSharedPanelOpen }">
-            <neu-row cols="12">
-                <neu-col cols="4" class="profile-desktop-header profile-nav flex40 no-print">
-                    <neu-card-content  class="vh-100 vw-20" color="plain-0" col="3">
-                        <neu-sub-left-nav  color="plain" side="left">
-                            <neu-input type="text" readonly="true"  enterkeyhint="search" :value="userName" id="txtUsername" >
-                            </neu-input>
-                            <!-- Nav: Employee Details -->
-                            <neu-item :selected="isSelected('EmpDtls')" class="pl-3" @click="routeNavigation('EmployeeDetails')">
-                            <neu-stepper slot="start"> <neu-icon slot="start">manage_accounts</neu-icon></neu-stepper>
-                            <neu-label>Employee Info</neu-label>
-                            <neu-icon v-if="isSelected('EmpDtls')" slot="end">navigate_next</neu-icon>
-                            </neu-item>
-                            <!-- END Nav: Employee Details -->
+   <neu-container class= "desktop-view">
+        <neu-sub-left-nav  color="plain" side="left" :name="userName">
+            <!-- <neu-input type="text" readonly="true"  enterkeyhint="search" :value="userName" id="txtUsername" >
+            </neu-input> -->
+            
+            <!-- Nav: Employee Details Starts -->
+            <neu-item :selected="isSelected('EmpDtls')" class="pl-3" @click="routeNavigation('EmployeeDetails')">
+            <neu-stepper slot="start"> <neu-icon slot="start">manage_accounts</neu-icon></neu-stepper>
+            <neu-label>Employee Info</neu-label>
+            </neu-item>
+            <!-- Nav: Employee Details Ends -->
 
-                            <!-- Nav: Schedule Preference -->
-                            <neu-item :selected="isSelected('SchPref')" class="pl-3"  @click="routeNavigation('SchedulePreference')" >
-                            <neu-stepper slot="start"> <neu-icon slot="start">calendar_month</neu-icon></neu-stepper>
-                            <neu-label> Schedule Preference </neu-label>
-                            <neu-icon v-if="isSelected('SchPref')" slot="end">navigate_next</neu-icon>
-                            </neu-item>
-                            <!-- END Nav: Schedule Preference -->
+            <!-- Nav: Schedule Preference Starts -->
+            <neu-item :selected="isSelected('SchPref')" class="pl-3"  @click="routeNavigation('SchedulePreference')" >
+            <neu-stepper slot="start"> <neu-icon slot="start">calendar_month</neu-icon></neu-stepper>
+            <neu-label> Schedule Preference </neu-label>
+            </neu-item>
+            <!-- Nav: Schedule Preference Ends -->
 
-                            <!-- Nav: Payroll Details -->
-                            <neu-item :selected="isSelected('PayrollDtls')" class="pl-3" @click="routeNavigation('PayrollDetails')">
-                            <neu-stepper slot="start"> <neu-icon slot="start">timer</neu-icon></neu-stepper>
-                            <neu-label > Payroll Details </neu-label>
-                            <neu-icon v-if="isSelected('PayrollDtls')" slot="end">navigate_next</neu-icon>
-                            <!-- END Nav: Payroll Details -->
-                        </neu-item>
-                        
-                        </neu-sub-left-nav>
-                    </neu-card-content>
-                </neu-col>
-                <neu-col cols="4" class="mobile-menu profile-mobile-header no-print">
-                    <neu-card-content  class="vh-100 vw-100" color="plain-0" col="3" >
-                        <neu-sub-left-nav color="plain" side="left" overlay="true" >
-                            <neu-input type="text" readonly="true"  enterkeyhint="search" :value="userName" id="txtUsername" >
-                            </neu-input>
-                            <neu-item class="pl-3"  @click="routeNavigation('EmployeeDetails')">
-                            <neu-stepper slot="start"> <neu-icon slot="start">manage_accounts</neu-icon></neu-stepper>
-                            </neu-item>
-                            <neu-item selected="true" class="pl-3"  @click="routeNavigation('SchedulePreference')">
-                            <neu-stepper slot="start"> <neu-icon slot="start">calendar_month</neu-icon></neu-stepper>
-                            </neu-item>
-                            <neu-item selected="true" class="pl-3"  @click="routeNavigation('PayrollDetails')">
-                            <neu-stepper slot="start"> <neu-icon slot="start">timer</neu-icon></neu-stepper>
-                            </neu-item>
-                            </neu-sub-left-nav>
-                    </neu-card-content>
-                </neu-col>
-                <neu-col cols="8">
-                    <neu-card-content  class="vw-80" color="plain-0" col="3" >
-                        <main aria-label="content">
-                            <!-- MOBILE NAV -->
-                            <header class="row neu-margin--bottom-30 flex flex-row w-100 mobile-header ml0">
-                                <div class="row neu-margin--top-20 center">
-                                    <neu-card-content center="true">
-                                            <h5>
-                                                {{ headerCaption }}
-                                            </h5>
-                                    </neu-card-content>
-                                    
-                                </div>
-                            </header>
-                            <div v-if="isSelected('EmpDtls')">
-                                <EmploymentDetails />
-                            </div>
+            <!-- Nav: Payroll Details Starts -->
+            <neu-item :selected="isSelected('PayrollDtls')" class="pl-3" @click="routeNavigation('PayrollDetails')">
+            <neu-stepper slot="start"> <neu-icon slot="start">timer</neu-icon></neu-stepper>
+            <neu-label > Payroll Details </neu-label>
+            </neu-item>
+            <!-- Nav: Payroll Details Ends -->
+
+        </neu-sub-left-nav>
+        <neu-card-content>
+            <main aria-label="content">
+            <!-- MOBILE NAV -->
+            <header class="row neu-margin--bottom-30 flex flex-row w-80 mobile-header ml0">
+            <div class="row neu-margin--top-20 center">
+            <neu-card-content center="true">
+                    <h5>
+                        {{ headerCaption }}
+                    </h5>
+            </neu-card-content>
+
+            </div>
+            </header>
+            <div v-if="isSelected('EmpDtls')">
+                <EmploymentDetails />
+            </div>
+
+            <div v-else-if="isSelected('SchPref')">
+            <!-- <SchedulingPref /> -->
+                <neu-lable>SchedulingPref</neu-lable>
+            </div>
+
+            <div v-else-if="isSelected('PayrollDtls')">
+                <PayrollDetails />
+                <!-- <neu-lable>PayrollDetails</neu-lable> -->
+            </div>
                             
-                            <div v-else-if="isSelected('SchPref')">
-                                <!-- <SchedulingPref /> -->
-                                <neu-lable>SchedulingPref</neu-lable>
-                            </div>
-                            
-                            <div v-else-if="isSelected('PayrollDtls')">
-                                <PayrollDetails />
-                            </div>
-                            
-                        </main>
-                    </neu-card-content>
-                </neu-col>
-            </neu-row>
-        </neu-container>
-    </div>
+            </main>
+        </neu-card-content>
+    </neu-container>
 </template>
 <script lang="ts">
         import { NeuContainer } from '@neutron/vue';
@@ -116,8 +88,8 @@
             },
             props: {},
             components: { 
-                EmploymentDetails,
                 NeuContainer,
+                EmploymentDetails, 
                 // SchedulingPref, 
                 // SMSPref, 
                 // NotificationMgmt,
@@ -165,21 +137,12 @@
                         this.headerCaption = "My Employment Details";
                         this.pagingNumber = "Page 1 of 3";
                     }
-                    //  else if (flag == "SelfSchPrefDefault") {
-                    //     this.selectedTab = "SelfSchPrefDefault";
-                    //     this.headerCaption = "Self-Scheduling Defaults";
-                    //     this.pagingNumber = "Page 2 of 5";
-                    // }
-                     else if (flag == "SchPref") {
+                    else if (flag == "SchPref") {
                         this.selectedTab = "SchPref";
                         this.headerCaption = "Scheduling Preferences";
                         this.pagingNumber = "Page 2 of 3";
                     }
-                    //  else if (flag == "SMSPref") {
-                    //     this.selectedTab = "SMSPref";
-                    //     this.headerCaption = "SMS Preferences";
-                    //     this.pagingNumber = "Page 4 of 5";
-                    // }
+                   
                      else if (flag == "PayrollDtls") {
                         this.selectedTab = "PayrollDtls";
                         this.headerCaption = "Employee Payroll Details";
@@ -210,15 +173,7 @@
                         this.headerCaption = "Employee Payroll Details";
                         this.pagingNumber = "Page 3 of 3";
                     }
-                }
-    
-                //else if (flag == "NtfMgmt") {
-                //    this.selectedTab = "NtfMgmt";
-                //    this.headerCaption = "Notification Management";
-                //    this.pagingNumber = "Page 4 of 4";
-                //}
-                //---Need to add code for Notification Management
-                },
+                }},
     
                 isSelected(selectedTabVal: string) {
                     if(this.selectedTab === selectedTabVal){
@@ -245,250 +200,67 @@
         });
     </script>
 <style scoped>
-    .div-cursor {
-        cursor: pointer;
+    .desktop-view{
+        display: -webkit-inline-box;
+        overflow: unset;
     }
-    .itemcenter{
-        display: flex;
-        align-items: center;
-    }
-
     /* Media Query for Mobile Devices */
     @media (max-width: 480px) {
-        .pheadingNavigation0 {
-            padding-left: 15px !important;
-            padding-right: 15px !important;
-        }
-
-        .mobile-Content {
-            max-width: 85%;
-        }
-
-        .mobile-menu {
-            min-width: 15%;
-            display: block;
-        }
-
-        .prePageNavigationmobile {
-            padding-left: 0px !important;
-            padding-right: 5px !important;
-            font-size: 0.9rem;
-        }
-
-        .nxtPageNavigationmobile {
-            padding-left: 5px !important;
-            padding-right: 0px !important;
-            font-size: 0.9rem;
-        }
-
-        .leftArrowMobile {
-            margin-right: 0px !important;
-        }
-
-        .rightArrowMobile {
-            margin-left: 0px !important;
-        }
-
-        .pleft5 {
-            padding-left: 5px !important;
-        }
-
-        .profile-mobile-header {
-            display: initial;
-        }
-
-        .profile-desktop-header {
-            display: none;
-        }
-        
-
-        .profile-Name {
-            height: 45px;
-            width: 45px;
-            border-radius: 50%;
-            margin-left: 4px;
-            justify-content: center;
-        }
-
-        .profile-Name-Initial {
-            padding-top: 8px;
-            color: #fff;
-        }
-
-        .profile-Navigation-Num {
-            /* border: 1px solid #01558C; */
-            border-radius: 50%;
-            padding: 2px;
-            width: 30px
-        }
-
-        .profileMainDiv {
-            position: relative;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
-            transition: width 0.2s ease-in-out;
-            width: 100%;
-        }
-        .desktop-menu {
-            display: none;
+        .desktop-view{
+            display: flex;
+            overflow: unset;
         }
     }
 
     @media (min-width: 481px) {
-        .profile-mobile-header {
-            display: none;
-        }
-
-        .profile-desktop-header {
-            display: initial;
-        }
-        .desktop-menu {
-            display: none;
+        .desktop-view{
+            display: flex;
+            overflow: unset;
         }
     }
 
     /* Media Query for low resolution  Tablets, Ipads */
     @media (min-width: 481px) and (max-width: 767px) {
-        .profile-nav {
-            padding-left: 0px;
-        }
-
-        .profile-Navigation-Num {
-            /* border: 1px solid rgb(1, 85, 140); */
-            border-radius: 50%;
-            padding: 2px;
-            width: 30px;
-            height: 30px;
-        }
-
-        .containerWidth {
-            max-width: 608px;
-        }
-
-        .flex40 {
-            flex: 0 0 40%;
-            max-width: 40%;
-        }
-
-        .flex60 {
-            flex: 0 0 58%;
-            max-width: 58%;
-            padding-right: 0;
-        }
-
-        .profileMainDiv {
-            position: relative;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
-            transition: width 0.2s ease-in-out;
-            width: 100%;
-        }
-        .mobile-menu{
-            display: none;
-        }
-        .desktop-menu {
-            display: block;
+        .desktop-view{
+            display: flex;
+            overflow: unset;
         }
     }
 
     @media (min-width: 768px) and (max-width: 899px) {
-        .profile-Navigation-Num {
-            /* border: 1px solid rgb(1, 85, 140); */
-            border-radius: 50%;
-            padding: 2px;
-            width: 30px;
-            height: 30px;
-        }
-
-        .containerWidth {
-            max-width: 800px;
-        }
-
         .mobile-header {
             display: block !important;
+            width:100vw;
+
+        }
+        .desktop-view{
+            display: -webkit-inline-box;
+            overflow: unset;
         }
 
-        .profileMainDiv {
-            position: relative;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
-            transition: width 0.2s ease-in-out;
-            width: 100%;
-        }
+        
     }
     /* Media Query for Tablets Ipads portrait mode */
     @media (min-width: 900px) and (max-width: 1024px) {
-        .profile-Navigation-Num {
-            /* border: 1px solid #01558C; */
-            border-radius: 50%;
-            padding: 2px;
-            width: 30px
+        .mobile-header{
+            width:80vw;
         }
-
-        .profileMainDiv {
-            position: relative;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
-            transition: width 0.2s ease-in-out;
-            width: 100%;
-        }
-
-        .sidepanel-open {
-            transition: width 0.2s ease-in-out;
-            width: 70%;
-            margin-right: 0px !important;
-            margin-left: 0px !important;
-        }
-        .mobile-menu{
-            display: none;
-        }
-        .desktop-menu {
-            display: block;
+        .desktop-view{
+            display: -webkit-inline-box;
+            overflow: unset;
         }
     }
 
     /* Media Query for Laptops and Desktops */
     @media (min-width: 1025px) {
-        .profile-Navigation-Num {
-            /* border: 1px solid #01558C; */
-            border-radius: 50%;
-            padding: 2px;
-            width: 30px
+       
+        .mobile-header{
+            width:80vw;
         }
-
-        .profileMainDiv {
-            position: relative;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
-            transition: width 0.2s ease-in-out;
-            width: 100%;
+        .desktop-view{
+            display: -webkit-inline-box;
+            overflow: unset;
         }
-
-        .sidepanel-open {
-            transition: width 0.2s ease-in-out;
-            width: 75%;
-            margin-right: 0px !important;
-            margin-left: 0px !important;
-        }
-
-        .pdleft0 {
-            padding-left: 0px !important;
-        }
-        .mobile-menu{
-            display: none;
-        }
-        .desktop-menu {
-            display: block;
-        }
-    }
-
-    .circleNum {
-        border: 1px solid rgb(1, 85, 140);
-        border-radius: 50px;
-        height: 1.6rem;
-        width: 38px;
-        display: inline-block;
-        text-align: center;
     }
 
     @media print {
@@ -503,11 +275,14 @@
 
         .mobile-header {
             display: none;
+            width:100vw;
+
+        }
+        .desktop-view{
+            display: -webkit-inline-box;
+            overflow: unset;
         }
     }
-    /* .neu-stepper > .neu-item__content__inner__input-wrapper .sc-neu-item.sc-neu-item-s ::v-deep {
-    display: flex !important;
-    align-items: center !important;
-    } */
+    
     
 </style>
