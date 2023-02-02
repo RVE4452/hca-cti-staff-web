@@ -7,12 +7,7 @@
                         </div>
                 <div class="col-12 neu-margin--bottom-20" v-if="showErrorMsg">
                     <ErrorNotification :errorMsg="errorMsg" :errorType="errorType" />
-                </div>
-                <div class="col-12 f3">
-                    <h5>
-                        {{ formatDate(currentEvent?.date) }}
-                    </h5>
-                </div>
+                </div>              
                  <div class="col-12 neu-margin--top-20">
                     <neu-label content="Facility" position="fixed" >
                     </neu-label>
@@ -123,7 +118,6 @@
                 </div>
             </div>
         </div>
-        <!-- </div> -->
     </div>
 </template>
 

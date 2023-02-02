@@ -67,12 +67,6 @@ const store = new Vuex.Store({
       },
     } 
 }
-  // beforeEach(() => {
-  //  wrapper = mount(OpenNeed, componentOptions);
-  // })
-  // afterEach(() => {
-  //   jest.clearAllMocks();
-  // })
   describe('computed prop', () => {
     wrapper = mount(OpenNeed, componentOptions);
     wrapper.vm.data = {
@@ -114,37 +108,7 @@ const store = new Vuex.Store({
         it("check for shift dropdown option value", async () => {
           await wrapper.vm.$nextTick();   
           expect(wrapper.vm.data.selectedShift).toBe("");      
-        });
-
-        // it("check for facility dropdown onChangeEvent Id - onFacilityChange", async () => {
-        //   wrapper.vm.isLoaded = true;
-        //   await wrapper.vm.$nextTick();
-          
-        //   expect (wrapper.html()).toBe("");
-        //   const select = wrapper.findComponent({ref: 'ddlFacility'});
-        //   await wrapper.vm.$nextTick();
-        //   expect(select.exists()).toBe(true);
-        //   const event = {
-        //     target: {
-        //       value: 2
-        //     }
-        //   }
-        //   wrapper.findComponent({ref: 'ddlFacility'}).vm.$emit("v-neu-change", event);
-        //   await wrapper.vm.$nextTick();
-        //   expect(wrapper.vm.selectedFacilityId).toBe(2);
-        // });
-
-        // it("check for department dropdown onChangeEvent Id- onOpenNeedDepartmentChange", async () => {  
-        //   const event = { target: { value: 110541 } }      
-        //   const spy = jest.spyOn(wrapper.vm, "onOpenNeedDepartmentChange")
-        //   await wrapper.vm.$nextTick();          
-        //   const selectDept = wrapper.find('.ddl-department');
-        //   await wrapper.vm.$nextTick();          
-        //   selectDept.trigger("v-neu-change");
-        //   expect(spy).toHaveBeenCalled();
-        //   // wrapper.vm.onOpenNeedDepartmentChange(event);
-        //   // expect(wrapper.vm.selectedDeptId).toBe(110541);
-        // });       
+        });           
       });
 
       describe("Testing on loadopenNeedShiftMembers", () => { 
