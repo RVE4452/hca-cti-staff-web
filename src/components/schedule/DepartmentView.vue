@@ -80,19 +80,13 @@
                     </th>
                     <th class="neu-input__label td_column2 skillWidth pt14" v-bind:class="{ 'hideSkillCol': columnToggle }">
                         <span v-bind:class="{ 'hideIcon': columnToggle }">Skill</span>
-                        <div class="navArrow mobileNav no-print">
-                            <i class="material-icons pointer colNavigation"  v-bind:class="{ 'hideIcon': !iconToggle }" @click="hideColumns">
+                        <div class="navArrow mobileNav no-print">                           
+                            <neu-icon class="material-icons pointer colNavigation"  v-bind:class="{ 'hideIcon': !iconToggle }" @click="hideColumns">
                                 chevron_left
-                            </i>
-                            <i class="material-icons pointer colNavigation " v-bind:class="{ 'hideIcon': iconToggle }" @click="showColumns" >
-                                chevron_right
-                            </i>
-                            <!-- <neu-icon class="material-icons pointer colNavigation"  v-bind:class="{ 'hideIcon': !iconToggle }" @click="hideColumns">
-                                chevron_right
                             </neu-icon>
                             <neu-icon class="material-icons pointer colNavigation " v-bind:class="{ 'hideIcon': iconToggle }" @click="showColumns">
                                 chevron_right
-                            </neu-icon> -->
+                            </neu-icon>
                         </div>
                     </th>
                     <th v-for="day in days" :key="days.indexOf(day)" class="neu-input__label periodWidth" 
@@ -130,16 +124,16 @@
     //@ts-ignore
     import { Multiselect } from 'vue-multiselect';
     import { useAppInsights } from '../../store/modules/AppInsights'
-    // import {
-    //     NeuSelect,NeuOption,NeuRow,NeuCol,NeuDivider
-    // } from '@neutron/vue'
+    import {
+        NeuIcon
+    } from '@neutron/vue'
 
     class Props{
         readonly currentScheduleId!: string;
     }
     @Options({
         components: { 
-            VueMultiselect : Multiselect,
+            VueMultiselect : Multiselect,NeuIcon
             //NeuSelect,NeuOption,NeuRow,NeuCol,NeuDivider
          },
          computed: {
