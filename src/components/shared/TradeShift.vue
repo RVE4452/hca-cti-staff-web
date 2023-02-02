@@ -210,7 +210,7 @@ export default class TradeShift extends Vue.with(Props) {
     searchEndDate: "",
     searchFirstName: "",
     searchLastName: "",
-    recommendedShiftsOnly: true,
+    recommendedShiftsOnly: false,
     isInitialLoad: true
   };
   declare public $refs: {            
