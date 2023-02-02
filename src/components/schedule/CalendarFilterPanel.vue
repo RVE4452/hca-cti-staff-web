@@ -1,7 +1,7 @@
 <template >
 
   <div v-if="toggleStatus" class="overflow-hidden absolute bottom-0 fr filterwidth right-0 z-999 no-print" :style="customTop">
-    <div class="bg-near-white h-100 ml-auto relative rightnav-drawer-filter"  :style="this.toggleStatus ? 'left: 0' : 'left:502px'">
+    <div class="bg-near-white h-100 ml-auto relative rightnav-drawer-filter"  :style="toggleStatus ? 'left: 0' : 'left:502px'">
       <div class="bg-near-white z-999">
         <div class="align-items-xl-center bg-white container-fluid flex  w-100 h-20">
           <span @click="closeNav()" class="material-icons pointer tr-ns">close</span>

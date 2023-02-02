@@ -3,21 +3,21 @@
     <div class="margin">
         <neu-row class="no-print">
             <neu-col xxl="" xl="3" lg="12" md="2" sm="6" cols="12">
-                <neu-select interface="popover" :value="selectedFacilityId" @v-neu-change="onFacilityChange">
-                <neu-option v-for="facility in facilities" :value="facility.facilityId" :key="facility.facilityId">
+                <neu-select ref="ddlFacility" interface="popover" :value="selectedFacilityId" @v-neu-change="onFacilityChange">
+                <neu-option ref="ddlFacilityOption" v-for="facility in facilities" :value="facility.facilityId" :key="facility.facilityId">
                     {{facility.facilityName}}
                 </neu-option>
                 </neu-select>
             </neu-col>
             <neu-col xxl="2" xl="3" lg="12" md="2" sm="6" cols="12">
-                <neu-select interface="popover" :value="selectedDeptId" @v-neu-change="onDepartmentChange">
-                <neu-option v-for="department in facilityDepts" :value="department.deptId" :key="department.deptId">
+                <neu-select ref="ddlDepartment" interface="popover" :value="selectedDeptId" @v-neu-change="onDepartmentChange">
+                <neu-option ref="ddlDepartmentOption" v-for="department in facilityDepts" :value="department.deptId" :key="department.deptId">
                     {{department.deptName}}
                 </neu-option>
                 </neu-select>
             </neu-col>
             <neu-col xxl="2" xl="3" lg="12" md="2" sm="6" cols="12">
-                <VueMultiselect v-model="selectedSkills"
+                <VueMultiselect ref="ddlSkills" v-model="selectedSkills"
                         :options="skills"
                         :multiple="true"
                         :searchable="true"
@@ -29,7 +29,7 @@
                 </VueMultiselect>
             </neu-col>
             <neu-col xxl="2" xl="3" lg="12" md="2" sm="6" cols="12">
-                <VueMultiselect v-model="selectedSkills"
+                <VueMultiselect ref="ddlScheduleBlocks" v-model="selectedSkills"
                         :options="skills"
                         :multiple="true"
                         :searchable="true"
@@ -41,8 +41,8 @@
                 </VueMultiselect>
             </neu-col>
             <neu-col xxl="2" xl="3" lg="12" md="2" sm="6" cols="12">
-                <neu-select interface="popover" :value="selectedScheduleId" @v-neu-change="onScheduleChange">
-                    <neu-option v-for="schedule in userSchedules" :key="schedule.id" :value="schedule.id">
+                <neu-select ref="ddlPeriod" interface="popover" :value="selectedScheduleId" @v-neu-change="onScheduleChange">
+                    <neu-option ref="ddlPeriodOption" v-for="schedule in userSchedules" :key="schedule.id" :value="schedule.id">
                         {{getSchedulePeriod(userSchedules.indexOf(schedule))}}
                     </neu-option>
                 </neu-select>
@@ -130,13 +130,17 @@
     //@ts-ignore
     import { Multiselect } from 'vue-multiselect';
     import { useAppInsights } from '../../store/modules/AppInsights'
+    // import {
+    //     NeuSelect,NeuOption,NeuRow,NeuCol,NeuDivider
+    // } from '@neutron/vue'
 
     class Props{
         readonly currentScheduleId!: string;
     }
     @Options({
         components: { 
-            VueMultiselect : Multiselect
+            VueMultiselect : Multiselect,
+            //NeuSelect,NeuOption,NeuRow,NeuCol,NeuDivider
          },
          computed: {
                 ...mapState('profile', ['profileData','appInsightEventData']),
@@ -177,7 +181,7 @@
         private iconToggle: boolean = true;
 
         async mounted() { 
-            if(this.profileData.first == null || this.profileData.first == undefined)
+            if(this.profileData?.first == "" || this.profileData?.first == null || this.profileData?.first == undefined)
             {
                 await this.$store.dispatch('profile/getProfileDetails','');
                 await this.getFiltersData();
@@ -185,7 +189,7 @@
                 await this.getDepartmentSchedule();
                 localStorage.setItem("visitedDepartmentView", "true");
                 useAppInsights().trackEvent({name:'ViewDepartment',properties: 
-                JSON.parse(JSON.stringify(this.appInsightEventData))});  
+                JSON.parse(JSON.stringify(this.appInsightEventData))}); 
             } else{
                 await this.getFiltersData();
                 await this.showScheduleDays();
@@ -208,18 +212,18 @@
                     effective: "",
                     expires: ""
                 }
-                const deptIndex = this.profileData.secondaryDepartments.findIndex((x:any) => x.deptId == objPrimaryFacilityDepartment.deptId);
+                const deptIndex = this.profileData?.secondaryDepartments?.findIndex((x:any) => x.deptId == objPrimaryFacilityDepartment.deptId);
                 if (deptIndex > -1) {
-                    this.profileData.secondaryDepartments.splice(deptIndex, 1);
+                    this.profileData?.secondaryDepartments?.splice(deptIndex, 1);
                 }
-                this.profileData.secondaryDepartments.push(objPrimaryFacilityDepartment);
+                this.profileData?.secondaryDepartments?.push(objPrimaryFacilityDepartment);
 
                 this.facilities = this.removeDuplicatesFromArrayByProperty(this.profileData.secondaryDepartments, 'facilityId');                
                 this.selectedFacilityId = (localStorage.getItem("selFacId") == null ? this.profileData.facilityId : Number(localStorage.getItem("selFacId")));               
-                this.facilityDepts = this.profileData.secondaryDepartments.filter((x:any) => x.facilityId == this.selectedFacilityId);
+                this.facilityDepts = this.profileData?.secondaryDepartments?.filter((x:any) => x.facilityId == this.selectedFacilityId);
                 this.selectedDeptId = (localStorage.getItem("selDepId") == null ? this.profileData.deptId : Number(localStorage.getItem("selDepId")));               
 
-                if (this.userSchedules.length  == 0 || this.userSchedules == undefined) {
+                if (this.userSchedules?.length  == 0 || this.userSchedules == undefined) {
                     var payload = {
                         username: this.profileData.username,
                         index: this.currentShceduleIndex,
@@ -229,24 +233,24 @@
                 }
 
                 if (this.userSchedules != undefined) {
-                    this.selectedScheduleId = this.userSchedules[this.currentShceduleIndex].id;
+                    this.selectedScheduleId = this.userSchedules[this.currentShceduleIndex]?.id;
                     let Schedule = this.userSchedules.filter((x:any)=> x.id == this.selectedScheduleId)[0]
                     this.selectedScheduleName = this.getSchedulePeriod(this.userSchedules.indexOf(Schedule));
                 }
 
-                this.selectedFacilityName =  this.facilities.filter((x:any)=> x.facilityId == this.selectedFacilityId)[0].facilityName;
-                this.selectedDeptName = this.facilityDepts.filter((y:any)=> y.deptId == this.selectedDeptId)[0].deptName;
+                this.selectedFacilityName =  this.facilities?.filter((x:any)=> x.facilityId == this.selectedFacilityId)[0]?.facilityName;
+                this.selectedDeptName = this.facilityDepts?.filter((y:any)=> y.deptId == this.selectedDeptId)[0]?.deptName;
             }
         }
 
-        removeDuplicatesFromArrayByProperty = (arr:any, prop:any) => arr.reduce((accumulator:any, currentValue:any) => {
+        removeDuplicatesFromArrayByProperty = (arr:any, prop:any) => arr?.reduce((accumulator:any, currentValue:any) => {
             if (!accumulator.find((obj:any) => obj[prop] === currentValue[prop])) {
                 accumulator.push(currentValue);
             }
             return accumulator;
         }, [])
 
-        removeDuplicatesSkillsFromArrayByProperty = (arr:any, prop:any) => arr.reduce((accumulator:any, currentValue:any) => {
+        removeDuplicatesSkillsFromArrayByProperty = (arr:any, prop:any) => arr?.reduce((accumulator:any, currentValue:any) => {
             if (accumulator.length == 0) {
                 accumulator.push({ "id": 0, "description": "All", "skill": "All" });
             }
@@ -257,32 +261,34 @@
         }, [])
 
         async getDepartmentSchedule() {
-            var payload = {
-                startDate: this.userSchedules[this.currentShceduleIndex].startDate,
-                endDate: this.userSchedules[this.currentShceduleIndex].endDate,
-                deptId: this.selectedDeptId,
-                username: this.profileData.username,
-            };
-        
-            if(this.selectedDeptId > 0)
-            {
-            await this.$store
-                .dispatch("schedule/getDepartmentSchedule", payload)
-                .then((res: any) => {
-                    this.skills = this.removeDuplicatesSkillsFromArrayByProperty(this.departmentSchedules, 'skill');
-                    this.selectedSkills = localStorage.getItem("selSkills") == null ? this.skills.filter((x:any) => x.skill == "All") : JSON.parse(localStorage.getItem("selSkills") as any);
-                    this.sortedDSList = this.departmentSchedules;
-                    this.sortedDSListforSkills = this.departmentSchedules;
-                    this.getLastUpdatedDate();
-                    this.getSortedDSData('');
-                    this.sortDSListForFilteredSkills('');
-                    this.selectedSkillList = Array.prototype.map.call(this.selectedSkills, function(item) { return item.description; }).join(",");
-                })
-                .catch((err: any) => {
-                    if (err) {
-                        console.log(err); // Handle errors any way you want
+            if(this.userSchedules != undefined && this.userSchedules != null){
+                var payload = {
+                    startDate: this.userSchedules[this.currentShceduleIndex]?.startDate,
+                    endDate: this.userSchedules[this.currentShceduleIndex]?.endDate,
+                    deptId: this.selectedDeptId,
+                    username: this.profileData.username,
+                };
+
+                    if(this.selectedDeptId > 0)
+                    {
+                    await this.$store
+                    .dispatch("schedule/getDepartmentSchedule", payload)
+                    .then((res: any) => {
+                        this.skills = this.removeDuplicatesSkillsFromArrayByProperty(this.departmentSchedules, 'skill');
+                        this.selectedSkills = localStorage.getItem("selSkills") == null ? this.skills?.filter((x:any) => x.skill == "All") : JSON.parse(localStorage.getItem("selSkills") as any);
+                        this.sortedDSList = this.departmentSchedules;
+                        this.sortedDSListforSkills = this.departmentSchedules;
+                        this.getLastUpdatedDate();
+                        this.getSortedDSData('');
+                        this.sortDSListForFilteredSkills('');
+                        this.selectedSkillList = Array.prototype.map.call(this.selectedSkills, function(item) { return item.description; }).join(",");
+                    })
+                    .catch((err: any) => {
+                        if (err) {
+                            console.log(err); // Handle errors any way you want
+                        }
+                    });
                     }
-                });
             }
         }
 
@@ -295,12 +301,14 @@
 
         async showScheduleDays() {
             this.days = [];
-            var date1 = new Date(this.userSchedules[this.currentShceduleIndex].startDate);
-            var daysInSchedule = this.profileData.weeksInSchedule * 7;
-            for (var i = 0; i < daysInSchedule; i++) {
-                var d = new Date(date1);
-                d.setDate(date1.getDate() + i);
-                this.days.push(d);
+            if(this.userSchedules != undefined && this.userSchedules != null){
+                var date1 = new Date(this.userSchedules[this.currentShceduleIndex]?.startDate);
+                var daysInSchedule = this.profileData.weeksInSchedule * 7;
+                for (var i = 0; i < daysInSchedule; i++) {
+                    var d = new Date(date1);
+                    d.setDate(date1.getDate() + i);
+                    this.days.push(d);
+                }
             }
         }
 
@@ -316,9 +324,9 @@
                 this.sortedDSList = this.sortedDSList.slice().sort((a, b) => (a.lastName as any) > (b.lastName as any) ? 1 : -1);
             }
 
-            var loggedInStaff = this.sortedDSList.find(x => x.staffId == this.profileData.staffId);
+            var loggedInStaff = this.sortedDSList?.find(x => x.staffId == this.profileData.staffId);
             if (loggedInStaff != undefined) {
-                var loggedInStaffIndex = this.sortedDSList.findIndex(x => x.staffId == this.profileData.staffId);
+                var loggedInStaffIndex = this.sortedDSList?.findIndex(x => x.staffId == this.profileData.staffId);
                 this.sortedDSList.splice(loggedInStaffIndex, 1);
                 this.sortedDSList.unshift(loggedInStaff);
             }
@@ -387,38 +395,38 @@
 
         async onFacilityChange(event:any) {
             this.selectedFacilityId = event.target.value;
-            this.facilityDepts = this.profileData.secondaryDepartments.filter((x:any) => x.facilityId == event.target.value);
+            this.facilityDepts = this.profileData.secondaryDepartments?.filter((x:any) => x.facilityId == event.target.value);
             if (this.selectedFacilityId == this.profileData.facilityId) {
                 this.selectedDeptId = this.profileData.deptId;
             }
             else {
-                this.selectedDeptId = this.facilityDepts[0].deptId;
+                this.selectedDeptId = this.facilityDepts != null ? this.facilityDepts[0]?.deptId : 0;
             }
-            localStorage.setItem("selFacId", this.selectedFacilityId.toString());
-            localStorage.setItem("selDepId", this.selectedDeptId.toString());
+            localStorage.setItem("selFacId", this.selectedFacilityId?.toString());
+            localStorage.setItem("selDepId", this.selectedDeptId?.toString());
             localStorage.removeItem("selSkills");
-            this.selectedFacilityName =  this.facilities.filter((x:any)=> x.facilityId == this.selectedFacilityId)[0].facilityName;
-            this.selectedDeptName = this.facilityDepts.filter((y:any)=> y.deptId == this.selectedDeptId)[0].deptName;
+            this.selectedFacilityName =  this.facilities?.filter((x:any)=> x.facilityId == this.selectedFacilityId)[0]?.facilityName;
+            this.selectedDeptName = this.facilityDepts?.filter((y:any)=> y.deptId == this.selectedDeptId)[0]?.deptName;
             await this.getDepartmentSchedule();
         }
 
         async onDepartmentChange(event:any) {
             this.selectedDeptId = event.target.value;
-            localStorage.setItem("selDepId", this.selectedDeptId.toString());
+            localStorage.setItem("selDepId", this.selectedDeptId?.toString());
             localStorage.removeItem("selSkills");
-            this.selectedDeptName = this.facilityDepts.filter((y:any)=> y.deptId == this.selectedDeptId)[0].deptName;
+            this.selectedDeptName = this.facilityDepts?.filter((y:any)=> y.deptId == this.selectedDeptId)[0]?.deptName;
             await this.getDepartmentSchedule();
         }
 
         onSkillSelect(items:any, lastSelectItem:any) {            
-            this.selectedSkills = lastSelectItem.skill == "All" ? items.filter((x:any) => x.skill == "All") : items.filter((x:any) => x.skill != "All");
+            this.selectedSkills = lastSelectItem?.skill == "All" ? items.filter((x:any) => x.skill == "All") : items.filter((x:any) => x.skill != "All");
             this.lastSelectedSkills = lastSelectItem;
 
             this.sortedDSListforSkills = this.sortedDSListforSkills.slice().sort((a, b) => (a.lastName as any) > (b.lastName as any) ? 1 : -1);
 
-            var loggedInStaff = this.sortedDSListforSkills.find(x => x.staffId == this.profileData.staffId);
+            var loggedInStaff = this.sortedDSListforSkills?.find(x => x.staffId == this.profileData?.staffId);
             if (loggedInStaff != undefined) {
-                var loggedInStaffIndex = this.sortedDSListforSkills.findIndex(x => x.staffId == this.profileData.staffId);
+                var loggedInStaffIndex = this.sortedDSListforSkills?.findIndex(x => x.staffId == this.profileData?.staffId);
                 this.sortedDSListforSkills.splice(loggedInStaffIndex, 1);
                 this.sortedDSListforSkills.unshift(loggedInStaff);
             }
@@ -429,10 +437,10 @@
         }
 
         sortDSListForFilteredSkills(flag:string) {
-            if (this.selectedSkills.length > 0 && this.selectedSkills.find((x:any) => x.skill == "All") == undefined) {
+            if (this.selectedSkills?.length > 0 && this.selectedSkills?.find((x:any) => x.skill == "All") == undefined) {
                 var finalArray:any = [];
                 for (var i = 0; i < this.selectedSkills.length; i++) {
-                    var searchedArray = this.sortedDSListforSkills.filter(x => x.skill == this.selectedSkills[i].description);
+                    var searchedArray = this.sortedDSListforSkills?.filter(x => x.skill == this.selectedSkills[i].description);
                     if (searchedArray.length > 0) {
                         Array.prototype.push.apply(finalArray, searchedArray);
                     }
@@ -440,9 +448,9 @@
                 this.sortedDSList = finalArray;
                 this.sortedDSList = this.sortedDSList.slice().sort((a, b) => (a.lastName as any) > (b.lastName as any) ? 1 : -1);
 
-                var loggedInStaff1 = this.sortedDSList.find(x => x.staffId == this.profileData.staffId);
+                var loggedInStaff1 = this.sortedDSList?.find(x => x.staffId == this.profileData.staffId);
                 if (loggedInStaff1 != undefined) {
-                    var loggedInStaffIndex1 = this.sortedDSList.findIndex(x => x.staffId == this.profileData.staffId);
+                    var loggedInStaffIndex1 = this.sortedDSList?.findIndex(x => x.staffId == this.profileData.staffId);
                     this.sortedDSList.splice(loggedInStaffIndex1, 1);
                     this.sortedDSList.unshift(loggedInStaff1);
                 }
@@ -457,31 +465,22 @@
                 }
             }
         }
-        // deselect option
-        reset() {
-            this.selectedSkills = [] // reset
-            this.sortedDSList = this.sortedDSListforSkills;
-        }
-        // select option from parent component
-        selectFromParentComponent() {
-            //this.selectedSkills = _.unionWith(this.selectedSkills, [this.skills[0]], _.isEqual)
-        }
 
         getSchedulePeriod(indexVal:number) {
             var scheduleDate = (
-                moment(this.userSchedules[indexVal].startDate).format("ll") +
+                moment(this.userSchedules[indexVal]?.startDate).format("ll") +
                 " - " +
-                moment(this.userSchedules[indexVal].endDate).format("ll"));
+                moment(this.userSchedules[indexVal]?.endDate).format("ll"));
             return scheduleDate;
         }
 
         async onScheduleChange(value:any) {
             this.selectedScheduleId = value.target.value;
-            var schedule = this.userSchedules.find((x:any) => x.id == value.target.value);
-            this.currentShceduleIndex = this.userSchedules.indexOf(schedule);
-            localStorage.setItem("sIndex", this.currentShceduleIndex.toString());
-            let Schedule = this.userSchedules.filter((x:any)=> x.id == this.selectedScheduleId)[0]
-            this.selectedScheduleName = this.getSchedulePeriod(this.userSchedules.indexOf(Schedule));
+            var schedule = this.userSchedules?.find((x:any) => x.id == value.target.value);
+            this.currentShceduleIndex = this.userSchedules?.indexOf(schedule);
+            localStorage.setItem("sIndex", this.currentShceduleIndex?.toString());
+            let Schedule = this.userSchedules?.filter((x:any)=> x.id == this.selectedScheduleId)[0];
+            this.selectedScheduleName = this.getSchedulePeriod(this.userSchedules?.indexOf(Schedule));
             this.showScheduleDays();
             await this.getDepartmentSchedule();
         }
@@ -509,7 +508,7 @@
     {
         .deptTableContainer{
             overflow:auto !important;
-            height:455px;
+            height:410px;
         }
 
         .deptTable{

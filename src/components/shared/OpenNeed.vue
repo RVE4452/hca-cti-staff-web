@@ -1,13 +1,6 @@
 <template>
-    <div class="col-12" v-if="isLoaded">
-        <loading :active="isLoading"
-                 :can-cancel="false"
-                 :height="128"
-                 :width="128"
-                 :color="loaderColor"
-                 :opacity="0.7"
-                 :is-full-page="true" />
-        <div class="bg-black-05 container-fluid neu-margin--bottom-20 pb4 pt3">
+    <div class="col-12 container-fluid pb4 pt3" v-if="isLoaded">
+        <div class="bg-black-05 neu-margin--bottom-20">
             <div class="row">
                     <div class="col-12 neu-margin--bottom-20" v-if="!hasNeedsInPrimaryDept">
                             <p><small>Note: Your home department has no shifts available for this date.</small></p>
@@ -17,87 +10,64 @@
                 </div>
                 <div class="col-12 f3">
                     <h5>
-                        {{ formatDate(currentEvent.date) }}
+                        {{ formatDate(currentEvent?.date) }}
                     </h5>
                 </div>
-                <div class="col-12 neu-margin--top-20 neu-input">
-                    <label for="txtFacility" class="neu-input__label">Facility</label>
-                    <input type="text"
-                           name="Facility"
-                           id="txtFacility"
-                           :value="facilityName"
-                           readonly
-                           class="readonly_text_field neu-input__text-field" v-if="currentEvent.type != 'Need'" />
-                    <select name="ddlFacility" class="neu-input__text-field" v-model="selectedFacilityId" @change="onOpenNeedFacilityChange($event)" v-if="currentEvent.type == 'Need'">
-                        <option v-for="facility in facilities" :value="facility.facilityId" :key="facility.facilityId">
-                            {{facility.facilityName}}
-                        </option>
-                    </select>
+                 <div class="col-12 neu-margin--top-20">
+                    <neu-label content="Facility" position="fixed" >
+                    </neu-label>
+                    <neu-input inputmode="search" type="text" name="Facility" id="txtFacility" :value="facilityName" readonly v-if="currentEvent?.type != 'Need'"/>
+                   
+                    <neu-select ref="ddlFacility" class="ddl-facility" interface="popover" :value="selectedFacilityId" @v-neu-change="onOpenNeedFacilityChange" v-if="currentEvent?.type == 'Need'">
+                            <neu-option ref="ddlFacilityOption" class="ddl-facility-option" v-for="facility in facilities" :value="facility.facilityId" :key="facility.facilityId">
+                                {{facility.facilityName}}
+                            </neu-option>
+                        </neu-select>
                 </div>
-                <div class="col-12 neu-margin--top-20 neu-input">
-                    <label for="txtDepartment" class="neu-input__label">Department</label>
-                    <input type="text"
-                           name="Department"
-                           id="txtDepartment"
-                           :value="departmentName"
-                           readonly
-                           class="readonly_text_field neu-input__text-field" v-if="currentEvent.type != 'Need'" />
-                    <select name="ddlDepartment" class="neu-input__text-field" v-model="selectedDeptId" @change="onOpenNeedDepartmentChange($event)" v-if="currentEvent.type == 'Need'">
-                        <option v-for="department in facilityDepts" :value="department.departmentId" :key="department.departmentId">
+                <div class="col-12 neu-margin--top-20">
+                    <neu-label for="txtDepartment" content="Department" position="fixed" ></neu-label>
+                    <neu-input type="text" name="Department" id="txtDepartment" :value="departmentName" readonly v-if="currentEvent?.type != 'Need'"/>
+                    
+                    <neu-select  class="ddl-department" interface="popover" :value="selectedDeptId" ref="ddchecklDepartment" @v-neu-change="onOpenNeedDepartmentChange"  v-if="currentEvent?.type == 'Need'">
+                        <neu-option ref="ddlDepartmentOpton" class="ddl-department-option" v-for="department in facilityDepts" :value="department.departmentId" :key="department.departmentId">
                             {{'(' + department.departmentCode + ') ' + department.departmentName}}
-                        </option>
-                    </select>
+                        </neu-option>
+                    </neu-select>
+                    
                 </div>
-                <div class="col-12 neu-margin--top-20 neu-input">
-                    <label for="txtSkill" class="neu-input__label">Skill</label>
-                    <input type="text"
-                           name="Skill"
-                           id="txtSkill"
-                           :value="skillName"
-                           readonly
-                           class="readonly_text_field neu-input__text-field" v-if="currentEvent.type != 'Need'" />
-                    <select name="ddlSkill" class="neu-input__text-field" v-model="selectedSkillId" @change="onOpenNeedSkillChange($event)" v-if="currentEvent.type == 'Need'">
-                        <option v-for="skill in skills" :value="skill.id" :key="skill.id">
+                <div class="col-12 neu-margin--top-20">
+                    <neu-label for="txtSkill" content="Skill" position="fixed"></neu-label>
+                    <neu-input type="text" name="Skill" id="txtSkill" v-model="skillName" :value="skillName" readonly v-if="currentEvent?.type != 'Need'"/>
+                    <neu-select ref="ddlSkill" class="ddl-skill" interface="popover" :value="selectedSkillId" @v-neu-change="onOpenNeedSkillChange"  v-if="currentEvent?.type == 'Need'">
+                        <neu-option class="ddl-skill-option" v-for="skill in skills" :value="skill.id" :key="skill.id">
                             {{skill.description}}
-                        </option>
-                    </select>
+                        </neu-option>
+                    </neu-select>
+                    
                 </div>
-                <div class="col-12 neu-margin--top-20 neu-input">
-                    <label for="txtShift" class="neu-input__label">Shift</label>
-                    <select class="neu-input__text-field"
-                            name="ddlShifts" style="padding: 1px !important"
-                            v-model="data.selectedShift"
-                            @change="onOpenNeedShiftChanges()"
-                            v-if="currentEvent.type == 'Need' || (currentEvent.type == 'Assignment' && currentEvent.status  != 'Pending') ">
-                        <option v-for="shift in data.shifts"
-                                :value="shift.id"
-                                :key="shift.id">
+                <div class="col-12 neu-margin--top-20">
+                    <neu-label for="txtShift" content="Shift" position="fixed"></neu-label>
+                    <neu-input type="text" name="shift" id="txtShift" v-model="deptShiftDesc" :value="deptShiftDesc" readonly
+                    v-if="currentEvent?.type == 'Assignment' && currentEvent?.status  == 'Pending'" />
+                    <neu-select name="ddlShifts" class="ddl-shift" interface="popover" :value="data.selectedShift" @v-neu-change="onOpenNeedShiftChanges"  
+                    v-if="currentEvent?.type == 'Need' || (currentEvent?.type == 'Assignment' && currentEvent?.status  != 'Pending')">
+                        <neu-option  v-for="shift in data.shifts" :value="shift.id" :key="shift.id">
                             {{ shift.description }} {{shift.premiumLaborLevel ? ' (Incentive)': ''}}
-                        </option>
-                    </select>
-                    <input type="text"
-                           name="shift"
-                           id="txtShift"
-                           :value="deptShiftDesc"
-                           readonly
-                           class="readonly_text_field neu-input__text-field"
-                           style="padding: 0 0.4rem !important;"
-                           v-if="currentEvent.type == 'Assignment' && currentEvent.status  == 'Pending'" />
-                    <div class="neu-checkbox mt3" v-if="deptPartialShifts && deptPartialShifts.length">
-                        <input type="checkbox" name="showPartial" id="chkShowPartial" class="neu-checkbox__input" v-model="showPartial" />
-                        <label class="neu-checkbox__label" for="chkShowPartial">Show Partial Shift Options</label>
+                        </neu-option>
+                    </neu-select>
+
+                    <div class="mt3" v-if="deptPartialShifts && deptPartialShifts?.length">
+                        <neu-input type="checkbox" name="showPartial" id="chkShowPartial" v-model="showPartial" :value="showPartial"
+                            v-if="currentEvent?.type == 'Assignment' && currentEvent?.status  == 'Pending'" />
+                        <neu-label for="chkShowPartial" content="Show Partial Shift Options" position="fixed"></neu-label>
                     </div>
-                    <select class="neu-input__text-field mt3"
-                            name="ddlPartialShifts"
-                            v-model="data.selectedPartialShift"
-                            @change="onOpenNeedPartialShiftChanges()"
-                            v-if="deptPartialShifts && deptPartialShifts.length && showPartial">
-                        <option v-for="shift in data.partialShifts"
-                                :value="shift.departmentShiftId"
-                                :key="shift.departmentShiftId">
+
+                    <neu-select name="ddlPartialShifts" class="ddl-partial-shift" interface="popover" :value="data.selectedPartialShift" @v-neu-change="onOpenNeedPartialShiftChanges" 
+                      v-if="deptPartialShifts && deptPartialShifts?.length && showPartial">
+                        <neu-option v-for="shift in data.partialShifts" :value="shift.departmentShiftId" :key="shift.departmentShiftId">
                             {{ shift.description }} 
-                        </option>
-                    </select>
+                        </neu-option>
+                    </neu-select>
                 </div>
             </div>
         </div>
@@ -116,7 +86,7 @@
                         </div>
                     </div>
                     <div class="row"
-                         v-if="data.shiftMembers.length > 0">
+                         v-if="data?.shiftMembers?.length > 0">
                         <div class="col-12 neu-margin--top-20"><p class="neu-text--tag neu-text--align-left">SHIFT MEMBERS</p></div>
                         <div class="col-12 row mt3">
                             <div class="col-12 mt2 mb2"
@@ -148,13 +118,12 @@
                     </div>
                 </div>
                 <div class="col-12">
-                    <button @click="FireAction"
-                            v-bind:name="buttonName"
-                            class="d-block mb4 mt4 neu-button w-100 neu-text--white" 
-                            :class="[ isImpersonating || (currentEvent.status != 'Pending' && !selectedShiftId()) ? 'neu-button--blue-disabled': 'neu-background--denim']"
-                            :disabled="isImpersonating || (currentEvent.status != 'Pending' && !selectedShiftId())">
-                        {{ buttonCaption }}
-                    </button>
+                    <neu-button color="primary" fill="raised" class="d-block"
+                        @click="FireAction" 
+                        :class="[ isImpersonating || (currentEvent?.status != 'Pending' && !selectedShiftId()) ? 'neu-button--blue-disabled': 'neu-background--denim']"
+                        :disabled="isImpersonating || (currentEvent?.status != 'Pending' && !selectedShiftId())">
+                            {{ buttonCaption }}
+                    </neu-button>
                 </div>
             </div>
         </div>
@@ -162,15 +131,15 @@
     </div>
 </template>
 
-// <script lang="ts">
+<script lang="ts">
      import { Options, Vue } from "vue-class-component";
     import moment from "moment";
     import { mapState } from "vuex";   
-    import ErrorNotification from "./ErrorNotification.vue";
-   
-    //import Loading from 'vue-loading-overlay';
-    import 'vue-loading-overlay/dist/vue-loading.css';
+    import ErrorNotification from "./ErrorNotification.vue";   
     import { useAppInsights } from '../../store/modules/AppInsights'
+    import {
+        NeuSelect,NeuOption,NeuLabel,NeuInput,NeuButton
+    } from '@neutron/vue'
     class Props{
         currentEvent!: any;
         scheduleStartDate!: Date;
@@ -178,12 +147,13 @@
     }
     @Options({
         components: {
-            ErrorNotification
+            ErrorNotification,
+            NeuButton
         },
          computed: {
         ...mapState(['oidcUser']),
          ...mapState('schedule',['openNeedShiftMembers','assignmentDetail','openNeedsFacilities','openNeedsDepartments','openNeedsShiftDetails']),
-        ...mapState('profile', ['profileData', 'isAdmin', 'appInsightEventData','appInsightEventData','isImpersonating']),
+        ...mapState('profile', ['profileData', 'isAdmin', 'appInsightEventData','isImpersonating']),
     },
     })
     export default class OpenNeed extends Vue.with(Props) {
@@ -242,61 +212,61 @@
         hasPartials: boolean = false;
         hasNeedsInPrimaryDept: boolean = true;
 
-        async mounted() {
+        async mounted() {            
             this.buttonCaption =
-                (this.currentEvent.type == "Assignment" && this.currentEvent.status == "Pending") ? "Withdraw" : "Add to Schedule";
+                (this.currentEvent?.type == "Assignment" && this.currentEvent?.status == "Pending") ? "Withdraw" : "Add to Schedule";
             this.buttonName =
-                (this.currentEvent.type == "Assignment" && this.currentEvent.status == "Pending") ? "btnWithdraw" : "btnAddToSchedule";
-            this.skillName =  this.profileData.skills.find((x:any) => x.primary == true ).description;
-            this.deptShifts = this.profileData.departmentShifts.filter((x:any) => x.canRequest == false);
-            if (this.currentEvent.type == "Assignment" && this.currentEvent.status == "Pending") {
+                (this.currentEvent?.type == "Assignment" && this.currentEvent?.status == "Pending") ? "btnWithdraw" : "btnAddToSchedule";
+            this.skillName =  this.profileData?.skills?.find((x:any) => x.primary == true ).description;
+            this.deptShifts = this.profileData?.departmentShifts?.filter((x:any) => x.canRequest == false);
+            
+            if (this.currentEvent?.type == "Assignment" && this.currentEvent?.status == "Pending") {                
                 this.loadopenNeeds();
             } else {
                 this.loadopenNeedShiftMembers();
             }
         }
 
-        loadopenNeedShiftMembers() {
-            let dates = this.currentEvent.description.split(',');
+        loadopenNeedShiftMembers() {      
+            let dates = this.currentEvent?.description?.split(',');
             const payload = {
-                selectedDate: this.currentEvent.date,
-                username: this.profileData.username,
-                start: moment(dates[0]).format("YYYY-MM-DD"),
-                end: moment(dates[1]).format("YYYY-MM-DD"),
+                selectedDate: this.currentEvent?.date,
+                username: this.profileData?.username,
+                start: moment(dates != undefined ? dates[0] : null).format("YYYY-MM-DD"),
+                end: moment(dates != undefined ? dates[1] : null).format("YYYY-MM-DD"),
                 includePartials: true,
-            };
-
+            };   
             this.$store
                 .dispatch("schedule/getOpenNeeds", payload)
                 .then((res) => {
                     this.facilities = this.openNeedsFacilities;
-                    this.hasNeedsInPrimaryDept = this.openNeedsDepartments.filter((x:any) => x.departmentId == this.profileData.deptId).length > 0;
-                    this.selectedFacilityId = this.openNeedsFacilities.find((x:any) => x.facilityId == this.profileData.facilityId) == undefined
-                        ? this.openNeedsFacilities[0].facilityId : this.profileData.facilityId;
-                    this.facilityName = this.openNeedsFacilities.find((x:any) => x.facilityId == this.selectedFacilityId) == undefined
-                        ? this.openNeedsFacilities[0].facilityName : this.profileData.facilityName;
-                    this.facilityDepts = this.openNeedsDepartments.filter((x:any) => x.facilityId == this.selectedFacilityId);
+                    this.hasNeedsInPrimaryDept = this.openNeedsDepartments?.filter((x:any) => x.departmentId == this.profileData?.deptId).length > 0;
+                    this.selectedFacilityId = this.openNeedsFacilities?.find((x:any) => x.facilityId == this.profileData?.facilityId) == undefined
+                        ? this.openNeedsFacilities[0]?.facilityId : this.profileData?.facilityId;
+                    this.facilityName = this.openNeedsFacilities?.find((x:any) => x.facilityId == this.selectedFacilityId) == undefined
+                        ? this.openNeedsFacilities[0]?.facilityName : this.profileData?.facilityName;
+                    this.facilityDepts = this.openNeedsDepartments?.filter((x:any) => x.facilityId == this.selectedFacilityId);
 
-                    if (this.selectedFacilityId == this.profileData.facilityId) {
-                        this.selectedDeptId = this.profileData.deptId;
+                    if (this.selectedFacilityId == this.profileData?.facilityId) {
+                        this.selectedDeptId = this.profileData?.deptId;
                     }
                     else {
-                        this.selectedDeptId = this.openNeedsDepartments.find((x:any) => x.facilityId == this.selectedFacilityId)[0].departmentId;
+                        this.selectedDeptId = this.openNeedsDepartments?.find((x:any) => x.facilityId == this.selectedFacilityId)[0]?.departmentId;
                     }
-                    this.primarySkillId = this.profileData.skills.find((x:any) => x.primary == true).id;
+                    this.primarySkillId = this.profileData?.skills?.find((x:any) => x.primary == true).id;
 
                     //remove duplicate from array having same shift code
-                    const removeDuplicatesFromArrayByProperty = (arr:any, prop:any) => arr.reduce((accumulator:any, currentValue:any) => {
+                    const removeDuplicatesFromArrayByProperty = (arr:any, prop:any) => arr?.reduce((accumulator:any, currentValue:any) => {
                         if (!accumulator.find((obj:any) => obj[prop] === currentValue[prop])) {
                             accumulator.push(currentValue);
                         }
                         return accumulator;
                     }, [])
 
-                    this.skills = removeDuplicatesFromArrayByProperty(res.data.map((x:any) => { return { id: x.skillId, description: x.skill } }), 'id');
-                    this.selectedSkillId = this.skills.length? this.skills[0].id : this.primarySkillId;
-                    this.deptShifts = this.openNeedsShiftDetails.filter((x:any) => x.departmentId == this.selectedDeptId && !x.isPartial);
-                    const updatedShift: any = res.data.map((members:any) => {
+                    this.skills = removeDuplicatesFromArrayByProperty(res?.data?.map((x:any) => { return { id: x.skillId, description: x.skill } }), 'id');
+                    this.selectedSkillId = this.skills?.length ? this.skills[0]?.id : this.primarySkillId;
+                    this.deptShifts = this.openNeedsShiftDetails?.filter((x:any) => x.departmentId == this.selectedDeptId && !x.isPartial);
+                    const updatedShift: any = res?.data?.map((members:any) => {
                         if(members.isPartial){
                             members.description = members.shiftCode
                                 + " " + this.formatTime(members.startTime)
@@ -313,19 +283,19 @@
                     });
 
                     this.data.allShifts = removeDuplicatesFromArrayByProperty(updatedShift, 'departmentShiftId');
-                    this.data.partialShifts = updatedShift.filter((x:any) => x.isPartial);
-                    this.deptShifts = this.openNeedsShiftDetails.filter((x:any) => x.departmentId == this.selectedDeptId && !x.isPartial);
-                    this.deptPartialShifts = this.openNeedsShiftDetails.filter((x:any) => x.departmentId == this.selectedDeptId && x.isPartial);
-                    if(this.deptShifts.length){
-                        this.setShiftDetails(this.deptShifts[0].departmentShiftId, this.deptShifts[0].departmentId);
+                    this.data.partialShifts = updatedShift?.filter((x:any) => x.isPartial);
+                    this.deptShifts = this.openNeedsShiftDetails?.filter((x:any) => x.departmentId == this.selectedDeptId && !x.isPartial);
+                    this.deptPartialShifts = this.openNeedsShiftDetails?.filter((x:any) => x.departmentId == this.selectedDeptId && x.isPartial);
+                    if(this.deptShifts?.length){
+                        this.setShiftDetails(this.deptShifts[0]?.departmentShiftId, this.deptShifts[0]?.departmentId);
                     }
                     else{
                         this.setShiftDetails(0, 0);
                     }
                     
 
-                    if (this.deptPartialShifts.length){
-                        this.setPartialShiftDetails(this.deptPartialShifts[0].departmentShiftId, this.deptPartialShifts[0].departmentId);
+                    if (this.deptPartialShifts?.length){
+                        this.setPartialShiftDetails(this.deptPartialShifts[0]?.departmentShiftId, this.deptPartialShifts[0]?.departmentId);
                     }
                 })
                 .catch((err: any) => {
@@ -340,9 +310,9 @@
                 .dispatch("schedule/GetScheduleAssignmentDetail", this.currentEvent.id)
                 .then(() => {
                     this.isLoaded = true;
-                    if (this.assignmentDetail != undefined) {
+                    if (this.assignmentDetail != undefined) {                        
                         this.facilityName = this.assignmentDetail.facilityName;
-                        this.departmentName = this.assignmentDetail.departmentCode;
+                        this.departmentName = this.assignmentDetail?.departmentCode;
                         if(this.assignmentDetail.premiumLaborLevel){
                                 this.assignmentDetail.description = this.assignmentDetail.shiftCode
                                     + " " + this.formatTime(this.assignmentDetail.startTime)
@@ -375,25 +345,25 @@
 
         onOpenNeedFacilityChange(event:any) {
             this.selectedFacilityId = event.target.value;
-            this.facilityDepts = this.openNeedsDepartments.filter((x:any) => x.facilityId == event.target.value);
-            this.facilityName = this.facilities.find((f:any) => f.facilityId == event.target.value).facilityName;
+            this.facilityDepts = this.openNeedsDepartments?.filter((x:any) => x.facilityId == event.target.value);
+            this.facilityName = this.facilities.find((f:any) => f.facilityId == event.target.value)?.facilityName;
             if (this.selectedFacilityId == this.profileData.facilityId) {
-                this.selectedDeptId = this.profileData.deptId;
+                this.selectedDeptId = this.profileData?.deptId;
             }
             else {
-                this.selectedDeptId = this.facilityDepts[0].departmentId;
+                this.selectedDeptId = this.facilityDepts[0]?.departmentId;
             }
             this.departmentName = (this.facilityDepts.find((x:any) => x.departmentId == this.selectedDeptId) || {}).departmentCode;
             this.deptShifts = this.openNeedsShiftDetails.filter((x:any) => x.departmentId == this.selectedDeptId);
-            if (this.deptShifts.length){
+            if (this.deptShifts?.length){
                 this.setShiftDetails(this.deptShifts[0].departmentShiftId, this.deptShifts[0].departmentId);
             }
             else {
                 this.setShiftDetails(0, 0);
             }
 
-            if (this.deptPartialShifts.length){
-                this.setPartialShiftDetails(this.deptPartialShifts[0].departmentShiftId, this.deptPartialShifts[0].departmentId);
+            if (this.deptPartialShifts?.length){
+                this.setPartialShiftDetails(this.deptPartialShifts[0]?.departmentShiftId, this.deptPartialShifts[0]?.departmentId);
             }
         }
 
@@ -401,7 +371,7 @@
             this.selectedDeptId = parseInt(event.target.value);
             this.departmentName = (this.openNeedsShiftDetails.find((x:any) => x.departmentId == event.target.value) || {}).departmentCode;
             this.deptShifts = this.openNeedsShiftDetails.filter((x:any) => x.departmentId == event.target.value);
-            if (this.deptShifts.length){
+            if (this.deptShifts?.length){
                 this.setShiftDetails(this.deptShifts[0].departmentShiftId, this.deptShifts[0].departmentId);
             }
             else {
@@ -410,24 +380,24 @@
 
             this.deptPartialShifts = this.openNeedsShiftDetails.filter((x:any) => x.departmentId == this.selectedDeptId && x.isPartial);
 
-            if (this.deptPartialShifts.length){
-                this.setPartialShiftDetails(this.deptPartialShifts[0].departmentShiftId, this.deptPartialShifts[0].departmentId);
+            if (this.deptPartialShifts?.length){
+                this.setPartialShiftDetails(this.deptPartialShifts[0]?.departmentShiftId, this.deptPartialShifts[0]?.departmentId);
             }
         }
 
         onOpenNeedSkillChange(event:any) {
             this.selectedSkillId = event.target.value;
-            this.skillName = this.skills.find((x:any) => x.id == event.target.value).description;
-            this.deptShifts = this.openNeedsShiftDetails.filter((x:any) => x.departmentId == this.selectedDeptId && x.skillId == event.target.value);
-            if (this.deptShifts.length){
-                this.setShiftDetails(this.deptShifts[0].departmentShiftId, this.deptShifts[0].departmentId);
+            this.skillName = this.skills?.find((x:any) => x.id == event.target.value).description;
+            this.deptShifts = this.openNeedsShiftDetails?.filter((x:any) => x.departmentId == this.selectedDeptId && x.skillId == event.target.value);
+            if (this.deptShifts?.length){
+                this.setShiftDetails(this.deptShifts[0]?.departmentShiftId, this.deptShifts[0]?.departmentId);
             }
             else {
                 this.setShiftDetails(0, 0);
             }
 
-            if (this.deptPartialShifts.length){
-                this.setPartialShiftDetails(this.deptPartialShifts[0].departmentShiftId, this.deptPartialShifts[0].departmentId);
+            if (this.deptPartialShifts?.length){
+                this.setPartialShiftDetails(this.deptPartialShifts[0]?.departmentShiftId, this.deptPartialShifts[0]?.departmentId);
             }
         }
 
@@ -436,7 +406,7 @@
                 && x.departmentId == deptId && !x.isPartial);
             var selectedShiftDetails: any
 
-            if (this.data.allShifts.length > 0) {
+            if (this.data.allShifts?.length > 0) {
                 this.data.shifts = this.data.allShifts.filter((shift: any) => { return shift.departmentId === this.selectedDeptId && !shift.isPartial && shift.skillId == this.selectedSkillId });
             }
             if (this.data.shifts.length > 0) {
@@ -448,8 +418,8 @@
                 
                 this.data.selectedShift = selectedDeptShift? selectedDeptShift.id : "";
             } else {
-                this.data.shifts = this.openNeedsShiftDetails.filter((shift: any) => { return shift.departmentId === this.selectedDeptId && !shift.isPartial && shift.skillId == this.selectedSkillId });
-                if (this.data.shifts.length > 0) {
+                this.data.shifts = this.openNeedsShiftDetails?.filter((shift: any) => { return shift.departmentId === this.selectedDeptId && !shift.isPartial && shift.skillId == this.selectedSkillId });
+                if (this.data.shifts?.length > 0) {
                     this.data.shifts.sort();
 
                     selectedShiftDetails = this.data.shifts[0];
@@ -475,11 +445,11 @@
             const selectedDeptShift = this.deptPartialShifts.find((x:any) => x.departmentShiftId == deptShiftId
                 && x.departmentId == deptId);
 
-            if (this.data.allShifts.length > 0) {
+            if (this.data.allShifts?.length > 0) {
                 this.data.partialShifts = this.data.allShifts.filter((shift: any) => { return shift.id == this.data.selectedShift && shift.departmentId === this.selectedDeptId && shift.isPartial });
             }
-            if (this.data.partialShifts.length > 0) {
-                this.data.partialShifts.sort();
+            if (this.data?.partialShifts?.length > 0) {
+                this.data?.partialShifts?.sort();
                 this.data.selectedPartialShift = selectedDeptShift? selectedDeptShift.id : null;
             } else {
                 this.data.selectedPartialShift = null;
@@ -495,10 +465,10 @@
         }
 
         onOpenNeedShiftChanges() {
-            const filteredShift: any = this.data.shifts.filter((shift: any) => {
+            const filteredShift: any = this.data?.shifts?.filter((shift: any) => {
                 return shift.id === this.data.selectedShift;
             });
-            if (filteredShift.length){
+            if (filteredShift?.length){
                 this.needid = filteredShift[0].id;
                 this.actualShiftStartTime = this.formatTime(filteredShift[0].startTime);
                 this.actualShiftEndTime = this.formatTime(filteredShift[0].endTime);
@@ -515,17 +485,17 @@
                 this.errorMsg = "";
             }
 
-            if (this.deptPartialShifts.length){
-                this.setPartialShiftDetails(this.deptPartialShifts[0].departmentShiftId, this.deptPartialShifts[0].departmentId);
+            if (this.deptPartialShifts?.length){
+                this.setPartialShiftDetails(this.deptPartialShifts[0]?.departmentShiftId, this.deptPartialShifts[0]?.departmentId);
             }
         }
 
         onOpenNeedPartialShiftChanges() {
-            const filteredShift: any = this.data.partialShifts.filter((shift: any) => {
+            const filteredShift: any = this.data?.partialShifts?.filter((shift: any) => {
                 return shift.id === this.data.selectedShift && shift.departmentShiftId === this.data.selectedPartialShift;
             });
             
-            if (filteredShift.length){
+            if (filteredShift?.length){
                 this.needid = filteredShift[0].id;
                 this.actualPartialShiftStartTime = this.formatTime(filteredShift[0].startTime);
                 this.actualPartialShiftEndTime = this.formatTime(filteredShift[0].endTime);
@@ -545,20 +515,20 @@
         }
 
         selectedShiftId(){
-            return this.data.partialShifts.length && this.showPartial? this.departmentPartialShiftId : this.departmentShiftId;
+            return this.data.partialShifts?.length && this.showPartial? this.departmentPartialShiftId : this.departmentShiftId;
         }
 
         selectedShiftActualStartTime(){
-            return this.data.partialShifts.length && this.showPartial && this.data.selectedPartialShift? this.actualPartialShiftStartTime : this.actualShiftStartTime;
+            return this.data.partialShifts?.length && this.showPartial && this.data?.selectedPartialShift? this.actualPartialShiftStartTime : this.actualShiftStartTime;
         }
 
         selectedShiftActualEndTime(){
-            return this.data.partialShifts.length && this.showPartial && this.data.selectedPartialShift? this.actualPartialShiftEndTime : this.actualShiftEndTime;
+            return this.data.partialShifts?.length && this.showPartial && this.data?.selectedPartialShift? this.actualPartialShiftEndTime : this.actualShiftEndTime;
         }
 
         FireAction() {
             try {
-                if (this.currentEvent.type == "Assignment" && this.currentEvent.status == "Pending") {
+                if (this.currentEvent?.type == "Assignment" && this.currentEvent?.status == "Pending") {
                     this.isLoading = true;
                     this.$store.dispatch('schedule/WithdrawEvent', { needid: this.needid, assignementid: this.currentEvent.id })
                         .then((res: any) => {
@@ -581,11 +551,11 @@
                 } else {
                     const requestBody = {
                         "needId": this.needid,
-                        "tenantId": this.profileData.tenantId,
+                        "tenantId": this.profileData?.tenantId,
                         "deptShiftId": this.selectedShiftId(),
-                        "date": this.currentEvent.date,
+                        "date": this.currentEvent?.date,
                         "deptId": this.selectedDeptId,
-                        "staffId": this.profileData.staffId,
+                        "staffId": this.profileData?.staffId,
                         "scheduleStartDate": this.scheduleStartDate,
                         "scheduleEndDate": this.scheduleEndDate
                     };
@@ -593,7 +563,7 @@
                     this.$store
                         .dispatch("schedule/ScheduleOpenNeedRequest", requestBody)
                         .then((res) => {
-
+                            console.log("test777")
                             //showing message in MyScheduleView Screen and close modal only on success
                             this.isLoading = false;
                             this.$emit('showSuccessMsgPopUp');
