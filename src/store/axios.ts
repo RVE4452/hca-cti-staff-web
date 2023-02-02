@@ -13,16 +13,16 @@ http.interceptors.request.use((config) => {
         config.params['tenantId'] = sessionStorage.getItem("tenant");
     }
     else{
-        if(config.data != undefined){
-            config.data = Object.assign(config.data, {
-                TenantId: sessionStorage.getItem("tenant")
-            });
-        }
-        else{
-            config.data = {
-                TenantId: sessionStorage.getItem("tenant")
-            };
-        }
+        // if(config.data != undefined){
+        //     config.data = Object.assign(config.data, {
+        //         TenantId: sessionStorage.getItem("tenant")
+        //     });
+        // }
+        // else{
+        //     config.data = {
+        //         TenantId: sessionStorage.getItem("tenant")
+        //     };
+        // }
     }
     return config;
 });
