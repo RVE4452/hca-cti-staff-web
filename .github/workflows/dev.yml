@@ -11,7 +11,7 @@ env:
   IDP_CLIENT_ID: StaffPortal
   IDP_REDIRECT_URL: https://ht-fps-cti-dev-appservice-staff-portal.azurewebsites.net/callback
   IDP_SILENT_REDIRECT_URL: https://ht-fps-cti-dev-appservice-staff-portal.azurewebsites.net/callback-silent
-  API_URL: https://ht-fps-cti-dev-appservice-api.azurewebsites.net/api
+  API_URL: https://scheduler-api-dev-hws-facsched-dev.apps.np2.paas.medcity.net/api/v1
 
   # Deploy Variables
   AZURE_CLIENT_ID: 53c01bcf-a767-487b-9941-96cd33df8284
