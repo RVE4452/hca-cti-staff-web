@@ -7,7 +7,6 @@ import { payRollMockData, profileData } from '../../src/mocks/payRollMockData';
 const store = new Vuex.Store({
 
     modules: {
-
         "schedule": {
             namespaced: true,
             state: {
