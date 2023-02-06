@@ -5,7 +5,6 @@ import Vuex from "vuex";
 import { payRollMockData, profileData } from '../../src/mocks/payRollMockData';
 
 const store = new Vuex.Store({
-
     modules: {
         "schedule": {
             namespaced: true,
@@ -77,12 +76,6 @@ describe("computed prop",() => {
         it("should call totalHours to get the total hours", () => {
             expect(wrapper.vm.totalHours("02/06/2023", "02/07/2023")).toBe("24.00")
         });
-
-        // it("should call getPayrollDetails to update the getPayrollDetails", () => {
-        //     wrapper.vm.getPayrollDetails();
-        //     const spy = jest.spyOn(wrapper.vm, "validateDates")
-        //     expect(wrapper.vm.validateDates()).toBe(true)
-        // });
     });
 });
 // END Global Describe
