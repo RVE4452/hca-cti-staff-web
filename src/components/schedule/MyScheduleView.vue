@@ -1237,7 +1237,7 @@
                 //events
                  let payload = {
                 scheduleId: schedule.scheduleId,
-                staffId: 15
+                staffId:this.profile.staffId
             };
             if(this.profileData.staffId == 0)
             return;
