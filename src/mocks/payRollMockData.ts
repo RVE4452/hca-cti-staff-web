@@ -32,6 +32,6 @@ export const payRollMockData = [
 
 export const profileData = {
     "username": "RVE4452",
-    "tenantUrl": "https://api-dev.internal.medcity.net/",
-    
+    "tenantUrl": "https://api-dev.internal.medcity.net/"    
 }
+
