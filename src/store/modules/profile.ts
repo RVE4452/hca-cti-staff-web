@@ -173,7 +173,7 @@ const state: Profile = {
     // ACTIONS
      const actions: ActionTree<Profile, RootState> = {
      getProfileDetails({commit},username: string){
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/${username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Staff/${username}`;
         return http
             .get(apiUrl)
             .then((res) => {

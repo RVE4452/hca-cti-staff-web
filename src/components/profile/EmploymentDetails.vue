@@ -282,13 +282,14 @@ export default defineComponent({
     .sideNavPanel{
         position: absolute;
         right: 0;
-        top: 0px;
+        top: -55px;
         background-color: #f4f4f4;
         bottom: 92px;
         z-index: 99;
         border-left-style: solid;
         border-left-width: 1px;
         width:100%;
+        height:110% !important;
         transition: left 1s ease-in-out;
         overflow-x: hidden;
         overflow-y: auto;
@@ -326,13 +327,14 @@ export default defineComponent({
      .sideNavPanel{
         position: absolute;
         right: 0;
-        top: 0px;
+        top: -55px;
         background-color: #f4f4f4;
         bottom: 92px;
         z-index: 99;
         border-left-style: solid;
         border-left-width: 1px;
         width:100%;
+        height:110% !important;
         transition: left 1s ease-in-out;
         overflow-x: hidden;
         overflow-y: auto;
@@ -361,13 +363,14 @@ export default defineComponent({
      .sideNavPanel{
         position: absolute;
         right: 0;
-        top: 0;
+        top: 0px;
         background-color: #f4f4f4;
         bottom: 92px;
         z-index: 99;
         border-left-style: solid;
         border-left-width: 1px;
         width:100%;
+        height:110% !important;
         transition: left 1s ease-in-out;
         overflow-x: hidden;
         overflow-y: auto;
@@ -436,7 +439,7 @@ export default defineComponent({
         overflow-x: hidden;
         overflow-y: auto;
         z-index:99;
-        height:100vh !important;
+        height:100% !important;
         box-shadow: 2px 2px 6px 1px !important;
         border-radius: 5px !important;
     }
