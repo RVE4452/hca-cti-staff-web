@@ -195,7 +195,7 @@ const mutations: MutationTree<Schedule> = {
     //actions
 const actions: ActionTree<Schedule, RootState> = {
     getStaffSchedule({ commit, rootState },payload: any){
-        const api = `${process.env.VUE_APP_CTI_APIURL}/Staff/${payload.staffId}/Schedule/${payload.scheduleId}`
+        const api = `${process.env.VUE_APP_APIURL}/Staff/${payload.staffId}/Schedule/${payload.scheduleId}`
         return http
             .get(api)
             .then((res: any) => {
