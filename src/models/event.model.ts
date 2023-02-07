@@ -4,6 +4,8 @@ export interface Event {
      type: string;
      status: string;
      description: string;
+     changed: boolean;
+     isWeekend: boolean;
      assignmentId: number;
      needId: string;
      requestId: string;
@@ -25,4 +27,15 @@ export interface Event {
      productiveType: string;
      date: Date;
      startTime: Date;
+     endTime: Date;
+     actualStartTime: Date;
+     actualEndTime: Date;
+     hours: number;
+     minutes: number;
+     comment: string;
+     isCommitment: boolean;
+     isSelfScheduled: boolean;
+     isOvertime: boolean;
+     premiumLaborLevel: boolean;
+     dailyEventsType: string[];  
 }
