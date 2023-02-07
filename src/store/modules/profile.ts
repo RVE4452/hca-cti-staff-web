@@ -13,70 +13,50 @@ const namespaced = true
 interface Profile {
      //STATE
     profileData: Staff,
-    isAdmin: boolean,
     schedulingPrefData: any,
     notificationPrefData: any,
     smsPrefData: any,
-    isImpersonating: boolean,
-    impersonatingUser: string,
-    appInsightEventData:any,
-    isStaffManager: boolean
+    appInsightEventData:any
  }
  //state
 const state: Profile = {
     profileData: {
-        username: '',
-        staffId: 0,
-        tenantId: '',
-        tenantName: '',
-        tenantUrl: '',
+        coid: '',
+        created: new Date(),
+        createdBy: '',
+        departmentCode: '',
+        departmentId: 0,
+        departmentName: '',
         email: '',
-        first: '',
-        last: '',
-        birth: new Date(),
+        end: new Date(),
+        facilityId: 0,
+        facilityName : '',
         address1: '',
         address2: '',
         city: '',
         state: '',
         zip: '',
-        facilityId: 0,
-        cOID: '',
-        facilityName: '',
-        deptId: 0,
-        deptCode: '',
-        deptName: '',
-        employeeType: '',
-        workSchedule: '',
-        PTOBalance: 0,
-        primaryShift: '',
-        isUnavailabilityAllowed: false,
-        maxUnavailableDays: 0,
-        homePhoneNumber: '',
-        weeksInSchedule: 0,
-        profilePic: '',
-        staffAssignmentToSecondaryDepartments: '',
-        staffRequestOpenNeedsInSecondaryDepartments: '',
-        staffReceiveTradeAssignmentsInSecondaryDepartments: '',
-        secondaryStaffAssignmentToThisDepartment: '',
-        secondaryStaffSelfScheduleInThisDepartment: '',
-        secondaryStaffRequestOpenNeedsInThisDepartment: '',
-        secondaryStaffReceiveTradeAssignmentsInThisDepartment: '',
-        isFirstTimeLogin: false,
-        isAdmin: false,
-        isDisabled: false,
-        isStaffHasAdminAccount: false,
-        useMySchedulerOperatingRoom: false,
-        skill: '',
-        charge: false
+        firstName: '',
+        fte: 0,
+        lastName: '',
+        partOfDayId: 0,
+        proficiency: 0,
+        ptoBalance: '',
+        rate: '',
+        schedules: [],
+        staffId: 0,
+        staffType: '',
+        staffTypeId: 0,
+        start: new Date(),
+        updated: new Date(),
+        updatedBy: '',
+        userId: 0,
+        username: '',
     },
-    isAdmin: false,
     schedulingPrefData: null,
     notificationPrefData: null,
     smsPrefData:  null,
-    isImpersonating: false,
-    impersonatingUser:  '',
-    appInsightEventData:{},
-    isStaffManager: false
+    appInsightEventData:{}
  }
  const mutations: MutationTree<Profile> = {
      setAppInsightEventData(state, profileData: any){
@@ -108,25 +88,8 @@ const state: Profile = {
     // }
     
     
-    setProfileData(state, payload: any): void {
-        state.profileData = payload.newState;
-
-        if (payload.userId.length > 0) {
-            state.impersonatingUser = payload.userId;
-            state.isImpersonating = true;
-            state.isAdmin = true;
-        }
-        else {
-            state.impersonatingUser = '';
-            state.isImpersonating = false;
-
-            if(state.profileData.isAdmin == true || state.profileData.isStaffHasAdminAccount == true)
-            {
-                state.isAdmin = true;
-            }
-        }
-
-        //bus.$emit("profileLoaded", "");
+    setProfileData(state, payload: Staff): void {
+        state.profileData = payload;
     },
 
     setSchedulingPref(state, newState: SchedulingPreferences) {
@@ -163,21 +126,18 @@ const state: Profile = {
 
     
     setWelcomePopupStatus(state) {
-        state.profileData.isFirstTimeLogin = true;
+        //state.profileData.isFirstTimeLogin = true;
     },
-    
-    setStaffManager(state, isStaffManager: boolean) {
-        state.isStaffManager = isStaffManager;
-    }
+   
 }
     // ACTIONS
      const actions: ActionTree<Profile, RootState> = {
      getProfileDetails({commit},username: string){
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Staff/${username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Staff`;
         return http
             .get(apiUrl)
             .then((res) => {
-                if(res.status === 204 || (!res.data.isAdmin && res.data.isDisabled)) {
+                if(res.status === 204 || (res.data.isDisabled)) {
                     router.push("/invalidaccount");
                 }
                 else
@@ -187,7 +147,7 @@ const state: Profile = {
                         userId: username,
                     }
 
-                    commit("setProfileData", payload);
+                    commit("setProfileData", payload.newState);
                     commit("setAppInsightEventData", payload.newState);
                 }
             })

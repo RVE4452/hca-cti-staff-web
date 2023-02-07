@@ -1,18 +1,13 @@
 <template>
     <div class="col-12 container-fluid pb4 pt3" v-if="isLoaded">
-        <div class="bg-black-05 neu-margin--bottom-20">
+        <div class="neu-margin--bottom-20">
             <div class="row">
                     <div class="col-12 neu-margin--bottom-20" v-if="!hasNeedsInPrimaryDept">
                             <p><small>Note: Your home department has no shifts available for this date.</small></p>
                         </div>
                 <div class="col-12 neu-margin--bottom-20" v-if="showErrorMsg">
                     <ErrorNotification :errorMsg="errorMsg" :errorType="errorType" />
-                </div>
-                <div class="col-12 f3">
-                    <h5>
-                        {{ formatDate(currentEvent?.date) }}
-                    </h5>
-                </div>
+                </div>              
                  <div class="col-12 neu-margin--top-20">
                     <neu-label content="Facility" position="fixed" >
                     </neu-label>
@@ -93,13 +88,10 @@
                                  v-for="shiftMember in data.shiftMembers"
                                  :key="shiftMember.username">
                                 <div class="d-flex">
-                                    <div class="col-auto pa0">
-                                        <h6 class="bg-gray tc white mr2 initial-name">
-                                            {{ shiftMember.firstName[0] + shiftMember.lastName[0] }}
-                                        </h6>
+                                    <div>                        
+                                        <neu-avatar color="gray-60" :initials="shiftMember.firstName[0] + shiftMember.lastName[0]"></neu-avatar>                  
                                     </div>
-                                    <div class="col-auto pa0">
-                                        <div class="row">
+                                        <div>
                                             <div class="col-12" v-bind:title="shiftMember.name">
                                                 <span class="fw6">
                                                     {{
@@ -111,7 +103,6 @@
                                                 <span class="gray">{{ shiftMember.skill }}</span>
                                             </div>
                                         </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -127,7 +118,6 @@
                 </div>
             </div>
         </div>
-        <!-- </div> -->
     </div>
 </template>
 
