@@ -1,12 +1,10 @@
 
 export interface Event {
-     id: string;
+     id: number;
      type: string;
      status: string;
      description: string;
-     changed: boolean;
-     isWeekend: boolean;
-     assignmentId: string;
+     assignmentId: number;
      needId: string;
      requestId: string;
      requestShiftId: number;
@@ -27,15 +25,4 @@ export interface Event {
      productiveType: string;
      date: Date;
      startTime: Date;
-     endTime: Date;
-     actualStartTime: Date;
-     actualEndTime: Date;
-     hours: number;
-     minutes: number;
-     comment: string;
-     isCommitment: boolean;
-     isSelfScheduled: boolean;
-     isOvertime: boolean;
-     premiumLaborLevel: boolean;
-     dailyEventsType: string[];  
 }
