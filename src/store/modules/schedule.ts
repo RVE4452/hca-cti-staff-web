@@ -209,7 +209,7 @@ const actions: ActionTree<Schedule, RootState> = {
     },
    
      getAssignmentDetail({ commit, rootState }, payload: any) {
-        const api = `${process.env.VUE_APP_APIURL}/Schedules/Assignments/${payload.id}/${payload.username}`
+        const api = `${process.env.VUE_APP_APIURL}/Assignments/${payload.id}`
 
         return http
             .get(api)

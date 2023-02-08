@@ -32,17 +32,11 @@
                 <neu-col  md="2" >                
                         <h5>
                             <p  style="margin-top: 1em; margin-left: 1em;">
-                                            <span v-if="scheduleStatus.toUpperCase() == 'PLAN SHEET' && isTierOpen">
-                                                SELF-SCHEDULING OPEN
+                                            <span v-if="scheduleStatus.toUpperCase() == 'OPEN'">
+                                                SCHEDULING OPEN
                                             </span>
-                                            <span v-if="scheduleStatus.toUpperCase() == 'PLAN SHEET' && !isTierOpen">
-                                                FUTURE SCHEDULE
-                                            </span>
-                                            <span v-if="scheduleStatus.toUpperCase() == 'AFTER PLAN SHEET'">
-                                                PENDING MANAGEMENT REVIEW
-                                            </span>
-                                            <span v-if="scheduleStatus.toUpperCase() == 'FIRST APPROVAL'">
-                                                PENDING MANAGEMENT APPROVAL
+                                            <span v-if="scheduleStatus.toUpperCase() == 'CLOSED'">
+                                                SCHEDULE CLOSED
                                             </span>
                                             <span v-if="scheduleStatus.toUpperCase() == 'POSTED'">
                                                 SCHEDULE POSTED
@@ -1249,7 +1243,7 @@
                         event.assignmentId =
                             event.type == "Need" || event.type == "Pending"
                                 ? event.id
-                                : "";
+                                : 0;
                         this.events.push(event);
 
                         cellTitle = this.getEventCellTitle(event);
@@ -1262,9 +1256,10 @@
                                 type: event.type,
                                 status: event.status,
                                 description: event.description,
-                                descriptionCoid:  (this.profile.coid + ' - ' + this.profile.departmentCode),
-                                facilityDeptName:  (this.profile.facilityName + ' - ' + this.profile.departmentName),
-                               
+                                descriptionCoid:  (event.coid + ' - ' + event.departmentCode),
+                                facilityDeptName:  (event.facilityName + ' - ' + event.departmentName),
+                                dailyEvents: event.dailyEvents
+
                             });
                         }
                         this.isLoading = false;
@@ -1635,16 +1630,17 @@
             this.processClickEvent(clickInfo.event.title, clickInfo.event.start, clickInfo.event.id, clickInfo.event.extendedProps.needFV);
         }
 
-        processClickEvent(cellTitle:string, eventStart:any, eventId:string, needFV:boolean) {
-             //this.currentMonthCalendarApi = this.$refs.fullCalendarCurrentMonth.getApi();
-            const event = cellTitle.includes("NEEDS") || cellTitle.includes("SHIFT")
+        processClickEvent(cellTitle:string, eventStart:any, eventId:number, needFV:boolean) {
+            debugger
+            console.log(this.events);
+             const event = cellTitle.includes("NEEDS")
                 ? this.events.find(
                     (event: Event) =>
                         moment(event.date).format("YYYY-MM-DD") ==
                         moment(eventStart).format("YYYY-MM-DD")
                         && event.type == "Need"
                 )
-                : this.events.find((event: Event) => event.id === eventId);
+                : this.events.find((event: Event) => event.id === Number(eventId));
             if (event) {
                 this.currentEvent = event;
                 this.sharedToggle = false;
@@ -1679,13 +1675,10 @@
                     this.sharedRequest = {
                         type: 4,
                         tradeShift: this.isShiftTradeAllowed,
-                        selfSchedule: true,
                         request: this.checkIfFutureDate(strClickEventDate),
                         status: this.scheduleStatus,
                         calSelectedDates: this.calSelectedDates,
-                        isSelfScheduledEvent: false,
-                        assignmentDetail: !this.isShiftTradeAllowed,
-                        isSymphonyUser: this.profile.useMySchedulerOperatingRoom? true :false
+                        assignmentDetail: !this.isShiftTradeAllowed
                     };
                     return;
                 }
@@ -1707,12 +1700,10 @@
 
                     this.sharedRequest = {
                         type: 1,
-                        selfSchedule: needFV,
                         request: this.checkIfFutureDate(strClickEventDate),
                         availability: this.isUnavailabilityAllowed,
                         calSelectedDates: this.calSelectedDates,
                         status: this.scheduleStatus,
-                        isSelfScheduledEvent: false,
                         SelfScheduleDepartments: event.selfScheduleDepartments                      
                     };
                 }                
@@ -1739,12 +1730,10 @@
                     const calSelectedDates = { startDate: eventStart, endDate: moment(eventStart).add(1, 'days') };
                     this.sharedRequest = {
                         type: 1,
-                        selfSchedule: false,
                         request: true,
                         additionalRequest: this.checkIfFutureDate(strClickEventDate),
                         availability: false,
                         calSelectedDates,
-                        isSelfScheduledEvent: false,
                         status: this.scheduleStatus                       
                     };
                 } //event.type = "Assignment"
@@ -1754,7 +1743,6 @@
                         event: this.checkIf48hour(event),
                         assignmentDetail: true,
                         status: this.scheduleStatus,
-                        isSymphonyUser: this.profile.useMySchedulerOperatingRoom? true :false,
                         availability:true
                     };
                 }
