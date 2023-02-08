@@ -303,7 +303,7 @@ const state: Profile = {
             });
     },
 
-     checkStaffManager({commit}, impersonateUsername: string){
+    checkStaffManager({commit}, impersonateUsername: string){
          const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/CheckStaffManager/${impersonateUsername}`;
  
          return http
@@ -315,7 +315,28 @@ const state: Profile = {
                  //Vue.notify({ type: "error", text: err.toString() })
                  console.log(err);
              });
-     }
+    },
+    saveProficiency({commit},payload:any){
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Staff/${payload.staffId}`;
+
+        return http
+            .put(apiUrl, payload)
+            .then((res: AxiosResponse) => {
+                console.log(res);
+                // commit("setProfileData", res); 
+                const payload = {
+                    newState: res.data,
+                    //userId: username,
+                }
+
+                commit("setProfileData", payload.newState);
+                commit("setAppInsightEventData", payload.newState);              
+            })
+            .catch((err: AxiosError) => {
+                //Vue.notify({ type: "error", text: err.toString() }) 
+                console.log(err);
+            });
+    }
 }
 
 export const profile: Module<Profile, RootState> = {

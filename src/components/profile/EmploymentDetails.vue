@@ -59,7 +59,9 @@
                 <neu-icon color="primary" fill="raised"  slot="content" @click="toggleSideNav()">info </neu-icon>
                 
                 <neu-select interface="popover" :value="proficiency"  @v-neu-change="selectionChange">
-                  <neu-option value="1">Level 1 Beginner </neu-option>
+                    
+                    <neu-option value="select">--Select-- </neu-option>
+                    <neu-option value="1">Level 1 Beginner </neu-option>
                   <neu-option value="2">Level 2 Intermediate</neu-option>
                   <neu-option value="3">Level 3 Advanced</neu-option>
                 </neu-select>
@@ -70,7 +72,7 @@
               <neu-button color="primary"   name="cancel" type="reset" value="Cancel" fill="flat">
                 Cancel
                 </neu-button>
-                <neu-button color="green-50"  name="submit" type="submit"  fill="raised" @click="saveProficiency()">
+                <neu-button :color="enableSave?'primary':'gray-50'"   name="submit" type="submit"  fill="raised" :disable="!enableSave" @click="saveProficiency()">
                 Save
                 </neu-button>
             </div>
@@ -141,7 +143,7 @@ export default defineComponent({
       return { 
           //  profileData: {} as any,
             ProficienceData: [] as any,
-            proficiency:'',
+            proficiency:"select",
             proficinecyDetails:'',
             enableSave :false,
             enableSideNav:false,
@@ -152,7 +154,7 @@ export default defineComponent({
   computed: {
       ...mapState('profile',["profileData"]),
       getName():any  {
-          return (this.profileData.first + " " + this.profileData.last);
+          return (this.profileData.firstName + " " + this.profileData.lastName);
       },
       getFullHomeAddress():any {
           let fulladdress = "";
@@ -196,37 +198,47 @@ export default defineComponent({
           }
           return primarySkill;
       },
+    //   getProficiency() {
+    //     return this.profileData?.proficiency.toString();
+    //   }
   },
   mounted() {
-  this.selectionChange({detail:{value:"1"}});
-  localStorage.setItem("guarenteedHours", this.profileData.guarenteedHours);
-  localStorage.setItem("UserName", this.profileData.first + " " + this.profileData.last);
+    
+    this.setDefaultValue();
+    // localStorage.setItem("guarenteedHours", this.profileData.guarenteedHours);
+    localStorage.setItem("UserName", this.profileData.firstName + " " + this.profileData.lastName);
   },
   methods: {
+      setDefaultValue(){
+            this.proficiency = this.profileData.proficiency.toString();
+        },
       // computed
       selectionChange(ev:any){
         this.enableSave = true;
-        if(ev.detail.value ==="1"){
-          this.proficiency = ev.detail.value;
-          this.proficinecyDetails = "An individual with a level of experience and clinical judgement gained in a classroom or orientation but is limited in caring for patients on the unit. Will have questions on clinical conditions and is expected to need consultation from a more advanced nurse with decision-making when patients are unstable or under rapidly changing conditions."
-        }else if(ev.detail.value ==="2"){
-          this.proficiency = ev.detail.value;
-          this.proficinecyDetails = "An individual with clinical judgement of a patient's condition and situational awareness of the current unit status. Anticipates patient care needs and promptly assesses and intervenes with minimal consultation and support in rapidly changing conditions. Emerging teacher and coach."
-        }else{
-          this.proficiency = ev.detail.value;
-          this.proficinecyDetails = "An individual recognized within the organization as a person for recognizing early clinical changes and for making wise clinical judgements when difficult questions arise regarding patient care, particularly when unusual, complex, emergent, or high-risk situations require clinical reasoning and rapid intervention."
-        }
+        this.proficiency = ev.detail.value;
+        
       },
       
       async saveProficiency(){
         if (this.enableSave) {
             var payload = {
-                ...this.profileData,
-                proficiency: this.proficiency,
+                userId: this.profileData.userId,
+                departmentId:this.profileData.departmentId,
+                staffTypeId:this.profileData.staffTypeId,
+                partOfDayId:this.profileData.partOfDayId,
+                fte:this.profileData.fte,
+                ptoBalance:this.profileData.ptoBalance,
+                // "start": "2023-02-07T10:54:00.722Z",
+                // "end": "2023-02-07T10:54:00.722Z",
+                rate:this.profileData.rate,
+                proficiency:+this.proficiency,
+                staffId: this.profileData.staffId,
             };
-            await this.$store.dispatch('schedule/getPayrollDetails', payload)
+            
+            await this.$store.dispatch('profile/saveProficiency', payload)
                 .then((res: any) => {
-
+                    console.log(res);
+                    this.enableSave = !this.enableSave;
                 })
                 .catch((err: any) => {
                     if (err) {

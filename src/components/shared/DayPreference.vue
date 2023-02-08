@@ -37,7 +37,7 @@
     </div>
     <div class="row">
       <div class="row neu-margin--top-20 neu-margin--left-30" style="width:100%" >
-        <neu-button :color="enableSave?'green-50':'gray-50'" full="true" type="submit" fill="raised"  style="width:100%" >
+        <neu-button :color="enableSave?'primary':'gray-50'" full="true" type="submit" fill="raised"  style="width:100%"  @click="savePreference()">
               Save
         </neu-button>
       </div>
@@ -47,19 +47,16 @@
   <neu-container></neu-container>
   </template>
   
-  <script>
-  import { NeuContainer } from '@neutron/vue'
+  <script lang="ts">
+  import { NeuContainer } from '@neutron/vue';
+import { mapState } from "vuex";
   
   export default {
     name: 'DayPreferenceView',
     components: { NeuContainer },
-    props: {
-      resource: {
-        type: String,
-        required: false,
-        default: 'resource',
-      },
-      
+    props: {},
+    computed: {
+      ...mapState('profile',["profileData"]),
     },
     data : () =>{
       return {
@@ -73,10 +70,30 @@
       // if (this.dayPreference == value){
       //   return 0;
       // }
-      this.dayPreference = value;
+        this.dayPreference = value;
         this.enableSave =true;
       },
-
+      
+      
+      async savePreference(){
+            var payload = {
+                staffId: this.profileData.staffId,
+                schedulePreferenceId: this.dayPreference,
+                date: "2023-02-07T14:19:32.052Z"
+            };
+            
+            await this.$store.dispatch('schedule/saveDayPreference', payload)
+                .then((res: any) => {
+                    console.log(res);
+                    this.enableSave = !this.enableSave;
+                })
+                .catch((err: any) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+        
+      },
     }
     
     

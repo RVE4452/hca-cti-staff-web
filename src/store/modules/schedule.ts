@@ -643,8 +643,21 @@ const actions: ActionTree<Schedule, RootState> = {
             .catch((err: AxiosError) => {               
                  console.log(err)                
             })
-    }
+    },
 
+    saveDayPreference({ commit, rootState },payload:any){
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Staff/SchedulePreferences/${payload.staffId}`;
+        
+        return http
+        .put(apiUrl,payload)
+        .then((res: AxiosResponse) => {
+            return res;
+        })
+        .catch((err: AxiosError) => {
+            console.log(err)
+            throw err;
+        });
+    }
 }
 export const schedule: Module<Schedule, RootState> = {
     namespaced,
