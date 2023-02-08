@@ -44,7 +44,7 @@
                 </span>
             </neu-tablist>           
             <div v-if="tabCurrent === 'Details'">
-                <detail :enableField="[]" :currentEvent="currentEvent" :key="counter" />
+                <detail :enableField="[]" :currentEvent="currentEvent" />
                 <!-- <shift-member-detail :currentEvent="currentEvent" :key="counter + 1" /> -->
                 <div class="container-fluid tc">
                     <div>
