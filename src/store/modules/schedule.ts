@@ -586,7 +586,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     // ACTIONS    
      getPayrollDetails({ commit, rootState },payload: any) {
-        const api = `${process.env.VUE_APP_APIURL}/Schedules/PayrollDetails/${payload.startDate}/${payload.endDate}/${payload.username}`;
+        const api = `${process.env.VUE_APP_APIURL}/Staff/Time/${payload.startDate}/${payload.endDate}`;
 
         return http
             .get(api)

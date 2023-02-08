@@ -35,12 +35,8 @@
             <template v-if="payrollDetails.length > 0">
                 <neu-table>
                     <neu-table-row columns="{'Schedule': '50%', 'Actual': '50%'}" header="true">
-                        <neu-table-heading icon="none" slot="Schedule">
-                            <div class="tHeading">Schedule</div>
-                        </neu-table-heading>
-                        <neu-table-heading slot="Actual" icon="none" active="false">
-                            <div class="tHeading actual">Actual</div>
-                        </neu-table-heading>
+                        <div slot="Schedule" icon="none" active="false" class="tHeading text-bold">Schedule</div>
+                        <div slot="Actual" icon="none" active="false" class="tHeading actual text-bold">Actual</div>
                     </neu-table-row>
 
                     <neu-table-body>
@@ -279,7 +275,9 @@ export default class PayrollDetails extends Vue {
 .bg-transparent {
     background: transparent;
 }
-
+.text-bold{
+    font-weight: bold;
+}
 .text-left {
     text-align: left
 }
