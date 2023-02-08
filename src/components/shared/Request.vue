@@ -1,765 +1,803 @@
 <template>
-  <div class="col-12">
-      <loading :active="isFullScreenLoading"
-               :can-cancel="false"
-               :height="128"
-               :width="128"
-               :color="loaderColor"
-               :opacity="0.7"
-               :is-full-page="true" />
-      <div class="container-fluid">
-          <div class="row">
-              <div class="col-12 pt3">
-                  <p>
-                      Estimated PTO Balance:
-                      <strong>{{ profileData.ptoBalance }}</strong>
-                  </p>
-              </div>
-              <div class="col-12 neu-margin--bottom-20" v-if="showErrorMsg">
-                  <ErrorNotification :errorMsg="errorMsg" :errorType="errorType" />
-              </div>
-              <div class="col-12 pt3 pb4" v-if="availiableDates.length>1">
-                  <h4>Dates</h4>
-              </div>
-              <div class="col-12" v-if="availiableDates.length>1">
-                  <div class="row">
-                      <div class="col-6 mb3"
-                           v-for="dates of availiableDates"
-                           v-bind:key="dates">
-                          <div @click="selectDates(dates)"
-                               v-bind:class="[
-                               'pa2 custom-border pointer' ,
-                               {
-                               'neu-background--cerulean-25' :
-                               data.selectedDate.indexOf(dates)>
-                              -1,
-                              },
-                              ]"
-                              >
-                              {{ dates }}
-                          </div>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-12">
-                  <div class="hr-line"></div>
-              </div>
-              <div class="col-md-12 pb4">
-                  <div class="row">
-                      <div class="col-12">
-                          <label for="approval_code" class="neu-input__label">Select Shift</label>
-                          <p>Data for Available Shift:  {{ availableShifts }}</p>
-                          <!-- <p>Data for Shift:  {{ shift }}</p> -->
-                              <!-- <neu-select interface="popover">
-                                  <neu-option value="edEducation">ED Education</neu-option>
-                                  <neu-option value="orange">LOA Leave of Absence</neu-option>
-                                  <neu-option value="pear">ED1 Education 8a-10a</neu-option>
-                                  <neu-option value="grape">ED2 Education 10a-12a</neu-option>
-                                  <neu-option value="grape">ED3 Education 12p-2p</neu-option>
-                              </neu-select> -->
+    <div class="col-12">
+        <loading :active="isFullScreenLoading" :can-cancel="false" :height="128" :width="128" :color="loaderColor"
+            :opacity="0.7" :is-full-page="true" />
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 pt3">
+                    <p>
+                        Estimated PTO Balance:
+                        <strong>{{ profileData.ptoBalance }}</strong>
+                    </p>
+                </div>
+                <div class="col-12 neu-margin--bottom-20" v-if="showErrorMsg">
+                    <ErrorNotification :errorMsg="errorMsg" :errorType="errorType" />
+                </div>
+                <div class="col-12 pt3 pb4" v-if="availiableDates.length > 1">
+                    <h4>Dates</h4>
+                </div>
+                <div class="col-12" v-if="availiableDates.length > 1">
+                    <div class="row">
+                        <div class="col-6 mb3" v-for="dates of availiableDates" v-bind:key="dates">
+                            <div @click="selectDates(dates)" v-bind:class="[
+                                'pa2 custom-border pointer',
+                                {
+                                    'neu-background--cerulean-25':
+                                        data.selectedDate.indexOf(dates) > -1,
+                                },
+                            ]">
+                                {{ dates }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="hr-line"></div>
+                </div>
+                <div class="col-md-12 pb4">
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="approval_code" class="neu-input__label">Select Shift</label>
+                            <template v-if="!additionalRequestEvent">
+                                <neu-select ref="ddlShift" interface="popover" v-model="shift"
+                                    @v-neu-change="shiftChange(additionalRequestEvent)">
 
-                              <neu-select-native :list="data.availableShifts"
-                              name="ddlShift" v-bind:class="[
-                                  'dropdown dropdown-input',
-                                  { 'readonly_text_field bg-transparent': widthdrawMode(additionalRequestEvent) },
-                                ]"
-                                                                   :isDisabled="widthdrawMode(additionalRequestEvent)"
-                                                                   @input="shiftChange(additionalRequestEvent)"
-                                                                   v-model="data.shift"
-                                                                   option-value="id"
-                                                                   option-text="name"
-                                                                   placeholder="select item">
-                              </neu-select-native>
-                              
-                              <!-- <model-list-select :list="data.availableShifts"
-                                              name="ddlShift"
-                                                 v-bind:class="[
-                'dropdown dropdown-input',
-                { 'readonly_text_field bg-transparent': widthdrawMode(additionalRequestEvent) },
-              ]"
-                                                 :isDisabled="widthdrawMode(additionalRequestEvent)"
-                                                 @input="shiftChange(additionalRequestEvent)"
-                                                 v-model="data.shift"
-                                                 option-value="id"
-                                                 option-text="name"
-                                                 placeholder="select item">
-                              </model-list-select> -->
-                              
-                          <div v-if="additionalRequestEvent">
-                              Another Select Goes here
-                              <!-- <model-list-select :list="data.availableShifts"
-                                              name="ddlShift"
-                                                 v-bind:class="[
-                'dropdown dropdown-input',
-                { 'readonly_text_field bg-transparent': widthdrawMode(additionalRequestEvent) },
-              ]"
-                                                 :isDisabled="widthdrawMode(additionalRequestEvent)"
-                                                 @input="shiftChange(additionalRequestEvent)"
-                                                 v-model="data.defaultShift"
-                                                 option-value="id"
-                                                 option-text="name"
-                                                 placeholder="select item">
-                              </model-list-select> -->
-                          </div>
-                      </div>
-                  </div>
+                                    <neu-option ref="ddlShiftOptions" v-for="shift in availableShifts" :value="shift.id"
+                                        :key="shift.id">
+                                        {{ shift.name }}
+                                    </neu-option>
+                                </neu-select>
+                            </template>
 
-                  <div class="row pt3">
-                      <div class="col-12">
-                          <div class="row">
-                              <div class="d-inline-flex w-100">
-                                  <div class="col-6">
-                                      <label for="partof_day" class="neu-input__label">Start Time</label>
-                                      <neu-input type="time" class="neu-input__text-field readonly_text_field starttimecolor" autocomplete="off" autocorrect="off" name="txtStartTime" >
-                                      </neu-input>
-                                      <!-- <template v-if="!additionalRequestEvent">
-                                          <input :disabled="getDisableDuration(additionalRequestEvent)"
-                                                 name="txtStartTime"
-                                                 v-model="data.startTime"
-                                                 v-bind:class="[
-                      'neu-input__text-field',
-                      {
-                        'readonly_text_field starttimecolor': getDisableDuration(additionalRequestEvent),
-                      },
-                    ]"
-                                                 type="time" />
-                                      </template> -->
-                                      <!-- <template v-if="additionalRequestEvent">
-                                          <input :disabled="getDisableDuration(additionalRequestEvent)"
-                                                 name="txtStartTime"
-                                                 v-model="data.defaultStartTime"
-                                                 v-bind:class="[
-                      'neu-input__text-field',
-                      {
-                        'readonly_text_field starttimecolor': getDisableDuration(additionalRequestEvent),
-                      },
-                    ]"
-                                                 type="time" />
-                                      </template> -->
-                                  </div>
-                                  <div class="col-6">
-                                      <label for="partof_day" class="neu-input__label">Duration</label>
-                                      <neu-select interface="popover">
-                                          <neu-option value="edEducation">1 Hour</neu-option>
-                                          <neu-option value="edEducation">2 Hour</neu-option>
-                                          <neu-option value="edEducation">3 Hour</neu-option>
-                                          <neu-option value="edEducation">4 Hour</neu-option>
-                                          <neu-option value="edEducation">5 Hour</neu-option>
-                                          <neu-option value="edEducation">6 Hour</neu-option>
-                                          <neu-option value="edEducation">7 Hour</neu-option>
-                                          <neu-option value="edEducation">8 Hour</neu-option>
-                                          <neu-option value="edEducation">9 Hour</neu-option>
-                                          <neu-option value="edEducation">10 Hour</neu-option>
-                                          <neu-option value="edEducation">11 Hour</neu-option>
-                                          <neu-option value="edEducation">12 Hour</neu-option>
-                                      </neu-select>
+                            <template v-if="additionalRequestEvent">
+                                <neu-select ref="ddlShift" interface="popover" v-model="defaultShift"
+                                    @v-neu-change="shiftChange(additionalRequestEvent)">
 
-                                      
-                                      <!-- <template v-if="!additionalRequestEvent">
-                                          <model-list-select :list="data.durationList"
-                                                          name="ddlDuration"
-                                                             v-bind:class="[
-                      'neu-input__text-field',
-                      {
-                        'readonly_text_field bg-transparent': getDisableDuration(additionalRequestEvent),
-                      },
-                    ]"
-                                                             :isDisabled="getDisableDuration(additionalRequestEvent)"
-                                                             v-model="data.duration"
-                                                             option-value="value"
-                                                             option-text="label"
-                                                             placeholder="select item">
-                                          </model-list-select>
-                                      </template> -->
-                                      <!-- <template v-if="additionalRequestEvent">
-                                          <model-list-select :list="data.durationList"
-                                                          name="ddlDuration"
-                                                             v-bind:class="[
-                      'neu-input__text-field',
-                      {
-                        'readonly_text_field bg-transparent': getDisableDuration(additionalRequestEvent),
-                      },
-                    ]"
-                                                             :isDisabled="getDisableDuration(additionalRequestEvent)"
-                                                             v-model="data.defaultDuration"
-                                                             option-value="value"
-                                                             option-text="label"
-                                                             placeholder="select item">
-                                          </model-list-select>
-                                      </template> -->
+                                    <neu-option ref="ddlShiftOptions" v-for="shift in availableShifts" :value="shift.id"
+                                        :key="shift.id">
+                                        {{ shift.name }}
+                                    </neu-option>
+                                </neu-select>
+                            </template>
 
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
 
-                  <div class="row pt3">
-                      <div class="col-12">
-                          <label for="approval_code" class="neu-input__label">Comments (Optional)</label>
-                          <template v-if="!additionalRequestEvent">
-                              <neu-textarea placeholder="Enter text here" wrap="off" inputmode="search" enterkeyhint="search" >
-                              </neu-textarea>                               
-                          </template>
-                          <!-- <template v-if="!additionalRequestEvent">
-                              <textarea
-                                  v-bind:class="[
-                                      'neu-input__textarea',
-                                      { 'readonly_text_field bg-transparent starttimecolor': widthdrawMode(additionalRequestEvent) },
-                                      ]"
-                                  :disabled="widthdrawMode(additionalRequestEvent)"
-                                  :maxlength="maxCommentsCharacters"
-                                  v-model="data.comment"
-                                  name="Comment"
-                              ></textarea>
-                              <br>
-                              <span class="commentCharacterCountText">Remaining {{ maxCommentsCharacters - (data.comment!= undefined ? data.comment.length: 0) }}  characters.</span>
-                          </template> -->
-                          <!-- <template v-if="additionalRequestEvent">
-                               <textarea
-                                  v-bind:class="[
-                                      'neu-input__textarea',
-                                      { 'readonly_text_field bg-transparent starttimecolor': widthdrawMode(additionalRequestEvent) },
-                                      ]"
-                                  :disabled="widthdrawMode(additionalRequestEvent)"
-                                  :maxlength="maxCommentsCharacters"
-                                  v-model="data.defaultComment"
-                                  name="Comment"
-                              ></textarea>
-                              <br>
-                              <span class="commentCharacterCountText">Remaining {{ maxCommentsCharacters - (data.defaultComment!= undefined ? data.defaultComment.length: 0) }}  characters.</span>
-                          </template> -->
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-      <div class="container-fluid">
-          <div class="row">
-              <div class="col-12">
-                  <neu-button color="primary" fill="raised" class="d-block">
-                      Add to Schedule
-                  </neu-button>
-                  <!-- <button @click="FireAction(additionalRequestEvent)"
-                          v-bind:name="'btn' + (currentEvent.type == 'Request' && additionalRequestEvent == false ? 'Withdraw' : 'AddToSchedule')"
-                          data-test="fire-action"
-                          :class="[
-            'd-block mb4 mt4 neu-button w-100 neu-text--white',
-            disableSubmit(additionalRequestEvent) || isImpersonating
-              ? 'neu-button--blue-disabled'
-              : 'neu-background--denim'
-          ]"
-                          :disabled="(disableSubmit(additionalRequestEvent) || isImpersonating)">
-                      {{currentEvent.type == "Request" && additionalRequestEvent == false ? "Withdraw" : "Add to Schedule"}}
-                  </button> -->
-              </div>
-          </div>
-      </div>
-      <!-- <div v-if="isConfirmModalVisible">
-          <ConfirmMsgPopUp @cancelled="isConfirmModalVisible = false"
-                           @confirmed="confirmedClicked"
-                           :msgValue="confirmMsgValue"></ConfirmMsgPopUp>
-      </div> -->
-  </div>
+                            <template v-if="additionalRequestEvent">
+                                Another Select Goes here
+                                <model-list-select :list="availableShifts" name="ddlShift" v-bind:class="[
+                                    'dropdown dropdown-input',
+                                    { 'readonly_text_field bg-transparent': widthdrawMode(additionalRequestEvent) },
+                                ]" :isDisabled="widthdrawMode(additionalRequestEvent)"
+                                    @input="shiftChange(additionalRequestEvent)" :value="defaultShift" option-value="id"
+                                    option-text="name" placeholder="select item">
+                                </model-list-select>
+                                <model-list-select :list="availableShifts" name="ddlShift" v-bind:class="[
+                                    'dropdown dropdown-input',
+                                    { 'readonly_text_field bg-transparent': widthdrawMode(additionalRequestEvent) },
+                                ]" :isDisabled="widthdrawMode(additionalRequestEvent)" @input="shiftChange(additionalRequestEvent)"
+                                    v-model="defaultShift" option-value="id" option-text="name"
+                                    placeholder="select item">
+                                </model-list-select>
+
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="row pt3">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="d-inline-flex w-100">
+                                    <div class="col-6">
+                                        <label for="partof_day" class="neu-input__label">Start Time</label>
+
+                                        <div v-if="!additionalRequestEvent">
+                                            <input :disabled="getDisableDuration(additionalRequestEvent)"
+                                                name="txtStartTime" v-model="startTime" v-bind:class="[
+                                                    'neu-input__text-field',
+                                                    {
+                                                        'readonly_text_field starttimecolor': getDisableDuration(additionalRequestEvent),
+                                                    },
+                                                ]" type="time" />
+                                        </div>
+                                        <div v-if="additionalRequestEvent">
+                                            <input :disabled="getDisableDuration(additionalRequestEvent)"
+                                                name="txtStartTime" v-model="defaultStartTime" v-bind:class="[
+                                                    'neu-input__text-field',
+                                                    {
+                                                        'readonly_text_field starttimecolor': getDisableDuration(additionalRequestEvent),
+                                                    },
+                                                ]" type="time" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <label for="partof_day" class="neu-input__label">Duration</label>
+                                        <div v-if="!additionalRequestEvent">
+                                            <neu-select interface="popover" name="ddlDuration"
+                                                @v-neu-change="getDisableDuration(additionalRequestEvent)" :class="[
+                                                    {
+                                                        'readonly_text_field bg-transparent':
+                                                            getDisableDuration(additionalRequestEvent),
+                                                    },
+                                                ]">
+                                                <neu-option v-for="duration in durationList" :value="duration.value"
+                                                    :key="duration.value" :input="duration">
+                                                    {{ duration.label }}
+                                                </neu-option>
+                                            </neu-select>
+                                        </div>
+
+                                        <div v-if="additionalRequestEvent">
+                                            <neu-select interface="popover" name="ddlDuration"
+                                                @v-neu-change="getDisableDuration(additionalRequestEvent)" :class="[
+                                                    {
+                                                        'readonly_text_field bg-transparent':
+                                                            getDisableDuration(additionalRequestEvent),
+                                                    },
+                                                ]">
+                                                <neu-option v-for="duration in durationList" :value="duration.value"
+                                                    :key="duration.value" v-model="defaultDuration">
+                                                    {{ duration.label }}
+                                                </neu-option>
+                                            </neu-select>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row pt-3">
+                    <div class="col-12">
+                        <label for="approval_code" class="neu-input__label">Comments (Optional)</label>
+                        <template v-if="!additionalRequestEvent">
+                            <textarea placeholder="Enter text here" wrap="off" inputmode="search" enterkeyhint="search" v-bind:class="[
+                                'neu-input__textarea',
+                                { 'readonly_text_field bg-transparent starttimecolor': widthdrawMode(additionalRequestEvent) },
+                            ]" :disabled="widthdrawMode(additionalRequestEvent)"
+                                :maxlength="maxCommentsCharacters" v-model="comment" name="Comment"></textarea>
+                            <br>
+                            <span class="commentCharacterCountText">Remaining {{ maxCommentsCharacters -
+                            (comment != undefined ? comment.length : 0) }} characters.</span>
+                        </template>
+                        <template v-if="additionalRequestEvent">
+                            <template v-if="!additionalRequestEvent">
+                                <model-list-select :list="durationList" name="ddlDuration" v-bind:class="[
+                                    'neu-input__text-field',
+                                    {
+                                        'readonly_text_field bg-transparent': getDisableDuration(additionalRequestEvent),
+                                    },
+                                ]" :isDisabled="getDisableDuration(additionalRequestEvent)" v-model="duration" option-value="value"
+                                    option-text="label" placeholder="select item">
+                                </model-list-select>
+                            </template>
+                            <template v-if="additionalRequestEvent">
+                                <model-list-select :list="durationList" name="ddlDuration" v-bind:class="[
+                                    'neu-input__text-field',
+                                    {
+                                        'readonly_text_field bg-transparent': getDisableDuration(additionalRequestEvent),
+                                    },
+                                ]" :isDisabled="getDisableDuration(additionalRequestEvent)" v-model="defaultDuration"
+                                    option-value="value" option-text="label" placeholder="select item">
+                                </model-list-select>
+                            </template>
+                            <span class="commentCharacterCountText">Remaining {{ maxCommentsCharacters -
+                            (defaultComment != undefined ? defaultComment.length : 0) }}
+                                characters.</span>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <button @click="FireAction(additionalRequestEvent)" v-bind:name="
+                    'btn' +
+                    (currentEvent?.type == 'Request' &&
+                        additionalRequestEvent == false
+                        ? 'Withdraw'
+                        : 'AddToSchedule')
+                " data-test="fire-action" :class="[
+    'd-block mb4 mt4 neu-button w-100 neu-text--white',
+    disableSubmit(additionalRequestEvent) || isImpersonating
+        ? 'neu-button--blue-disabled'
+        : 'neu-background--denim',
+]" :disabled="disableSubmit(additionalRequestEvent) || isImpersonating">
+                    {{
+    currentEvent?.type == 'Request' && additionalRequestEvent == false
+    ? 'Withdraw'
+    : 'Add to Schedule'
+                    }}
+                </button>
+            </div>
+        </div>
+    </div>
+    <div v-if="isConfirmModalVisible">
+        <ConfirmMsgPopUp @cancelled="isConfirmModalVisible = false" @confirmed="confirmedClicked"
+            :msgValue="confirmMsgValue"></ConfirmMsgPopUp>
+    </div>
 </template>
 
 <script lang="ts">
-  import { ORSchedule, Event } from "@/models";
-  //import plugins and modules
-  import { Options, Vue } from 'vue-class-component';
-  import moment from "moment";
-  import { mapState } from "vuex";
-  import ErrorNotification from "./ErrorNotification.vue";
-  import ConfirmMsgPopUp from "@/components/shared/ConfirmMsgPopUp.vue";
-  import { NeuSelect } from '@neutron/vue';
-  import Loading from '@neutron/vue';
-  // import 'vue-loading-overlay/dist/vue-loading.css';
-  import { useAppInsights } from '../../store/modules/AppInsights'
-  
-  class Props{        
-      calSelectedDates!: any;
-      currentEvent!: any;
-      additionalRequestEvent!: any;
-      dayChanged!: any;
-  }
-  @Options({
-       computed: {
-              ...mapState('schedule', ['requestDetail','userSchedules']),
-              ...mapState('profile',['profileData','isAdmin','isImpersonating','appInsightEventData'])
-          },
-      components: {
-          ErrorNotification,
-          NeuSelect,
-          Loading,
-          ConfirmMsgPopUp,
-          selectedDate: []
-          
-      },
-  })
-  export default class Request extends Vue.with(Props) {
-     
-      public requestDetail!: any;
-      public data!: any;
-      availiableDates: string[] = [];
-      buttonCaption: string = "";
-      isLoading: boolean = false;
-      errorMsg: string = "";
-      errorType: string = "error";
-      showErrorMsg: boolean = false;
-      disableduration: boolean = false;
-      maxTimeDuration: any = 12;
-      isFullScreenLoading: boolean = false;
-      loaderColor: string = "#0085ca";
-      isConfirmModalVisible: boolean = false;
-      confirmMsgValue: string = '';
-      maxCommentsCharacters: number = 25;
-      public profileData!: any;
-      currentSchedule!: ORSchedule;
-      isAdmin!: boolean;
-      public userSchedules!: any;
-      isImpersonating!: boolean;
-      appInsightEventData!: any;
-      startTime: string = "";
-      defaultStartTime: string = "";
-      duration: string = "";
-      defaultDuration: string = "";
-      shift: string = "";
-      defaultShift: string = "";
-      minutes:  string = "";
-      hours: number = 0;
-      startDateTime: string ="";
-      durationList = [];
-      availableShifts=[];
-      comment: string = "";
-      defaultComment:string = ""
+import { ORSchedule, Event } from '@/models'
+//import plugins and modules
+import { Options, Vue } from 'vue-class-component'
+import moment from 'moment'
+import { mapState } from 'vuex'
+import { onMounted } from 'vue'
+import ErrorNotification from './ErrorNotification.vue'
+import ConfirmMsgPopUp from '@/components/shared/ConfirmMsgPopUp.vue'
+import {
+    NeuSelect,
+    NeuSelectNative,
+    NeuTextarea,
+    NeuButton,
+} from '@neutron/vue'
+import Loading from '@neutron/vue'
+// import 'vue-loading-overlay/dist/vue-loading.css';
+// import 'vue-loading-overlay/dist/css/index.css';
+import { useAppInsights } from '../../store/modules/AppInsights'
+//@ts-ignore
+import { ModelListSelect } from 'vue-search-select'
 
-      async mounted(): Promise<void> {
-          await this.loadData();
-      }
-           
+class Props {
+    calSelectedDates!: any
+    currentEvent!: any
+    additionalRequestEvent!: any
+    dayChanged!: any
+}
+@Options({
+    computed: {
+        ...mapState('schedule', ['requestDetail', 'userSchedules']),
+        ...mapState('profile', [
+            'profileData',
+            'isAdmin',
+            'isImpersonating',
+            'appInsightEventData',
+        ]),
+    },
+    components: {
+        ErrorNotification,
+        NeuSelect,
+        NeuSelectNative,
+        NeuTextarea,
+        NeuButton,
+        Loading,
+        ConfirmMsgPopUp,
+        ModelListSelect,
+        selectedDate: [],
+    },
+})
+export default class Request extends Vue.with(Props) {
+    public requestDetail!: any
+    public data!: any
+    availiableDates: string[] = []
+    buttonCaption: string = ''
+    isLoading: boolean = false
+    errorMsg: string = ''
+    errorType: string = 'error'
+    showErrorMsg: boolean = false
+    disableduration: boolean = false
+    maxTimeDuration: any = 12
+    isFullScreenLoading: boolean = false
+    loaderColor: string = '#0085ca'
+    isConfirmModalVisible: boolean = false
+    confirmMsgValue: string = ''
+    maxCommentsCharacters: number = 25
+    public profileData!: any
+    currentSchedule!: ORSchedule
+    isAdmin!: boolean
+    public userSchedules!: any
+    isImpersonating!: boolean
+    appInsightEventData!: any
+    startTime: string = ''
+    defaultStartTime: string = ''
+    duration: string = ''
+    defaultDuration: string = ''
+    shift: string = ''
+    defaultShift: string = ''
+    minutes: string = ''
+    hours: number = 0
+    startDateTime: string = ''
+    durationList = []
+    availableShifts = []
+    comment: string = ''
+    defaultComment: string = ''
 
-      async loadData() {
-          try {
-              this.generateTimeList(this.maxTimeDuration);
-              this.buttonCaption =
-                  this.currentEvent.type == "Request" ? "Withdraw" : "Add to Schedule";
-              await this.getSelectedDates();
-              if (this.currentEvent.type == "Request") {
-                  this.getRequestEvent();
-                  this.disableduration = false;
-              }
-              this.data.defaultStartTime = "";
-              this.data.defaultDuration = "";
-              this.data.defaultShift = "";
-              this.data.availableShifts = [];
-              this.data.defaultComment = "";
+    async mounted() {
+        await this.loadData()
+    }
 
-              // alert("<br />" + this.data.availableShifts);
+    // setup() {
+    //     onMounted(() => {
+    //         this.loadData();
+    //     })
+    // }
 
-              for (var i = 0; i < this.profileData.departmentShifts.length; i++)
-              {
-                  let selectedDate = moment(new Date(
-                      this.calSelectedDates.startDate.getTime() -
-                      this.calSelectedDates.startDate.getTimezoneOffset() * 60000
-                  ).toISOString());
-                  
-                  if ((this.profileData.departmentShifts[i].effective === null)
-                      && (this.profileData.departmentShifts[i].expires === null))
-                  {
-                      this.data.availableShifts.push(this.profileData.departmentShifts[i]);
-                  }
-                  else if ((this.profileData.departmentShifts[i].effective !== null)
-                          && (this.profileData.departmentShifts[i].expires !== null)) 
-                  {
-                      if((this.profileData.departmentShifts[i].effective <= selectedDate) && (this.profileData.departmentShifts[i].expires >= selectedDate))
-                      {
-                          this.data.availableShifts.push(this.profileData.departmentShifts[i]);
-                      }
-                  }
-                  else if (((this.profileData.departmentShifts[i].effective === null)) && (selectedDate <=  moment(this.profileData.departmentShifts[i].expires)))
-                  {
-                      
-                      this.data.availableShifts.push(this.profileData.departmentShifts[i]);
-                      
-                  } 
-                  else if(((this.profileData.departmentShifts[i].expires === null)) && (selectedDate >= moment(this.profileData.departmentShifts[i].effective)))
-                  {
-                      
-                      this.data.availableShifts.push(this.profileData.departmentShifts[i]);
-                      
-                  }
-              }
-          } catch (error) {
-              console.log(error);
-          }
-      }      
+    async loadData() {
+        //try {
+        this.generateTimeList(this.maxTimeDuration);
+        //this.buttonCaption =
+        //this.currentEvent?.type == "Request" ? "Withdraw" : "Add to Schedule";
+        //await this.getSelectedDates();
+        // if (this.currentEvent?.type == "Request") {
+        //     this.getRequestEvent();
+        //     this.disableduration = false;
+        //
+        this.getRequestEvent()
+        this.defaultStartTime = ''
+        this.defaultDuration = ''
+        this.defaultShift = ''
+        this.availableShifts = []
+        this.defaultComment = ''
+        this.profileData = ''
 
-      generateTimeList(maxDuration: any): void {
-          const hours: any = [];
-          for (let hour = 0; hour < maxDuration; hour++) {
-              hours.push({
-                  label: `${hour + 1} hour`,
-                  value: hour + 1,
-              });
-          }
-          this.data.durationList = hours;
-      }
+        // for (var i = 0; i < this.profileData.departmentShifts.length; i++) {
+        //     debugger
+        //     let selectedDate = moment(
+        //         new Date(
+        //             this.calSelectedDates.startDate.getTime() -
+        //             this.calSelectedDates.startDate.getTimezoneOffset() * 60000
+        //         ).toISOString()
+        //     )
+        //     if (
+        //         this.profileData.departmentShifts[i].effective === null &&
+        //         this.profileData.departmentShifts[i].expires === null
+        //     ) {
+        //         this.availableShifts.push(this.profileData.departmentShifts[i])
+        //     } else if (
+        //         this.profileData.departmentShifts[i].effective !== null &&
+        //         this.profileData.departmentShifts[i].expires !== null
+        //     ) {
+        //         if (
+        //             this.profileData.departmentShifts[i].effective <= selectedDate &&
+        //             this.profileData.departmentShifts[i].expires >= selectedDate
+        //         ) {
+        //             this.availableShifts.push(this.profileData.departmentShifts[i])
+        //         }
+        //     }
+        // }
 
-      widthdrawMode(additionalRequestEvent:any): boolean {
-          return Boolean(this.currentEvent.type == "Request" && additionalRequestEvent == false);
-      }
+        for (var i = 0; i < this.profileData.departmentShifts.length; i++) {
+            let selectedDate = moment(new Date(
+                this.calSelectedDates.startDate.getTime() -
+                this.calSelectedDates.startDate.getTimezoneOffset() * 60000
+            ).toISOString());
 
-      async getSelectedDates(): Promise<void> {
-          var startSD = moment(this.calSelectedDates.startDate, "M/D/YYYY");
-          var endSD = moment(this.calSelectedDates.endDate, "M/D/YYYY");
-          var diffDays = endSD.diff(startSD, "days");
-          let currentDate: Date = new Date(this.calSelectedDates.startDate);
-          this.availiableDates = [];
-          for (var i = 0; i < diffDays; i++) {
-              const date = moment(currentDate)
-                  .format("dddd, MMMM DD")
-                  .toString();
-              this.availiableDates.push(date);
-              currentDate.setDate(currentDate.getDate() + 1);
-          }
-          this.data.selectedDate = JSON.parse(JSON.stringify(this.availiableDates));
-      }
+            if ((this.profileData.departmentShifts[i].effective === null)
+                && (this.profileData.departmentShifts[i].expires === null)) {
+                this.availableShifts.push(this.profileData.departmentShifts[i]);
+            }
+            else if ((this.profileData.departmentShifts[i].effective !== null)
+                && (this.profileData.departmentShifts[i].expires !== null)) {
+                if ((this.profileData.departmentShifts[i].effective <= selectedDate) && (this.profileData.departmentShifts[i].expires >= selectedDate)) {
+                    this.availableShifts.push(this.profileData.departmentShifts[i]);
+                }
+            }
+            else if (((this.profileData.departmentShifts[i].effective === null)) && (selectedDate <= moment(this.profileData.departmentShifts[i].expires))) {
 
-      
+                this.availableShifts.push(this.profileData.departmentShifts[i]);
 
-      getRequestEvent() {
-          var payload = { 
-              username: this.profileData.username, 
-              id: this.currentEvent.id
-          };  
+            }
+            else if (((this.profileData.departmentShifts[i].expires === null)) && (selectedDate >= moment(this.profileData.departmentShifts[i].effective))) {
 
-          this.$store
-              .dispatch("schedule/GetRequestDetails", payload)
-              // .dispatch("schedule/Requests", payload)
-              .then((res: any) => {
-                  if (this.requestDetail != undefined) {
-                      this.data.shift = this.requestDetail.departmentShiftId;
-                      var requestEventStartDateTime = new Date(
-                          this.requestDetail.startTime
-                      );
-                      var requeststartTime = moment(requestEventStartDateTime).format(
-                          "hh:mm"
-                      );
-                      var requestHours = this.requestDetail.hours;
-                      this.data.duration = requestHours;
-                      this.data.startTime = requeststartTime;
-                      this.data.comment = this.requestDetail.comment;
-                  }
-              })
-              .catch((err: any) => {
-                  if (err) {
-                      console.log(err); // Handle errors any way you want
-                  }
-              });
-      }
+                this.availableShifts.push(this.profileData.departmentShifts[i]);
 
-      async FireAction(additionalRequestEvent:any) {
-          if (!this.widthdrawMode(additionalRequestEvent)) {
-              //If there is no email address present in profile then doesn't allow them to send Non-productive shift request
-              var selectedShift =  this.data.availableShifts.find((x:any)=> x.id == this.data.shift);           
-              if(this.profileData.email == null || 
-                  this.profileData.email == undefined || this.profileData.email == "")
-              {
-                  this.showErrorMsg = true;
-                  this.errorMsg = "Request Failed: There is no email address associated with your profile. To update this information, contact your manager, FSA, or call HCA HR Answers at 1-844-HR-ANSWR(472-6797)."
-                  return;
-              }
-              this.isLoading = true;
-              let requestBody = {
-                  tenantId: this.profileData.tenantId,
-                  startDate: new Date(
-                      this.calSelectedDates.startDate.getTime() -
-                      this.calSelectedDates.startDate.getTimezoneOffset() * 60000
-                  ).toISOString(),
-                  endDate: new Date(
-                      this.calSelectedDates.endDate.getTime() -
-                      this.calSelectedDates.endDate.getTimezoneOffset() * 60000
-                  ).toISOString(),
-                  comment: additionalRequestEvent ? this.data.defaultComment : this.data.comment,
-                  email: this.profileData.email,
-                  shifts: [] as any[],
-              };
-              for (var i = 0; i < this.data.selectedDate.length; i++) {
-                  var eventStartDateTime = new Date(this.data.selectedDate[i]);
-                  if (!additionalRequestEvent) {
-                      eventStartDateTime.setHours(
-                          Number(this.data.startTime.split(":")[0]),
-                          Number(this.data.startTime.split(":")[1])
-                      );
-                  }
-                  else {
-                      eventStartDateTime.setHours(
-                          Number(this.data.defaultStartTime.split(":")[0]),
-                          Number(this.data.defaultStartTime.split(":")[1])
-                      );
-                  }
-                  eventStartDateTime.setFullYear(
-                      this.calSelectedDates.startDate.getFullYear()
-                  );
-                  let objReq = {
-                      departmentShiftId: additionalRequestEvent ? this.data.defaultShift : this.data.shift,
-                      startDateTime: new Date(
-                          eventStartDateTime.getTime() -
-                          eventStartDateTime.getTimezoneOffset() * 60000
-                      ).toISOString(), // Add Time
-                      hours: Number(additionalRequestEvent ? this.data.defaultDuration : this.data.duration), // Add Hours
-                      minutes: 0,
-                  };
+            }
+        }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
-                  requestBody.shifts.push(objReq);
-              }
-              this.isFullScreenLoading = true;
-              this.$store
-                  .dispatch("schedule/RequestSchedule", requestBody)
-                  .then(() => {
-                      // showing message in MyScheduleView Screen and close modal only on success
-                      this.isFullScreenLoading = false;
-                      this.$emit(
-                          "showSuccessMsgPopUp",
-                          true,
-                          "Time off request successfully submitted."
-                      );
-                      this.$emit("closeSharedModal");
-                      useAppInsights().trackEvent({name:'CreateRequests',properties: 
-                          JSON.parse(JSON.stringify(this.appInsightEventData))
-                      });
-                  })
-                  .finally(() => { this.isLoading = false; this.isFullScreenLoading = false; })
-                  .catch((err: any) => {
-                      this.isFullScreenLoading = false;
-                      if (err) {
-                          let parseResponse =
-                              err.request.response != ""
-                                  ? err.request.response
-                                  : "An error has occurred. Please try again. If the error persists, contact Facility Scheduler support.";
+    generateTimeList(maxDuration: any): void {
+        const hours: any = []
+        for (let hour = 0; hour < maxDuration; hour++) {
+            hours.push({
+                label: `${hour + 1} hour`,
+                value: hour + 1,
+            })
+        }
+        this.durationList = hours
+    }
 
-                          this.showErrorMsg = true;
-                          this.errorMsg = parseResponse;
-                      }
-                  });
-          }
-          else //
-          {
-              if (this.profileData.selfScheduleToCommitment == true) {
-                  if (this.isBelowCommitment()) {
-                      this.confirmMsgValue = "By withdrawing this request, you will be under your shift commitment. Do you want to proceed?";
-                      this.isConfirmModalVisible = true;
-                  }
-                  else {
-                      this.confirmMsgValue = "This shift request will be removed. Do you want to proceed?";
-                      this.isConfirmModalVisible = true;
-                  }
-              }
-              else {
-                  this.confirmMsgValue = "This shift request will be removed. Do you want to proceed?";
-                  this.isConfirmModalVisible = true;
-              }
-          }
-      }
+    widthdrawMode(additionalRequestEvent: any): boolean {
+        return Boolean(
+            this.currentEvent?.type == 'Request' && additionalRequestEvent == false
+        )
+    }
 
-      selectDates(date: string): void {
-          const selectedDates: any = this.data.selectedDate;
-          const index = selectedDates.indexOf(date);
-          if (index > -1) {
-              selectedDates.splice(index, 1);
-          } else {
-              selectedDates.push(date);
-          }
-      }
+    async getSelectedDates(): Promise<void> {
+        var startSD = moment(this.calSelectedDates.startDate, 'M/D/YYYY')
+        var endSD = moment(this.calSelectedDates.endDate, 'M/D/YYYY')
+        var diffDays = endSD.diff(startSD, 'days')
+        let currentDate: Date = new Date(this.calSelectedDates.startDate)
+        this.availiableDates = []
+        for (var i = 0; i < diffDays; i++) {
+            const date = moment(currentDate).format('dddd, MMMM DD').toString()
+            this.availiableDates.push(date)
+            currentDate.setDate(currentDate.getDate() + 1)
+        }
+        this.selectedDate = JSON.parse(JSON.stringify(this.availiableDates))
+    }
 
-      shiftChange(additionalRequestEvent:any): void {                     
-          let defaultDuration = this.profileData.partOfDayDuration;
-          let defaultStartTime = this.formatTime(this.profileData.partOfDayStartTime).toString();
-          
-          this.generateTimeList(this.maxTimeDuration);
-          this.data.duration = defaultDuration;
-          this.data.defaultDuration = defaultDuration;
-          this.data.startTime = defaultStartTime;
-          this.data.defaultStartTime = defaultStartTime;
-          this.disableduration = true;            
+    getRequestEvent() {
+        var payload = {
+            username: this.profileData.username,
+            // id: "def0a6ac-609c-44cb-90d7-421725a33d27" //this.currentEvent?.id
+            // bed1116d-cd91-41b9-bc60-edb0c42596b4
+            //bed1116d-cd91-41b9-bc60-edb0c42596b4
+            id: this.currentEvent?.id,
+        }
 
-          if (this.showErrorMsg) {
-              this.showErrorMsg = false;
-              this.errorMsg = "";
-          }
-      }
+        this.$store
+            .dispatch('schedule/GetRequestDetails', payload)
+            // .dispatch('schedule/GetRequestDetails', payload)
+            // .dispatch("schedule/Requests", payload)
+            .then((res: any) => {
+                if (this.requestDetail != undefined) {
+                    this.shift = this.requestDetail.departmentShiftId
+                    this.availableShifts = res
+                    console.log('data', this.availableShifts)
+                    var requestEventStartDateTime = new Date(this.requestDetail.startTime)
+                    var requeststartTime = moment(requestEventStartDateTime).format('hh:mm')
+                    var requestHours = this.requestDetail.hours
+                    this.duration = requestHours
+                    this.startTime = requeststartTime
+                    this.comment = this.requestDetail.comment
+                }
+            })
+            .catch((err: any) => {
+                if (err) {
+                    console.log(err) // Handle errors any way you want
+                }
+            })
+    }
 
-      formatTime(t: Date): string {
-          return moment(t).format("HH:mm:ss");
-      }
+    async FireAction(additionalRequestEvent: any) {
+        if (!this.widthdrawMode(additionalRequestEvent)) {
+            //If there is no email address present in profile then doesn't allow them to send Non-productive shift request
+            var selectedShift = this.availableShifts.find(
+                (x: any) => x.id == this.shift
+            )
+            if (
+                this.profileData.email == null ||
+                this.profileData.email == undefined ||
+                this.profileData.email == ''
+            ) {
+                this.showErrorMsg = true
+                this.errorMsg =
+                    'Request Failed: There is no email address associated with your profile. To update this information, contact your manager, FSA, or call HCA HR Answers at 1-844-HR-ANSWR(472-6797).'
+                return
+            }
+            this.isLoading = true
+            let requestBody = {
+                tenantId: this.profileData.tenantId,
+                startDate: new Date(
+                    this.calSelectedDates.startDate.getTime() -
+                    this.calSelectedDates.startDate.getTimezoneOffset() * 60000
+                ).toISOString(),
+                endDate: new Date(
+                    this.calSelectedDates.endDate.getTime() -
+                    this.calSelectedDates.endDate.getTimezoneOffset() * 60000
+                ).toISOString(),
+                comment: additionalRequestEvent ? this.defaultComment : this.comment,
+                email: this.profileData.email,
+                shifts: [] as any[],
+            }
+            for (var i = 0; i < this.selectedDate.length; i++) {
+                var eventStartDateTime = new Date(this.selectedDate[i])
+                if (!additionalRequestEvent) {
+                    eventStartDateTime.setHours(
+                        Number(this.startTime.split(':')[0]),
+                        Number(this.startTime.split(':')[1])
+                    )
+                } else {
+                    eventStartDateTime.setHours(
+                        Number(this.defaultStartTime.split(':')[0]),
+                        Number(this.defaultStartTime.split(':')[1])
+                    )
+                }
+                eventStartDateTime.setFullYear(
+                    this.calSelectedDates.startDate.getFullYear()
+                )
+                let objReq = {
+                    departmentShiftId: additionalRequestEvent
+                        ? this.defaultShift
+                        : this.shift,
+                    startDateTime: new Date(
+                        eventStartDateTime.getTime() -
+                        eventStartDateTime.getTimezoneOffset() * 60000
+                    ).toISOString(), // Add Time
+                    hours: Number(
+                        additionalRequestEvent ? this.defaultDuration : this.duration
+                    ), // Add Hours
+                    minutes: 0,
+                }
 
-      getDisableDuration(additionalRequestEvent:any) {
-          var isDisabled = false;
-          if (this.currentEvent.type == "Request" && !additionalRequestEvent) {
-              isDisabled = false;
-          }
-          else if (this.currentEvent.type == "Request" && additionalRequestEvent) {
-              isDisabled = this.disableduration;
-          }
-          else if (this.currentEvent.type != "Request") {
-              isDisabled = this.disableduration;
-          }
-          return !isDisabled;
-      }
-      disableSubmit(additionalRequestEvent:any) {
-          var returnValue = true;
-          if (this.isLoading) {
-              returnValue = true;
-          }
-          else if (this.currentEvent.type == "Request" && !additionalRequestEvent) {
-              returnValue = false;
-          }
-          else if (this.currentEvent.type == "Request" && additionalRequestEvent) {
-              returnValue = Boolean(
-                  this.data.defaultShift &&
-                  this.data.defaultStartTime &&
-                  this.data.defaultDuration &&
-                  this.data.selectedDate.length > 0
-              ) != true;
-          }
-          else {
-              returnValue = Boolean(
-                  this.data.shift &&
-                  this.data.startTime &&
-                  this.data.duration &&
-                  this.data.selectedDate.length > 0
-              ) != true;
-          }
-          return returnValue;
-      }
+                requestBody.shifts.push(objReq)
+            }
+            this.isFullScreenLoading = true
+            this.$store
+                .dispatch('schedule/RequestSchedule', requestBody)
+                .then(() => {
+                    // showing message in MyScheduleView Screen and close modal only on success
+                    this.isFullScreenLoading = false
+                    this.$emit(
+                        'showSuccessMsgPopUp',
+                        true,
+                        'Time off request successfully submitted.'
+                    )
+                    this.$emit('closeSharedModal')
+                    useAppInsights().trackEvent({
+                        name: 'CreateRequests',
+                        properties: JSON.parse(JSON.stringify(this.appInsightEventData)),
+                    })
+                })
+                .finally(() => {
+                    this.isLoading = false
+                    this.isFullScreenLoading = false
+                })
+                .catch((err: any) => {
+                    this.isFullScreenLoading = false
+                    if (err) {
+                        let parseResponse =
+                            err.request.response != ''
+                                ? err.request.response
+                                : 'An error has occurred. Please try again. If the error persists, contact Facility Scheduler support.'
 
-      async confirmedClicked() {
-          this.isLoading = true;
-          this.isConfirmModalVisible = false;
-          this.isFullScreenLoading = true;
-          await this.$store
-              .dispatch("schedule/WithdrawRequestEvent", this.requestDetail.requestId)
-              .then(() => {
-                  this.isFullScreenLoading = false;
-                  this.$emit("showSuccessMsgPopUp");
-                  this.$emit("closeSharedModal");
-              })
-              .finally(() => { this.isLoading = false; this.isFullScreenLoading = false; })
-              .catch((err: any) => {
-                  this.isFullScreenLoading = false;
-                  this.$emit("showSuccessMsgPopUp", false);
-                  if (err) {
-                      let parseResponse =
-                          err.request.response != ""
-                              ? err.request.response
-                              : "An error has occurred. Please try again. If the error persists, contact Facility Scheduler support.";
-                      this.showErrorMsg = true;
-                      this.errorMsg = parseResponse;
-                  }
-              });
+                        this.showErrorMsg = true
+                        this.errorMsg = parseResponse
+                    }
+                })
+        } //
+        else {
+            if (this.profileData.selfScheduleToCommitment == true) {
+                if (this.isBelowCommitment()) {
+                    this.confirmMsgValue =
+                        'By withdrawing this request, you will be under your shift commitment. Do you want to proceed?'
+                    this.isConfirmModalVisible = true
+                } else {
+                    this.confirmMsgValue =
+                        'This shift request will be removed. Do you want to proceed?'
+                    this.isConfirmModalVisible = true
+                }
+            } else {
+                this.confirmMsgValue =
+                    'This shift request will be removed. Do you want to proceed?'
+                this.isConfirmModalVisible = true
+            }
+        }
+    }
 
-      }
+    selectDates(date: string): void {
+        const selectedDates: any = this.selectedDate
+        const index = selectedDates.indexOf(date)
+        if (index > -1) {
+            selectedDates.splice(index, 1)
+        } else {
+            selectedDates.push(date)
+        }
+    }
 
-      isBelowCommitment() {
-          let currdate = this.currentEvent.date;
-          let currsched = this.userSchedules.length? this.userSchedules[0]: null;
-          currsched = null;
+    shiftChange(additionalRequestEvent: any): void {
+        let defaultDuration = this.profileData.partOfDayDuration
+        let defaultStartTime = this.formatTime(
+            this.profileData.partOfDayStartTime
+        ).toString()
 
-          this.userSchedules.forEach((sched: any) => {
-              let startDt, endDt, currDt;
-              startDt = sched.startDate;
-              currDt = currdate;
-              endDt = sched.endDate;
-              if (
-                  new Date(startDt) <= new Date(currDt) &&
-                  new Date(endDt) > new Date(currDt)
-              ) {
-                  currsched = sched;
-                  return;
-              }
-          });
+        this.generateTimeList(this.maxTimeDuration)
+        this.duration = defaultDuration
+        this.defaultDuration = defaultDuration
+        this.startTime = defaultStartTime
+        this.defaultStartTime = defaultStartTime
+        this.disableduration = true
 
-          let totalHrs = 0,
-              totalMins = 0,
-              weekStartDate: Date = new Date(currsched.startDate),
-              weekEndDate: Date = new Date(currsched.startDate),
-              weekEvents!: Event[],
-              weekHours: number,
-              isOverallCommitmentBelow: boolean = false,
-              isWeekendCommitmentBelow: boolean = false;
+        if (this.showErrorMsg) {
+            this.showErrorMsg = false
+            this.errorMsg = ''
+        }
+    }
 
-          for (var i = 0; i < this.profileData.weeksInSchedule; i++) {
-              if (i == 0) {
-                  weekEndDate.setDate(weekStartDate.getDate() + 6);
-              }
-              else {
-                  weekStartDate.setDate(weekStartDate.getDate() + 7);
-                  weekEndDate.setDate(weekStartDate.getDate() + 6);
-              }
+    formatTime(t: Date): string {
+        return moment(t).format('HH:mm:ss')
+    }
 
-              if (weekStartDate <= new Date(currdate) && new Date(currdate) <= weekEndDate) {
-                  weekEvents = currsched.events.filter(
-                      (event: Event) =>
-                          new Date(event.date) >= weekStartDate &&
-                          new Date(event.date) <= weekEndDate && event.isCommitment == true &&
-                          (event.type == "Pending" || event.type == "Assignment" || event.type == "Request")
-                  );
+    debugger
+    getDisableDuration(
+        additionalRequestEvent: any,
+        requestType = 'Request' as string
+    ) {
+        var isDisabled = false
+        if (this.currentEvent?.type == requestType && !additionalRequestEvent) {
+            isDisabled = false
+        } else if (
+            this.currentEvent?.type == requestType &&
+            additionalRequestEvent
+        ) {
+            isDisabled = this.disableduration
+        } else if (this.currentEvent?.type != requestType) {
+            isDisabled = this.disableduration
+        }
+        return !isDisabled
+    }
 
-                  weekEvents.forEach((event: Event) => {
-                      totalHrs += event.hours;
-                      totalMins += event.minutes;
-                  });
-                  if(this.currentEvent.isCommitment)
-                  {
-                      weekHours = Math.round((totalHrs + (totalMins / 60)) - (this.currentEvent.hours + (this.currentEvent.minutes / 60)));
-                  }
-                  else
-                  {
-                    weekHours = Math.round((totalHrs + (totalMins / 60)));
-                  }
-                  if (this.currentEvent.isWeekend) {
-                      let weekendScheduledEvents: Event[] = currsched.events.filter(
-                          (event: Event) =>
-                              new Date(event.date) >= new Date(currsched.startDate) &&
-                              new Date(event.date) <= new Date(currsched.endDate) &&
-                              (event.type == "Pending" || event.type == "Assignment" || event.type == "Request") &&
-                              event.isWeekend
-                      );
+    
+    disableSubmit(additionalRequestEvent: any) {
+        debugger
+        var returnValue = true
+        if (this.isLoading) {
+            returnValue = true
+        } else if (
+            this.currentEvent?.type == 'Request' &&
+            !additionalRequestEvent
+        ) {
+            returnValue = false
+        } else if (this.currentEvent?.type == 'Request' && additionalRequestEvent) {
+            returnValue =
+                Boolean(
+                    this.defaultShift &&
+                    this.defaultStartTime &&
+                    this.defaultDuration &&
+                    this.selectedDate.length > 0
+                ) != true
+        } else {
+            returnValue =
+                Boolean(
+                    this?.shift &&
+                    this.startTime &&
+                    this.duration &&
+                    this.selectedDate.length > 0
+                ) != true
+        }
+        return returnValue
+    }
 
-                      if (this.profileData.displayWSC) {
-                          if ((weekendScheduledEvents.length - 1) >= this.profileData.reqCountWSC) {
-                              isWeekendCommitmentBelow = false;
-                          }
-                          else {
-                              isWeekendCommitmentBelow = true;
-                          }
-                      }
-                      else {
-                          isWeekendCommitmentBelow = false;
-                      }
-                  }
-                  if (weekHours < this.profileData.guarenteedHours || isWeekendCommitmentBelow) {
-                      isOverallCommitmentBelow = true;
-                  }
-                  break;
-              }
-          }
-          return isOverallCommitmentBelow;
-      }
-  }
+    async confirmedClicked() {
+        this.isLoading = true
+        this.isConfirmModalVisible = false
+        this.isFullScreenLoading = true
+        await this.$store
+            .dispatch('schedule/WithdrawRequestEvent', this.requestDetail.requestId)
+            .then(() => {
+                this.isFullScreenLoading = false
+                this.$emit('showSuccessMsgPopUp')
+                this.$emit('closeSharedModal')
+            })
+            .finally(() => {
+                this.isLoading = false
+                this.isFullScreenLoading = false
+            })
+            .catch((err: any) => {
+                this.isFullScreenLoading = false
+                this.$emit('showSuccessMsgPopUp', false)
+                if (err) {
+                    let parseResponse =
+                        err.request.response != ''
+                            ? err.request.response
+                            : 'An error has occurred. Please try again. If the error persists, contact Facility Scheduler support.'
+                    this.showErrorMsg = true
+                    this.errorMsg = parseResponse
+                }
+            })
+    }
+
+    isBelowCommitment() {
+        let currdate = this.currentEvent?.date
+        let currsched = this.userSchedules.length ? this.userSchedules[0] : null
+        currsched = null
+
+        this.userSchedules.forEach((sched: any) => {
+            let startDt, endDt, currDt
+            startDt = sched.startDate
+            currDt = currdate
+            endDt = sched.endDate
+            if (
+                new Date(startDt) <= new Date(currDt) &&
+                new Date(endDt) > new Date(currDt)
+            ) {
+                currsched = sched
+                return
+            }
+        })
+
+        let totalHrs = 0,
+            totalMins = 0,
+            weekStartDate: Date = new Date(currsched.startDate),
+            weekEndDate: Date = new Date(currsched.startDate),
+            weekEvents!: Event[],
+            weekHours: number,
+            isOverallCommitmentBelow: boolean = false,
+            isWeekendCommitmentBelow: boolean = false
+
+        for (var i = 0; i < this.profileData.weeksInSchedule; i++) {
+            if (i == 0) {
+                weekEndDate.setDate(weekStartDate.getDate() + 6)
+            } else {
+                weekStartDate.setDate(weekStartDate.getDate() + 7)
+                weekEndDate.setDate(weekStartDate.getDate() + 6)
+            }
+
+            if (
+                weekStartDate <= new Date(currdate) &&
+                new Date(currdate) <= weekEndDate
+            ) {
+                weekEvents = currsched.events.filter(
+                    (event: Event) =>
+                        new Date(event.date) >= weekStartDate &&
+                        new Date(event.date) <= weekEndDate &&
+                        event.isCommitment == true &&
+                        (event.type == 'Pending' ||
+                            event.type == 'Assignment' ||
+                            event.type == 'Request')
+                )
+
+                weekEvents.forEach((event: Event) => {
+                    totalHrs += event.hours
+                    totalMins += event.minutes
+                })
+                if (this.currentEvent?.isCommitment) {
+                    weekHours = Math.round(
+                        totalHrs +
+                        totalMins / 60 -
+                        (this.currentEvent?.hours + this.currentEvent?.minutes / 60)
+                    )
+                } else {
+                    weekHours = Math.round(totalHrs + totalMins / 60)
+                }
+                if (this.currentEvent?.isWeekend) {
+                    let weekendScheduledEvents: Event[] = currsched.events.filter(
+                        (event: Event) =>
+                            new Date(event.date) >= new Date(currsched.startDate) &&
+                            new Date(event.date) <= new Date(currsched.endDate) &&
+                            (event.type == 'Pending' ||
+                                event.type == 'Assignment' ||
+                                event.type == 'Request') &&
+                            event.isWeekend
+                    )
+
+                    if (this.profileData.displayWSC) {
+                        if (
+                            weekendScheduledEvents.length - 1 >=
+                            this.profileData.reqCountWSC
+                        ) {
+                            isWeekendCommitmentBelow = false
+                        } else {
+                            isWeekendCommitmentBelow = true
+                        }
+                    } else {
+                        isWeekendCommitmentBelow = false
+                    }
+                }
+                if (
+                    weekHours < this.profileData.guarenteedHours ||
+                    isWeekendCommitmentBelow
+                ) {
+                    isOverallCommitmentBelow = true
+                }
+                break
+            }
+        }
+        return isOverallCommitmentBelow
+    }
+
 </script>
 
 <style scoped="">
-  .starttimecolor {
-      color: gray;
-  }
+.starttimecolor {
+    color: gray;
+}
 
-  .neu-input__text-field {
-      padding: 0 0.30rem;
-  }
+.neu-input__text-field {
+    padding: 0 0.3rem;
+}
 
-  .commentCharacterCountText{
-      font-size: .875rem;
-      float: right;
-  }
+.commentCharacterCountText {
+    font-size: 0.875rem;
+    float: right;
+}
 </style>

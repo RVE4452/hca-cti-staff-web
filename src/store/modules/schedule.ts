@@ -223,7 +223,7 @@ const actions: ActionTree<Schedule, RootState> = {
     },
     
      GetRequestDetails({ commit, rootState }, payload: any) {
-        const api = `${process.env.VUE_APP_APIURL}/Schedules/Requests/${payload.id}/${payload.username}`;
+        const api = `${process.env.VUE_APP_APIURL}/Staff/Time/${payload.id}/${payload.username}`;
 
         return http
             .get(api)
@@ -584,8 +584,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     },
 
-    // ACTIONS
-    
+    // ACTIONS    
      getPayrollDetails({ commit, rootState },payload: any) {
         const api = `${process.env.VUE_APP_APIURL}/Schedules/PayrollDetails/${payload.startDate}/${payload.endDate}/${payload.username}`;
 
