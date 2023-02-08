@@ -325,7 +325,7 @@
             views: {
                 dayGrid: {
                     type: "dayGrid", // Applicable for: dayGrid and dayGridMonth
-                    fixedWeekCount: true,
+                    fixedWeekCount: false,
                     showNonCurrentDates: false,
                 },
             },
@@ -1200,7 +1200,8 @@
             }
         }
         //get staff assigments for particular schedules
-        async getSchedules(currentDate: boolean = false) {           
+        async getSchedules(currentDate: boolean = false) {  
+            this.weeksInSchedule = this.profileData.weeksInSchedule;         
                 if (currentDate) 
                 {                        
                     let currSchedule = this.getCurrentWeekSchedule();
@@ -1214,10 +1215,7 @@
         }
         //show staff events in calendar
           async setStaffEvents(schedule: any) {
-            this.events = [];
-            if (this.viewFlag == 'CalView') {
-                this.currentMonthCalendarApi.removeAllEvents();
-            }
+            this.events = [];           
             if(this.profileData.staffId == 0)
             return;
              //get all events
@@ -1228,6 +1226,11 @@
             await this.$store.dispatch("schedule/getStaffSchedule", payload)
            .then(() => {              
                     if (this.userSchedules.events != undefined) {
+                    //clear all existing events
+                    if (this.viewFlag == 'CalView') {
+                            this.currentMonthCalendarApi.removeAllEvents();
+                        }
+                    //add new events in calendar
                      this.userSchedules.events.forEach((event: Event) => {
                         let cellTitle: string;                        
                         this.events.push(event);
@@ -1303,23 +1306,6 @@
                 }
               }
             
-        }
-
-        async getScheduleDetailsOnNavigation(index: Number): Promise<any> {
-            let payload = {
-                username: this.profileData.username,
-                index: index,
-            };
-            await this.$store
-                .dispatch("schedule/getAllUserSchedules", payload)
-                .then((res: any) => {
-                    return res.data;                     
-                })
-                .catch((err: any) => {
-                    if (err) {
-                        console.log(err); // Handle errors any way you want
-                    }
-                });
         }
 
         showModal() {
