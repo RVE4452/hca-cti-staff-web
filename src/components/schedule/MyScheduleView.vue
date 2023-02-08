@@ -1,6 +1,6 @@
 <template>
 <div>
-    <neu-container class="mw-100">
+    <neu-container class="mw-100">         
         <div class="schedulerMainDiv"  v-bind:class="{ 'panel-open': sharedToggle, 'posNone': isWelcomeModalVisible }">
             <neu-row v-if="viewFlag == 'CalView'">
                 <neu-col md="3" style="margin-left:-45px;">
@@ -22,7 +22,7 @@
                                     <h5>
                                         <neu-icon @click="beforeMonthNavigate(false)"  style="position: relative; top: 4px" class="m-3 neu-icon pointer neu-icon--large hydrated">chevron_left</neu-icon>
                                         <span>
-                                            {{ this.currentDate }}
+                                            {{ currentDate }}
                                         </span>                                  
                                         <neu-icon @click="beforeMonthNavigate(true)" style="position: relative; top: 4px" class="m-3 neu-icon pointer neu-icon--large hydrated" >chevron_right</neu-icon>
                                     </h5>
@@ -32,17 +32,11 @@
                 <neu-col  md="2" >                
                         <h5>
                             <p  style="margin-top: 1em; margin-left: 1em;">
-                                            <span v-if="scheduleStatus.toUpperCase() == 'PLAN SHEET' && isTierOpen">
-                                                SELF-SCHEDULING OPEN
+                                            <span v-if="scheduleStatus.toUpperCase() == 'OPEN'">
+                                                SCHEDULING OPEN
                                             </span>
-                                            <span v-if="scheduleStatus.toUpperCase() == 'PLAN SHEET' && !isTierOpen">
-                                                FUTURE SCHEDULE
-                                            </span>
-                                            <span v-if="scheduleStatus.toUpperCase() == 'AFTER PLAN SHEET'">
-                                                PENDING MANAGEMENT REVIEW
-                                            </span>
-                                            <span v-if="scheduleStatus.toUpperCase() == 'FIRST APPROVAL'">
-                                                PENDING MANAGEMENT APPROVAL
+                                            <span v-if="scheduleStatus.toUpperCase() == 'CLOSED'">
+                                                SCHEDULE CLOSED
                                             </span>
                                             <span v-if="scheduleStatus.toUpperCase() == 'POSTED'">
                                                 SCHEDULE POSTED
@@ -75,7 +69,8 @@
                         <!-- MODAL -->
                     </div>
                     <div v-else>
-                        <vcl-facebook></vcl-facebook>                   
+                       <neu-spinner class="div-center" color="primary" >
+                       </neu-spinner>                 
                     </div>
                     <!-- END MODAL -->
                 </div>
@@ -87,7 +82,8 @@
                         </div>
                     </div>
                     <div v-else>
-                        <vcl-facebook></vcl-facebook>                   
+                        <neu-spinner class="div-center" color="primary" >
+                       </neu-spinner>                   
                     </div>
                 </div>
             </neu-row>       
@@ -206,18 +202,18 @@
         isAdmin!: boolean;        
         isImpersonating!: boolean;       
         appInsightEventData!: any;
-        private currentDate: string = "March, 2021";
+        currentDate: string = "March, 2021";
         confirmMsgValue = "You have not submitted your shift requests. Are you sure you want to navigate away?";
         isConfirmModalVisible: boolean = false;
         profile: any = null;
         private backDate = new Date();
         private forwardDate = new Date();
-        private selectedDates: Array<string | string> = [];
-        private isModalVisible = false;
+        selectedDates: Array<string | string> = [];
+        isModalVisible = false;
 
         currentMonthCalendarApi: any = null;
-        private schedules: any;
-        private scheduleStatus = "Unknown";
+        schedules: any;
+        scheduleStatus = "Unknown";
         currentEvent: any =null;
 
         updateData: string = "";
@@ -232,7 +228,7 @@
         calSelectedDates: any = {};
         isUnavailabilityAllowed!: boolean;
 
-        employeeType: string = "";
+        staffType: string = "";
         objCommitmentSubmit: any = {};
         scheduleId!: string;
         weeksInSchedule: number = 4;
@@ -305,14 +301,14 @@
                 this.localNextVar();
             }
             else if (this.navForward) {
-                this.nextMonth();
+                await this.nextMonth();
             }
             else {
-                this.prevMonth();
+                await this.prevMonth();
             }
         }
 
-        private calendarOptions: any = {
+        calendarOptions: any = {
             schedulerLicenseKey: '0712583610-fcs-1643842135',
             plugins: [
                 adaptivePlugin,
@@ -712,34 +708,11 @@
             },
         };
         
-        public userSchedules!: any;        
-        private isLoading!: Boolean;
-        public events: any = [];
-        private sharedToggle: boolean = false;
-        public counter: any = 0;
-
-        //constructor() {
-           // super();
-            //get singal r notification by using event bus
-            // bus.$on("profileLoaded", (msg:any) => {
-            //     this.getSchedules(true);
-            
-            //     this.showWelcomeModal();
-            // });
-
-            // bus.$on("assignmentchanged", (msg:any) => {
-            //     this.getSchedules(false);
-            // });
-
-            // bus.$on("loadShiftTradeEvent", (actionableByDate:any, shiftTradeOfferId:any) => {
-            //     this.raiseShiftTradeViewEvent(actionableByDate, shiftTradeOfferId);
-            // });
-
-            // bus.$on("ShiftTradeActionEvent", (actionableByDate:any, action:any, shiftTradeOfferId:any, notificationId:any) => {
-            //     let eventDate = new Date(actionableByDate);
-            //     this.raiseShiftTradeActionEvent(eventDate, action, shiftTradeOfferId, notificationId);
-            // });
-        //}
+        userSchedules!: any;        
+        isLoading!: Boolean;
+        events: any = [];
+        sharedToggle: boolean = false;
+        counter: any = 0;
 
         async created() { 
             await this.$store.dispatch("profile/getProfileDetails", "");           
@@ -758,21 +731,14 @@
 
         mounted() {
              // create a local variable of this
-             this.currentMonthCalendarApi = this.$refs.fullCalendarCurrentMonth.getApi();
-                 
-            this.updateUserName();
+             this.currentMonthCalendarApi = this.$refs.fullCalendarCurrentMonth.getApi();                 
+             this.updateUserName();
         }
 
        
 
         updated() {
-            
-            if(this.isAdmin && !this.isImpersonating && !this.profileData.isStaffHasAdminAccount)
-            {
-                this.$router.push('/admin')
-            }
             this.updateUserName();
-
             if(!this.isCalenderViewLoaded && this.appInsightEventData.Username != undefined){
                 //User logged in Event
                 var isUserLoggedIn = (localStorage.getItem("isUserLoggedIn") == null ? false : localStorage.getItem("isUserLoggedIn")=='true');
@@ -868,101 +834,14 @@
             if (this.firstName != undefined && this.lastName != undefined) {
                 this.nameInitials = this.firstName.charAt(0).toUpperCase() + this.lastName.charAt(0).toUpperCase();
             }
-        }
+        }       
 
-        setCalendarEvents(index: number) {
-            this.events = [];
-            if (this.viewFlag == 'CalView') {
-                this.currentMonthCalendarApi.removeAllEvents();
-            }
-            this.scheduleStatus = this.userSchedules[index].status;
-            this.isTierOpen = this.userSchedules[index].tierOpen;
-            this.currentDate =
-                moment(this.userSchedules[index].startDate).format("ll") +
-                " - " +
-                moment(this.userSchedules[index].endDate).format("ll");
-            let count = index + 1;
-
-           
-            while (count >= index - 1) {
-                if (this.userSchedules[count] != undefined) {
-                     this.userSchedules[count].events.forEach((event: Event) => {
-                        let cellTitle: string;
-                        event.assignmentId =
-                            event.type == "Need" || event.type == "Pending"
-                                ? this.userSchedules[count].id
-                                : "";
-                        this.events.push(event);
-
-                        cellTitle = this.getEventCellTitle(event, this.userSchedules[count].status, this.userSchedules[count].events);
-                        if (this.viewFlag == 'CalView') {
-                            this.currentMonthCalendarApi.addEvent({
-                                id: event.id,
-                                title: cellTitle,
-                                start: event.date,
-                                end: event.date,
-                                type: event.type,
-                                changed: event.changed,
-                                status: event.status,
-                                description: event.description,
-                                descriptionCoid: event.status.toUpperCase() == "PENDING" || event.status.toUpperCase() == "SCHEDULED" || event.status.toUpperCase() == "RESERVED" ? (event.facilityCoId + ' - ' + event.departmentCode)
-                                    : (this.userSchedules[count].coid + ' - ' + this.userSchedules[count].departmentCode),
-                                facilityDeptName: event.status.toUpperCase() == "PENDING" || event.status.toUpperCase() == "SCHEDULED" || event.status.toUpperCase() == "RESERVED" ? (event.facilityName + ' - ' + event.departmentName)
-                                    : (this.userSchedules[count].facilityName + ' - ' + this.userSchedules[count].departmentName),
-                                dailyEvents: event.dailyEvents,
-                                needFV: this.needFV,
-                                filteredEventCount: 0,
-                                isAllFilterChecked: true,
-                                isSelfScheduled: event.isSelfScheduled,
-                                isOvertime: event.isOvertime,
-                                premiumLaborLevel: event.premiumLaborLevel,
-                                schedStatus: this.scheduleStatus,
-                                types: event.dailyEventsType
-                            });
-                        }
-                    });
-                }
-                count -= 1;
-            }           
-            if (this.viewFlag == 'CalView') {
-                if (this.leftNavBar) {
-                    if (!this.$refs.calendarfilter.checkSchedEventsOption) {
-                        this.onCheckSchedEvents(
-                            this.$refs.calendarfilter.checkSchedEventsOption
-                        );
-                    }
-                    if (!this.$refs.calendarfilter.checkPendRequestsOption) {
-                        this.onCheckPendRequestsOption(
-                            this.$refs.calendarfilter.checkPendRequestsOption
-                        );
-                    }
-                    if (!this.$refs.calendarfilter.checkDepartNeedsOption) {
-                        this.onCheckDepartNeedsOption(
-                            this.$refs.calendarfilter.checkDepartNeedsOption
-                        );
-                    }
-                    if (!this.$refs.calendarfilter.checkTradeShiftsOption) {
-                        this.onCheckTradeShiftsOption(
-                            this.$refs.calendarfilter.checkTradeShiftsOption
-                        );
-                    }
-                    if (!this.$refs.calendarfilter.checkUnavailabilityOption) {
-                        this.onCheckUnavailabilityOption(
-                            this.$refs.calendarfilter.checkUnavailabilityOption
-                        );
-                    }
-                }
-            }   
-        }
-
-        getEventCellTitle(event:any, status:any, events:any) {
+        getEventCellTitle(event:any) {
             var cellTitle = '';
             if (event.type == "Need") {
                 cellTitle = event.status.toUpperCase();
             } else if (event.type == "Pending") {
                 cellTitle = "RESERVED";
-            } else if (event.type == "Assignment" && event.status == "Pending" && status == "Plan Sheet" && event.isSelfScheduled) {
-                cellTitle = "PENDING";
             } else if (event.type == "Request" || (event.type == "Assignment" && event.status == "Pending")) {
                 cellTitle = "REQUESTED";
             } else if (event.type == "Unavailability") {
@@ -1320,54 +1199,71 @@
                 });
             }
         }
-
+        //get staff assigments for particular schedules
         async getSchedules(currentDate: boolean = false) {
-            if (currentDate) {
-                localStorage.removeItem("sIndex");
+                if (currentDate) 
+                {                        
+                    let currSchedule = this.getCurrentWeekSchedule();
+                    await this.setStaffEvents(currSchedule);
+                }
+                else
+                {
+                    let schedule = this.profile.schedules[this.currentShceduleIndex];
+                    await this.setStaffEvents(schedule);
+                }
+               console.log(this.profile);
+        }
+        //show staff events in calendar
+          async setStaffEvents(schedule: any) {
+            this.isLoading = true;
+            this.events = [];
+            if (this.viewFlag == 'CalView') {
+                this.currentMonthCalendarApi.removeAllEvents();
             }
-            
-            if (localStorage.getItem("sIndex") != null) {
-                this.currentShceduleIndex = Number(localStorage.getItem("sIndex"));
-            }
-            this.isUnavailabilityAllowed = this.profile.isUnavailabilityAllowed;
-            this.employeeType = this.profileData.employeeType;
-            this.weeksInSchedule = this.profileData.weeksInSchedule;
-
-            let payload = {
-                username: this.profileData.username,
-                index: this.currentShceduleIndex,
+            this.scheduleStartDate = schedule.start;
+            this.scheduleEndDate = schedule.end;
+            this.scheduleStatus = schedule.status;
+            this.currentMonthCalendarApi.gotoDate(schedule.start);
+            this.currentDate =
+                moment(schedule.start).format("ll") +
+                " - " +
+                moment(schedule.end).format("ll");
+                //events
+                 let payload = {
+                scheduleId: schedule.scheduleId,
+                staffId:this.profile.staffId
             };
             if(this.profileData.staffId == 0)
             return;
-            await this.$store
-                .dispatch("schedule/getAllUserSchedules", payload)
-                .then((res: any) => {
-                    if (currentDate) {
-                        let currSchedule = this.getCurrentWeekSchedule();
-                        this.scheduleStatus = currSchedule.status;
-                        if (this.viewFlag == 'CalView') {
-                            this.currentMonthCalendarApi = this.$refs.fullCalendarCurrentMonth.getApi();
-                            this.currentMonthCalendarApi.changeView("dayGrid"); //Switch to one day view
-                            this.currentMonthCalendarApi.gotoDate(currSchedule.startDate);
-                        }
-                    }
-                    else {
-                        if (localStorage.getItem("sIndex") != null) {
-                            var departmentScheduleIndex = Number(localStorage.getItem("sIndex"));
-                            let currsched = this.userSchedules[departmentScheduleIndex];
-                            this.currentShceduleIndex = departmentScheduleIndex;
-                            this.scheduleStartDate = currsched.startDate;
-                            this.scheduleEndDate = currsched.endDate;
-                            this.scheduleStatus = currsched.status;
-                            if (this.viewFlag == 'CalView') {
-                                this.currentMonthCalendarApi = this.$refs.fullCalendarCurrentMonth.getApi();
-                                this.currentMonthCalendarApi.changeView("dayGrid"); //Switch to one day view
-                                this.currentMonthCalendarApi.gotoDate(currsched.startDate);
-                            }
-                        }
-                    }
+            await this.$store.dispatch("schedule/getStaffSchedule", payload)
+           .then(() => {              
+                    if (this.userSchedules.events != undefined) {
+                     this.userSchedules.events.forEach((event: Event) => {
+                        let cellTitle: string;
+                        event.assignmentId =
+                            event.type == "Need" || event.type == "Pending"
+                                ? event.id
+                                : 0;
+                        this.events.push(event);
 
-                    this.setCalendarEvents(this.currentShceduleIndex);
+                        cellTitle = this.getEventCellTitle(event);
+                        if (this.viewFlag == 'CalView') {
+                            this.currentMonthCalendarApi.addEvent({
+                                id: event.id,
+                                title: cellTitle,
+                                start: event.date,
+                                end: event.date,
+                                type: event.type,
+                                status: event.status,
+                                description: event.description,
+                                descriptionCoid:  (event.coid + ' - ' + event.departmentCode),
+                                facilityDeptName:  (event.facilityName + ' - ' + event.departmentName),
+                                dailyEvents: event.dailyEvents
+
+                            });
+                        }
+                        this.isLoading = false;
+                    })
                     if (this.viewFlag == 'CalView') {
                         this.currentMonthCalendarApi.changeView("dayGrid");
                         this.currentMonthCalendarApi.setOption('duration', { weeks: this.weeksInSchedule });
@@ -1379,14 +1275,39 @@
                             this.currentMonthCalendarApi.setOption('height', 550);
                         }
                     }
-                })
-                .catch((err: any) => {
-                    if (err) {
-                        console.log(err); // Handle errors any way you want
+            } 
+            });
+            //filtered
+              if (this.viewFlag == 'CalView') {
+                if (this.leftNavBar) {
+                    if (!this.$refs.calendarfilter.checkSchedEventsOption) {
+                        this.onCheckSchedEvents(
+                            this.$refs.calendarfilter.checkSchedEventsOption
+                        );
                     }
-                });
-
-            localStorage.setItem("sIndex", this.currentShceduleIndex.toString());
+                    if (!this.$refs.calendarfilter.checkPendRequestsOption) {
+                        this.onCheckPendRequestsOption(
+                            this.$refs.calendarfilter.checkPendRequestsOption
+                        );
+                    }
+                    if (!this.$refs.calendarfilter.checkDepartNeedsOption) {
+                        this.onCheckDepartNeedsOption(
+                            this.$refs.calendarfilter.checkDepartNeedsOption
+                        );
+                    }
+                    if (!this.$refs.calendarfilter.checkTradeShiftsOption) {
+                        this.onCheckTradeShiftsOption(
+                            this.$refs.calendarfilter.checkTradeShiftsOption
+                        );
+                    }
+                    if (!this.$refs.calendarfilter.checkUnavailabilityOption) {
+                        this.onCheckUnavailabilityOption(
+                            this.$refs.calendarfilter.checkUnavailabilityOption
+                        );
+                    }
+                }
+              }
+            
         }
 
         async getScheduleDetailsOnNavigation(index: Number): Promise<any> {
@@ -1394,11 +1315,10 @@
                 username: this.profileData.username,
                 index: index,
             };
-
             await this.$store
                 .dispatch("schedule/getAllUserSchedules", payload)
                 .then((res: any) => {
-                    return res.data;
+                    return res.data;                     
                 })
                 .catch((err: any) => {
                     if (err) {
@@ -1650,7 +1570,7 @@
                 if (eventDate >= new Date(this.userSchedules[i].startDate) && eventDate <= new Date(this.userSchedules[i].endDate)) {
                     this.userSchedules[i].events.forEach((event: Event) => {
                         if (eventDate.toDateString() == new Date(event.date).toDateString()) {
-                            var cellTitle = this.getEventCellTitle(event, this.userSchedules[i].status, this.userSchedules[i].events);
+                            var cellTitle = this.getEventCellTitle(event);
                             if(shiftTradeOfferId === event.id)
                                 this.processClickEvent(cellTitle, eventDate, event.id, this.needFV);
                             eventFound = true;
@@ -1685,7 +1605,7 @@
                 if (eventDate >= new Date(this.userSchedules[i].startDate) && eventDate <= new Date(this.userSchedules[i].endDate)) {
                     this.userSchedules[i].events.forEach((event: Event) => {
                         if (eventDate.toDateString() == new Date(event.date).toDateString()) {
-                            var cellTitle = this.getEventCellTitle(event, this.userSchedules[i].status, this.userSchedules[i].events);
+                            var cellTitle = this.getEventCellTitle(event);
                             this.processClickEvent(cellTitle, eventDate, event.id, this.needFV);
                             eventFound = true;
                             return;
@@ -1710,17 +1630,17 @@
             this.processClickEvent(clickInfo.event.title, clickInfo.event.start, clickInfo.event.id, clickInfo.event.extendedProps.needFV);
         }
 
-        processClickEvent(cellTitle:string, eventStart:any, eventId:string, needFV:boolean) {
-            
-             //this.currentMonthCalendarApi = this.$refs.fullCalendarCurrentMonth.getApi();
-            const event = cellTitle.includes("NEEDS") || cellTitle.includes("SHIFT")
+        processClickEvent(cellTitle:string, eventStart:any, eventId:number, needFV:boolean) {
+            debugger
+            console.log(this.events);
+             const event = cellTitle.includes("NEEDS")
                 ? this.events.find(
                     (event: Event) =>
                         moment(event.date).format("YYYY-MM-DD") ==
                         moment(eventStart).format("YYYY-MM-DD")
                         && event.type == "Need"
                 )
-                : this.events.find((event: Event) => event.id === eventId);
+                : this.events.find((event: Event) => event.id === Number(eventId));
             if (event) {
                 this.currentEvent = event;
                 this.sharedToggle = false;
@@ -1755,13 +1675,10 @@
                     this.sharedRequest = {
                         type: 4,
                         tradeShift: this.isShiftTradeAllowed,
-                        selfSchedule: true,
                         request: this.checkIfFutureDate(strClickEventDate),
                         status: this.scheduleStatus,
                         calSelectedDates: this.calSelectedDates,
-                        isSelfScheduledEvent: false,
-                        assignmentDetail: !this.isShiftTradeAllowed,
-                        isSymphonyUser: this.profile.useMySchedulerOperatingRoom? true :false
+                        assignmentDetail: !this.isShiftTradeAllowed
                     };
                     return;
                 }
@@ -1783,12 +1700,10 @@
 
                     this.sharedRequest = {
                         type: 1,
-                        selfSchedule: needFV,
                         request: this.checkIfFutureDate(strClickEventDate),
                         availability: this.isUnavailabilityAllowed,
                         calSelectedDates: this.calSelectedDates,
                         status: this.scheduleStatus,
-                        isSelfScheduledEvent: false,
                         SelfScheduleDepartments: event.selfScheduleDepartments                      
                     };
                 }                
@@ -1815,12 +1730,10 @@
                     const calSelectedDates = { startDate: eventStart, endDate: moment(eventStart).add(1, 'days') };
                     this.sharedRequest = {
                         type: 1,
-                        selfSchedule: false,
                         request: true,
                         additionalRequest: this.checkIfFutureDate(strClickEventDate),
                         availability: false,
                         calSelectedDates,
-                        isSelfScheduledEvent: false,
                         status: this.scheduleStatus                       
                     };
                 } //event.type = "Assignment"
@@ -1830,7 +1743,7 @@
                         event: this.checkIf48hour(event),
                         assignmentDetail: true,
                         status: this.scheduleStatus,
-                        isSymphonyUser: this.profile.useMySchedulerOperatingRoom? true :false
+                        availability:true
                     };
                 }
             }
@@ -1859,25 +1772,24 @@
             if (this.currentShceduleIndex > 0) {
                 this.currentShceduleIndex -= 1;
             }
-            await this.getScheduleDetailsOnNavigation(this.currentShceduleIndex);
-            let prevWeek = this.userSchedules[this.currentShceduleIndex];
-            this.scheduleStartDate = prevWeek.startDate;
-            this.scheduleEndDate = prevWeek.endDate;
+            let prevWeek = this.profile.schedules[this.currentShceduleIndex];
+            this.scheduleStartDate = prevWeek.start;
+            this.scheduleEndDate = prevWeek.end;
             this.scheduleStatus = prevWeek.status;
-            this.currentMonthCalendarApi.gotoDate(prevWeek.startDate);
-            this.setCalendarEvents(this.currentShceduleIndex);
-            localStorage.setItem("sIndex", this.currentShceduleIndex.toString());
+            this.currentMonthCalendarApi.gotoDate(prevWeek.start);
+            await this.setStaffEvents(prevWeek);
+            //localStorage.setItem("sIndex", this.currentShceduleIndex.toString());
         }
 
         getCurrentWeekSchedule(): any {
             var currdate = new Date();
             var currentsched:any;
 
-            this.userSchedules.forEach((sched: any) => {
+            this.profile.schedules.forEach((sched: any) => {
                 var startDt, endDt, currDt;
-                startDt = moment(sched.startDate).format("DD/MM/YYYY");
+                startDt = moment(sched.start).format("DD/MM/YYYY");
                 currDt = moment(currdate).format("DD/MM/YYYY");
-                endDt = moment(sched.endDate).format("DD/MM/YYYY");
+                endDt = moment(sched.end).format("DD/MM/YYYY");
                 //getting week start date from schedules, based on current date
 
                 var sDt = startDt.split("/");
@@ -1894,33 +1806,24 @@
                 }
             });
 
-            this.currentShceduleIndex = this.userSchedules.indexOf(currentsched);
-            this.scheduleStartDate = currentsched.startDate;
-            this.scheduleEndDate = currentsched.endDate;
+            this.currentShceduleIndex = this.profile.schedules.indexOf(currentsched);
+            this.scheduleStartDate = currentsched.start;
+            this.scheduleEndDate = currentsched.end;
 
             return currentsched;
         }
 
         //get current week schedules
-        async todayDate() {
-            await this.getScheduleDetailsOnNavigation(0);
-            localStorage.removeItem("sIndex");
+        async todayDate() {            
             let todaysWeek = this.getCurrentWeekSchedule();
-            this.currentMonthCalendarApi.gotoDate(todaysWeek.startDate);
-            this.setCalendarEvents(this.currentShceduleIndex);
+            await this.setStaffEvents(todaysWeek);
         }
 
         //get next month schedules
         async nextMonth() {
             this.currentShceduleIndex += 1;
-            await this.getScheduleDetailsOnNavigation(this.currentShceduleIndex);
-            const nextWeek = this.userSchedules[this.currentShceduleIndex];
-            this.scheduleStartDate = nextWeek.startDate;
-            this.scheduleEndDate = nextWeek.endDate;
-            this.scheduleStatus = nextWeek.status;
-            this.currentMonthCalendarApi.gotoDate(nextWeek.startDate);
-            this.setCalendarEvents(this.currentShceduleIndex);
-            localStorage.setItem("sIndex", this.currentShceduleIndex.toString());
+            const nextWeek = this.profile.schedules[this.currentShceduleIndex];           
+            await this.setStaffEvents(nextWeek);
         }
 
         showWelcomeModal(){

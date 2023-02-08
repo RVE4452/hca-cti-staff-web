@@ -1,11 +1,14 @@
 <template>
-<div  class="col-12" v-if="isLoaded">     
-  <div class="container-fluid neu-margin--bottom-20 pb4 pt3" >
-      <div class="row">
-          <div class="col-12 neu-margin--bottom-20" v-if="showErrorMsg">                    
+<div class="w-100">
+  <neu-spinner class="div-center" v-if="!isLoaded" color="primary" >
+  </neu-spinner> 
+ <div  class="col-12" v-if="isLoaded">     
+  <div class="container-fluid mb-20 pb4 pt3" >
+      <div class="row">       
+          <div class="col-12 mb-20" v-if="showErrorMsg">                    
           <ErrorNotification  :errorMsg="errorMsg" :errorType="errorType" />
           </div>       
-        <div class="col-12 neu-margin--top-20">
+        <div class="col-12">
           <neu-label content="Facility" position="fixed" >
           </neu-label>
           <neu-input 
@@ -52,6 +55,7 @@
       </div>
     </div>
   </div>
+ </div>
 </template>
 <script lang="ts">
 import ErrorNotification from "./ErrorNotification.vue";
@@ -106,3 +110,4 @@ export default class AssignmentDetail extends Vue.with(Props) {
   }
 }
 </script>
+

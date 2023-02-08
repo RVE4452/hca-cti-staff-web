@@ -3,7 +3,7 @@ import http from "@/store/axios";
 import { Module, ActionTree, MutationTree } from 'vuex'
 import { RootState } from "../types";
 import { AxiosError, AxiosResponse } from "axios";
-import { NotificationPreferences, SchedulingPreferences, SMSPreferences } from "@/models";
+import { Staff, NotificationPreferences, SchedulingPreferences, SMSPreferences } from "@/models";
 import router from '@/router';
 //import bus from '../../../src/eventBus'
 
@@ -12,27 +12,51 @@ const namespaced = true
 
 interface Profile {
      //STATE
-     profileData: any,
-    isAdmin: boolean,
+    profileData: Staff,
     schedulingPrefData: any,
     notificationPrefData: any,
     smsPrefData: any,
-    isImpersonating: boolean,
-    impersonatingUser: string,
-    appInsightEventData:any,
-    isStaffManager: boolean
+    appInsightEventData:any
  }
  //state
 const state: Profile = {
-    profileData: {},
-    isAdmin: false,
+    profileData: {
+        coid: '',
+        created: new Date(),
+        createdBy: '',
+        departmentCode: '',
+        departmentId: 0,
+        departmentName: '',
+        email: '',
+        end: new Date(),
+        facilityId: 0,
+        facilityName : '',
+        address1: '',
+        address2: '',
+        city: '',
+        state: '',
+        zip: '',
+        firstName: '',
+        fte: 0,
+        lastName: '',
+        partOfDayId: 0,
+        proficiency: 0,
+        ptoBalance: '',
+        rate: '',
+        schedules: [],
+        staffId: 0,
+        staffType: '',
+        staffTypeId: 0,
+        start: new Date(),
+        updated: new Date(),
+        updatedBy: '',
+        userId: 0,
+        username: '',
+    },
     schedulingPrefData: null,
     notificationPrefData: null,
     smsPrefData:  null,
-    isImpersonating: false,
-    impersonatingUser:  '',
-    appInsightEventData:{},
-    isStaffManager: false
+    appInsightEventData:{}
  }
  const mutations: MutationTree<Profile> = {
      setAppInsightEventData(state, profileData: any){
@@ -64,25 +88,8 @@ const state: Profile = {
     // }
     
     
-    setProfileData(state, payload: any): void {
-        state.profileData = payload.newState;
-
-        if (payload.userId.length > 0) {
-            state.impersonatingUser = payload.userId;
-            state.isImpersonating = true;
-            state.isAdmin = true;
-        }
-        else {
-            state.impersonatingUser = '';
-            state.isImpersonating = false;
-
-            if(state.profileData.isAdmin == true || state.profileData.isStaffHasAdminAccount == true)
-            {
-                state.isAdmin = true;
-            }
-        }
-
-        //bus.$emit("profileLoaded", "");
+    setProfileData(state, payload: Staff): void {
+        state.profileData = payload;
     },
 
     setSchedulingPref(state, newState: SchedulingPreferences) {
@@ -119,21 +126,18 @@ const state: Profile = {
 
     
     setWelcomePopupStatus(state) {
-        state.profileData.isFirstTimeLogin = true;
+        //state.profileData.isFirstTimeLogin = true;
     },
-    
-    setStaffManager(state, isStaffManager: boolean) {
-        state.isStaffManager = isStaffManager;
-    }
+   
 }
     // ACTIONS
      const actions: ActionTree<Profile, RootState> = {
      getProfileDetails({commit},username: string){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/${username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Staff`;
         return http
             .get(apiUrl)
             .then((res) => {
-                if(res.status === 204 || (!res.data.isAdmin && res.data.isDisabled)) {
+                if(res.status === 204 || (res.data.isDisabled)) {
                     router.push("/invalidaccount");
                 }
                 else
@@ -143,7 +147,7 @@ const state: Profile = {
                         userId: username,
                     }
 
-                    commit("setProfileData", payload);
+                    commit("setProfileData", payload.newState);
                     commit("setAppInsightEventData", payload.newState);
                 }
             })
@@ -155,7 +159,7 @@ const state: Profile = {
 
     
     getSchedulingPrefDetails({commit},username: string){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/Schedule/${username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/Schedule/${username}`;
 
         return http
             .get(apiUrl)
@@ -170,7 +174,7 @@ const state: Profile = {
 
     
     saveSchedulingPrefDetails({commit},payload:any){        
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/Schedule/${payload.username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/Schedule/${payload.username}`;
 
         return http
             .post(apiUrl, payload.schPrefData)
@@ -185,7 +189,7 @@ const state: Profile = {
 
     
     getSMSPrefDetails({commit},username: string){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/Sms/${username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/Sms/${username}`;
 
         return http
             .get(apiUrl)
@@ -200,7 +204,7 @@ const state: Profile = {
 
     
     saveSMSPrefDetails({commit}, payload:any) {
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/sms/${payload.username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/sms/${payload.username}`;
 
         return http
             .post(apiUrl, payload.smsData)
@@ -215,7 +219,7 @@ const state: Profile = {
 
     
     activateMobileNumber({commit}, payload:any){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/Sms/Activate/${payload.username}?phoneNumber=${payload.phoneNumber}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/Sms/Activate/${payload.username}?phoneNumber=${payload.phoneNumber}`;
 
         return http
             .get(apiUrl)
@@ -230,7 +234,7 @@ const state: Profile = {
 
     
     reactivateMobileNumber({commit}, payload:any){
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/Sms/Reactivate/${payload.username}?phoneNumber=${payload.phoneNumber}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/Sms/Reactivate/${payload.username}?phoneNumber=${payload.phoneNumber}`;
 
         return http
             .get(apiUrl)
@@ -244,7 +248,7 @@ const state: Profile = {
     },
 
     validateActivationCode({commit}, payload:any) {
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/Sms/Validate/${payload.username}?activationCode=${payload.activationCode}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/Sms/Validate/${payload.username}?activationCode=${payload.activationCode}`;
 
         return http
             .get(apiUrl)
@@ -258,7 +262,7 @@ const state: Profile = {
     },
 
     getNotificationPrefDetails({commit}, username: string) {
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/Notification/${username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/Notification/${username}`;
 
         return http
             .get(apiUrl)
@@ -272,7 +276,7 @@ const state: Profile = {
     },
 
     saveNotificationPrefDetails({commit}, payload:any ) {
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/Notification/${payload.username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/Notification/${payload.username}`;
 
         return http
             .post(apiUrl, payload.ntfData)
@@ -286,7 +290,7 @@ const state: Profile = {
     },
     
     updateWelcomePopupstatus({commit}, payload:any) {
-        const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/UpdateWelcomePopupStatus`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/UpdateWelcomePopupStatus`;
 
         return http
             .post(apiUrl, payload)
@@ -300,7 +304,7 @@ const state: Profile = {
     },
 
      checkStaffManager({commit}, impersonateUsername: string){
-         const apiUrl = `${process.env.VUE_APP_BASE_API_URL}/Profiles/CheckStaffManager/${impersonateUsername}`;
+         const apiUrl = `${process.env.VUE_APP_APIURL}/Profiles/CheckStaffManager/${impersonateUsername}`;
  
          return http
              .get(apiUrl)

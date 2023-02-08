@@ -1,93 +1,51 @@
 <template>
-   <div class="no-print modal" v-bind:class="isPanelOpen ? 'sideNavPanel' : 'sideNavPanelClose'">
+   <div class="modal" v-bind:class="isPanelOpen ? 'sideNavPanel' : 'sideNavPanelClose'">
         <div  style="text-align:center">
-        <neu-header class="fs-22 fw-bold modal-header relative" id="modalTitle">           
-            <f5><span>{{ requestTypeArray[sharedRequest.type - 1]}} </span></f5>            
-            <neu-icon  @click="close" data-test="modal-close" class="btn-close f1 absolute pointer btnSidePanelClose m-3 neu-icon neu-icon--large hydrated">close</neu-icon>
-        </neu-header>       
-           <template v-if="showDateNavigation()">
-            <div >
-                <div>
-                    <h5>
-                    <neu-icon @click="previousDay"
-                           class="material-icons pointer calendar-navigation"
-                           style="position: relative; top: 4px">
-                            chevron_left
-                        </neu-icon>
-                        <span>
-                            {{ this.sharedRequest && this.sharedRequest.calSelectedDates && this.sharedRequest.calSelectedDates.startDate ? formatDate(this.sharedRequest.calSelectedDates.startDate) : formatDate(currentEvent.date)  }}
-                        </span>
-                        <neu-icon @click="nextDay"
-                           class="material-icons pointer calendar-navigation"
-                           style="position: relative; top: 4px">
-                            chevron_right
-                        </neu-icon>
-                    </h5>
-                </div>
-            </div>
-        </template> 
-         </div>
-         <template v-if="sharedRequest.type === 1">
-            <!-- <neu-tablist color="primary-100"  value="openneed">
-                <neu-tab v-if="currentEvent.status !='0 Needs'" tab="openneed" navy="true">Open Need</neu-tab>
-                <neu-tab tab="request" v-if="sharedRequest.request" navy="true">Request</neu-tab>
-                <neu-tab tab="unavailablity" v-if="sharedRequest.availability" navy="true">Unavailability</neu-tab>
-            </neu-tablist> -->
-            <neu-tablist v-model="tabCurrent" color="primary-100" value="one">
-                <neu-tab
-                    v-for="(tab, tabId) in tabList"
-                    :key="tabId"
-                    @click="tabCurrent = tab.id"
-                    @keyup.space="tabCurrent = tab.id"
-                    @keyup.enter="tabCurrent = tab.id"
-                    navy="true">
-                    {{tab.title}}
-                </neu-tab>
-            </neu-tablist>
-
-          </template>
-
-          <template v-if="sharedRequest.type === 2">
-            <neu-tablist color="primary-100" value="assignment">
-                <neu-tab v-if="sharedRequest.event" tab="assignment" navy="true">Event</neu-tab>
-                <neu-tab v-if="sharedRequest.assignmentDetail" tab="assignment" navy="true">Details</neu-tab>
-                <neu-tab tab="request" v-if="sharedRequest.request" navy="true">Request</neu-tab>
-                <neu-tab tab="unavailablity" v-if="sharedRequest.availability" navy="true">Unavailability</neu-tab>
-            </neu-tablist>
-          </template>
-           <template v-if="sharedRequest.type === 4">
-            <neu-tablist color="primary-100"  value="assignment">
-                <neu-tab  v-if="sharedRequest.isSymphonyUser" tab="assignment" navy="true">Procedures</neu-tab>
-                <neu-tab  v-if="sharedRequest.tradeShift" tab="assignment" navy="true">Trade Event</neu-tab>
-                <neu-tab v-if="sharedRequest.assignmentDetail" tab="assignment" navy="true">Details</neu-tab>
-                <neu-tab v-if="sharedRequest.request" tab="request" navy="true">Request</neu-tab>
-                <neu-tab tab="unavailablity" v-if="sharedRequest.availability" navy="true">Unavailability</neu-tab>
-            </neu-tablist>
-          </template>
-           
-          <!-- Details -->
-          <template v-if="sharedRequest.type === 2">
-            <div class="pb3 row" v-if="activeTab == 0 && sharedRequest.isSymphonyUser == true && sharedRequest.status == 'Posted'">
-                <SymphonyOperatingRooms :key="counter" :currentEvent="currentEvent" @closeSharedModal="close" />
-            </div>
-            <div class="pb3 row" v-if="activeTab == 1">
-                <Detail :enableField="[]" :currentEvent="currentEvent" :key="counter" />
-                <PotentialTrade :key="counter + 1" />
-                <ShiftDetail :currentEvent="currentEvent" :key="counter + 2" />
-                <div class="container-fluid">
+            <neu-header class="fs-22 fw-bold modal-header relative" id="modalTitle">           
+                <f5><span>{{ requestTypeArray[sharedRequest.type - 1]}} </span></f5>            
+                <neu-icon  @click="close" data-test="modal-close" class="btn-close f1 absolute pointer btnSidePanelClose m-3 neu-icon neu-icon--large hydrated">close</neu-icon>
+            </neu-header>       
+            <template v-if="showDateNavigation()">
+                <div >
                     <div>
-                        <div class="col-12">
-                            <button name="btnSwapShift" class="d-block mb4 mt4 neu-background--denim neu-button w-100 white">
-                                Swap Shift
-                            </button>
-                        </div>
+                        <h5>
+                        <neu-icon @click="previousDay"
+                            class="material-icons pointer calendar-navigation"
+                            style="position: relative; top: 4px">
+                                chevron_left
+                            </neu-icon>
+                            <span>
+                                {{ sharedRequest && sharedRequest.calSelectedDates && sharedRequest.calSelectedDates.startDate ? formatDate(sharedRequest.calSelectedDates.startDate) : formatDate(currentEvent.date)  }}
+                            </span>
+                            <neu-icon @click="nextDay"
+                            class="material-icons pointer calendar-navigation"
+                            style="position: relative; top: 4px">
+                                chevron_right
+                            </neu-icon>
+                        </h5>
                     </div>
                 </div>
-            </div>
-            <div class="pb3 row" v-if="activeTab == 2">
-                <!-- <AssignmentDetail :currentEvent="currentEvent" /> -->
+            </template> 
+        </div>
+        
+        <div>
+            <neu-tablist v-model="tabCurrent">
+                <span  v-for="(tab,tabId) in tabList" :key="tabId" >
+                    <span v-if="tab.show">
+                        <neu-tab
+                        @click="tabSelected(tab.id)"
+                        @keyup.space="tabSelected(tab.id)"
+                        @keyup.enter="tabSelected(tab.id)"
+                        :class="tab.focused?'neu-focused':''"
+                        >
+                        {{tab.title}}
+                        </neu-tab>
+                    </span>
+                </span>
+            </neu-tablist>           
+            <div v-if="tabCurrent === 'Details'">
                 <detail :enableField="[]" :currentEvent="currentEvent" :key="counter" />
-                <shift-member-detail :currentEvent="currentEvent" :key="counter + 1" />
+                <!-- <shift-member-detail :currentEvent="currentEvent" :key="counter + 1" /> -->
                 <div class="container-fluid tc">
                     <div>
                         <div class="col-12">
@@ -96,23 +54,27 @@
                     </div>
                 </div>
             </div>
-        </template>
-        <!-- END Details tab contents-->
 
-        
-        <!-- <div v-if="tabCurrent === 'openneed'">
-            <h3>Open Need</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-          </div> -->
-          
-          <div v-if="tabCurrent == 'request' && sharedRequest.type == 1">                                
-                <Request :currentEvent="currentEvent"/>
-          </div>
-          
-      
-          <!-- <div v-if="tabCurrent === 'unavailablity'">
-            <h3>Unavailability</h3>
-          </div> -->
+            <div v-if="tabCurrent === 'Trade'">                
+                <TradeShift :key="counter" :currentEvent="currentEvent" @showSuccessMsgPopUp="showSuccessModal" @closeSharedModal="close" />
+            </div>
+             <div v-if="tabCurrent === 'OpenNeed'">
+               <open-need :currentEvent="currentEvent" @showSuccessMsgPopUp="showSuccessModal" @closeSharedModal="close"></open-need> 
+            </div>
+            <div v-if="tabCurrent === 'Request'">
+                <h3>Request</h3>
+                <!-- <Request :key="counter" :currentEvent="currentEvent" :additionalRequestEvent="false" :calSelectedDates="sharedRequest.calSelectedDates" @closeSharedModal="close" @showSuccessMsgPopUp="showSuccessModal" /> -->
+            </div>
+
+            <div v-if="tabCurrent === 'DayPreference'">
+                <day-preference-view />
+            </div> 
+            <div v-if="tabCurrent === 'Event'">
+                <h3>Event</h3>
+                <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+            </div>
+
+        </div>
     </div>
 </template>
 
@@ -121,22 +83,22 @@
     import {NeuApp, NeuTablist, NeuTab} from '@neutron/vue';
     import { Options, Vue } from 'vue-class-component';
     import { mapState } from "vuex";
-    import AssignmentDetail from "./AssignmentDetail.vue";
     import ShiftMemberDetail from "./ShiftMemberDetail.vue";
     import Detail from "./Detail.vue";
     import Request from './Request.vue';
     // import RequestedTrade from "./RequestedTrade.vue";
     /*import Approval from "./Approval.vue";*/
     // import PotentialTrade from "./PotentialTrades.vue";
-    
-   
-    // import Unavailability from './Unavailability.vue';
-    // import OpenNeed from './OpenNeed.vue';
-    // import TradeShift from './TradeShift.vue';
+    // import Request from './Request.vue';
+    // import RequestedTrade from "./RequestedTrade.vue";
+    import DayPreferenceView from './DayPreference.vue'
+    import OpenNeed from './OpenNeed.vue';
+    import TradeShift from './TradeShift.vue';
+    import Request from './Request.vue';
     
     import moment from "moment";
-    //import SymphonyOperatingRooms from './SymphonyOperatingRooms.vue'
-     import {
+    import {NeuApp, NeuTablist, NeuTab} from '@neutron/vue';
+    import {
                 NeuHeader,
                 NeuRow,
                 NeuCol
@@ -151,6 +113,7 @@
          counter!: any;
          scheduleStartDate!: Date;
          scheduleEndDate!: Date;
+        
     }
     @Options({
     //     props: {
@@ -159,35 +122,20 @@
     //     }
     // },
         components: {
-             AssignmentDetail,
-             NeuApp, 
-             NeuTablist, 
-             NeuTab,
             /*Approval,*/
             // PotentialTrade,
-             Detail,
-             Request,
-            //  RequestedTrade,
-             ShiftMemberDetail,
-            // // SelfSchedule,
-            // Unavailability,
-            // OpenNeed,
-            // TradeShift,
-            // SymphonyOperatingRooms,
+            Detail,
+            ShiftMemberDetail,
+            //Request,
+            // RequestedTrade,
+            OpenNeed,
+            TradeShift,
+            DayPreferenceView,
             NeuHeader,
             NeuRow,
-            NeuCol,
+            NeuCol, NeuTablist, NeuTab
         },
-        data() {
-            return {
-                tabCurrent: 'request',
-                tabList: [
-                    // {id: 'openneed', title: 'Open Need'},
-                    {id: 'request', title: 'Request'},
-                    // {id: 'unavailablity', title: 'Unavailability'}
-                ]
-            };
-        },
+        
          computed: {
                 ...mapState('schedule', ['assignmentDetail']),
         },
@@ -202,21 +150,78 @@
         isLoaded: boolean = false;
         singleTab: boolean = false;
         isProductive: boolean = false;
+        newTabList:any[] = [];
+        tabCurrent:string=  'Details';
+        //Add Tab details you want to add to the list
+        tabList:any[]= [
+        {id: 'Details', title: 'Details',show:false,focused:false},
+        {id: 'OpenNeed', title: 'Open Need',show:false,focused:false},          
+        {id: 'Trade', title: 'Trade',show:false,focused:false},
+        {id: 'Event', title: 'Event',show:false,focused:false},
+        {id: 'Request', title: 'Request',show:false,focused:false}, 
+        {id: 'DayPreference', title: 'Day Preference',show:false,focused:false}
+        ]
+        //Based on the sharedRequest type add the type and include the TabID from the Tablist
+        TabId:any = {
+            1:['OpenNeed','Request','DayPreference'],
+            2:['Event','Details','Request','DayPreference'],
+            4:['Trade','Details','Request','DayPreference'],
+        }
+           
 
         created() {
             //super(props);
+            
             const sharedRequest = JSON.parse(JSON.stringify(this.sharedRequest));
-            const currentEvent = JSON.parse(JSON.stringify(this.currentEvent));
-            delete sharedRequest.type;
-            delete sharedRequest.calSelectedDates;
-            //const updatedArray = Object.entries(sharedRequest);
-            //this.activeTab = Number(
-            //    Object.keys(updatedArray).find((key) => {
-            //        return updatedArray[key][1];
-            //    })
-            //);  
-            this.activeTab = this.getActiveTab(this.sharedRequest);
-            //this.setActiveTab(this.sharedRequest);
+            const currentEvent = JSON.parse(JSON.stringify(this.currentEvent));  
+            let tabfocused= 0;
+            this.newTabList = this.tabList.filter((eachTab)=>{
+                return this.TabId[sharedRequest.type].includes(eachTab.id);
+            })
+            this.newTabList.map((item)=>{
+                if(sharedRequest.assignmentDetail && item.id ==="Details") {
+                    item.show= true;
+                    item.focused =tabfocused==0 ?true:false;
+                    this.tabCurrent = item.focused?item.id:this.tabCurrent;
+                    tabfocused++;
+                }
+               
+                if(sharedRequest.tradeShift && item.id ==="Trade") {
+                    item.show= true;
+                    item.focused =tabfocused==0 ?true:false;
+                    this.tabCurrent = item.focused?item.id:this.tabCurrent;
+                    tabfocused++;
+                }
+                
+                if(currentEvent.status !='0 Needs' && item.id ==="OpenNeed") {
+                    item.show= true;
+                    item.focused =tabfocused== 0 ?true:false;
+                    this.tabCurrent = item.focused?item.id:this.tabCurrent;
+                    tabfocused++;
+                }
+
+                if(sharedRequest.request && item.id ==="Request") {
+                    item.show= true;
+                    item.focused =tabfocused==0 ?true:false;
+                    this.tabCurrent = item.focused?item.id:this.tabCurrent;
+                    tabfocused++;
+                    
+                }
+
+                if(sharedRequest.availability && item.id ==="DayPreference") {
+                    item.show= true;
+                    item.focused =tabfocused== 0 ?true:false;
+                    this.tabCurrent = item.focused?item.id:this.tabCurrent;
+                    tabfocused++;
+                }
+               
+                if(sharedRequest.event && item.id ==="Event") {
+                    item.show= true;
+                    item.focused =tabfocused== 0 ?true:false;
+                    this.tabCurrent = item.focused?item.id:this.tabCurrent;
+                    tabfocused++;
+                }
+            })
         }  
 
         //@Watch('isPanelOpen', {immediate: true}) 
@@ -230,7 +235,6 @@
         showSuccessModal(flag: boolean = true, msgValue: string = '') {
             this.$emit("showSuccessModal", flag, msgValue);
         }
-
 
         close() {
             this.$emit("close-modal");
@@ -274,57 +278,16 @@
             }
             return ret;
         }
-        getActiveTab(sharedRequest:any) {
-            var activeTab = 10;
-            if (sharedRequest.type === 1) {                
-                if (sharedRequest.selfSchedule && this.currentEvent.status !='0 Needs') {
-                    activeTab = 0;
-                }
-                else if (sharedRequest.request) {
-                    activeTab = 1;
-                }
-                else if (sharedRequest.availability) {
-                    activeTab = 2;
-                }
-                else if (sharedRequest.vacationBidding) {
-                    activeTab = 3;
-                }
-                else if (sharedRequest.additionalRequest) {
-                    activeTab = 4;
-                }
-                else {
-                    activeTab = 5;
-                }
-            }
-            else if (sharedRequest.type === 2) {
-                if (sharedRequest.isSymphonyUser) {
-                    activeTab = 0;
-                } 
-                else if (sharedRequest.event) {
-                    activeTab = 1;
-                }
-                else if (sharedRequest.assignmentDetail) {
-                    activeTab = 2;
-                }
-            }
-            else if (sharedRequest.type === 4) {
-                if (sharedRequest.isSymphonyUser) {
-                    activeTab = 0;
-                }
-                else if (sharedRequest.tradeShift) {
-                    activeTab = 1;
-                }
-                else if (sharedRequest.assignmentDetail) {
-                    activeTab = 2;
-                } else if(sharedRequest.request){
-                    activeTab = 3;
-                }
-            }
-            return activeTab;
+       
+        tabSelected(tabId:any){
+            this.tabCurrent = tabId;
+            this.tabList.map(item=>{
+                item.focused= (item.id===tabId)?true:false
+            });
         }
     }
 </script>
-<style src="@/css/shared-modal.css" />
+<style src="@/scss/shared-modal.css" />
 <style scoped>
 .padding-right1{
     padding-right: 0.4rem;
@@ -494,7 +457,7 @@
         right: 0;
         top: 0px;
         width: 25%;
-        display: block;
+        display: flex;
         background-color: #f4f4f4;
         bottom: 92px;
         overflow-x: hidden;
