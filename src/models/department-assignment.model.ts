@@ -1,8 +1,8 @@
 
 export interface DepartmentAssignment {
-    date: Date;
-    shiftCode: string;
-    ActualStartTime: Date;
-    isOverTime: boolean;
-    isChargeShift: boolean;    
+    assigmentId : number; 
+    departmentShiftCode: string;
+    start: Date;
+    end: Date;
+    hours: number;   
 }

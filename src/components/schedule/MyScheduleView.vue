@@ -74,18 +74,6 @@
                     </div>
                     <!-- END MODAL -->
                 </div>
-                <div class="neu-container neu-padding--top-0 paddingDeptView" v-else>
-                    <div v-if="!isLoading">
-                        <DepartmentView :currentScheduleId="currentShceduleIndex" />
-                        <div class="col-sm-12 neu-margin--top-20 neu-text--caption neu-text--align-center mTop0">
-                            <span class="neu-text--bold">Important Note </span>: Shift assignments display on the date of the shift's actual start time.
-                        </div>
-                    </div>
-                    <div v-else>
-                        <neu-spinner class="div-center" color="primary" >
-                       </neu-spinner>                   
-                    </div>
-                </div>
             </neu-row>       
         </div> 
          <neu-row style="display: block;">
