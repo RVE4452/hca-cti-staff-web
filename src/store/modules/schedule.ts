@@ -25,7 +25,7 @@ interface Schedule {
     openNeedsFacilities: any,
     openNeedsDepartments: any,
     openNeedsShiftDetails: any,
-    departmentSchedules: object[],
+    departmentSchedules: DepartmentStaff[],
     payrollDetails: object[],
     defaultSelfSchedules: any,
     orAssignmentDetail: any
@@ -570,7 +570,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      getDepartmentSchedule({ commit, rootState },payload: any){
-        const api = `${process.env.VUE_APP_APIURL}/Schedules/DepartmentSchedules/${payload.deptId}/${payload.startDate}/${payload.endDate}/${payload.username}`;
+        const api = `${process.env.VUE_APP_APIURL}/Departments/${payload.deptId}/Schedules/${payload.scheduleId}`;
 
         return http
             .get(api)
