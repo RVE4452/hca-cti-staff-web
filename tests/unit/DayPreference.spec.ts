@@ -1,7 +1,7 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import DayPreference from '@/components/shared/DayPreference.vue';
 import Vuex from 'vuex';
-import { departmentSchedules, profileData, userSchedules } from '../../src/mocks/mockSpecData';
+import { profileData,  } from '../../src/mocks/mockSpecData';
 
 const store = new Vuex.Store({
     modules: {
@@ -14,17 +14,6 @@ const store = new Vuex.Store({
         actions: {
           getProfileDetails: jest.fn()
         }
-      },
-      "schedule": {
-        namespaced: true,
-        state: {
-          userSchedules: userSchedules,
-          departmentSchedules: departmentSchedules
-        },
-        actions: {
-          getDepartmentSchedule: jest.fn(),
-          getAllUserSchedules: jest.fn()
-        }
       }
     },
   })
@@ -34,16 +23,12 @@ const store = new Vuex.Store({
     data: () => {
       return {
         appInsightEventData: {},
-        departmentSchedules: [],
-        userSchedules: [],
         profileData: []
       }
     },
     props: {
       appInsightEventData: {},
-      profileData: profileData,
-      departmentSchedules: departmentSchedules,
-      userSchedules: userSchedules
+      profileData: profileData
     },
     global: {
       mocks: {
