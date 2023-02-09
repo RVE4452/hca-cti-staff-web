@@ -2,7 +2,7 @@ name: DEV
   
 env:
   # Build Variables
-  NODE_VERSION: '16'  
+  NODE_VERSION: '18'  
 
   # Environment Variables
   APP_VERSION: 0.2.0.0
@@ -99,7 +99,7 @@ jobs:
       uses: azure/appservice-settings@v1
       with:
         app-name: ${{ env.AZURE_APP_NAME }}
-        general-settings-json: '{"linuxFxVersion": "NODE|16-lts", "alwaysOn": true, "appCommandLine": "npx serve -s"}'
+        general-settings-json: '{"linuxFxVersion": "NODE|18-lts", "alwaysOn": true, "appCommandLine": "npx serve -s"}'
   
     - name: 'Deploy Web to Azure'
       uses: azure/webapps-deploy@v2

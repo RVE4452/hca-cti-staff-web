@@ -2,7 +2,7 @@ name: Unit Test
   
 env:
   # Build Variables
-  NODE_VERSION: '16'  
+  NODE_VERSION: '18'  
 
 on:
   pull_request:
