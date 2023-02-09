@@ -1,14 +1,14 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import DayPreference from '@/components/shared/DayPreference.vue';
 import Vuex from 'vuex';
-import { profileData,  } from '../../src/mocks/mockSpecData';
+import { staff } from '../../src/mocks/mockSpecData';
 
 const store = new Vuex.Store({
     modules: {
       "profile": {
         namespaced: true,
         state: {
-          profileData: profileData,
+          profileData: staff,
           appInsightEventData: []
         },
         actions: {
@@ -17,8 +17,8 @@ const store = new Vuex.Store({
       }
     },
   })
-  let wrapper: any;
-  wrapper = shallowMount (DayPreference, {
+ 
+ const wrapper = shallowMount (DayPreference, {
     store,
     data: () => {
       return {
@@ -28,7 +28,7 @@ const store = new Vuex.Store({
     },
     props: {
       appInsightEventData: {},
-      profileData: profileData
+      profileData: staff
     },
     global: {
       mocks: {
@@ -38,7 +38,7 @@ const store = new Vuex.Store({
 });
 
   describe("Testing on onPreferenceChange", () => {
-    wrapper.vm.profileData = profileData;
+    wrapper.vm.profileData = staff;
     it("check prop values in onPreferenceChange", async ()=> {  
       const value = "Required"
            
