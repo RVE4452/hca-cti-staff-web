@@ -74,18 +74,6 @@
                     </div>
                     <!-- END MODAL -->
                 </div>
-                <div class="neu-container neu-padding--top-0 paddingDeptView" v-else>
-                    <div v-if="!isLoading">
-                        <DepartmentView :currentScheduleId="currentShceduleIndex" />
-                        <div class="col-sm-12 neu-margin--top-20 neu-text--caption neu-text--align-center mTop0">
-                            <span class="neu-text--bold">Important Note </span>: Shift assignments display on the date of the shift's actual start time.
-                        </div>
-                    </div>
-                    <div v-else>
-                        <neu-spinner class="div-center" color="primary" >
-                       </neu-spinner>                   
-                    </div>
-                </div>
             </neu-row>       
         </div> 
          <neu-row style="display: block;">
@@ -325,7 +313,7 @@
             views: {
                 dayGrid: {
                     type: "dayGrid", // Applicable for: dayGrid and dayGridMonth
-                    fixedWeekCount: true,
+                    fixedWeekCount: false,
                     showNonCurrentDates: false,
                 },
             },
@@ -1200,7 +1188,8 @@
             }
         }
         //get staff assigments for particular schedules
-        async getSchedules(currentDate: boolean = false) {
+        async getSchedules(currentDate: boolean = false) {  
+            this.weeksInSchedule = this.profileData.weeksInSchedule;         
                 if (currentDate) 
                 {                        
                     let currSchedule = this.getCurrentWeekSchedule();
@@ -1211,39 +1200,27 @@
                     let schedule = this.profile.schedules[this.currentShceduleIndex];
                     await this.setStaffEvents(schedule);
                 }
-               console.log(this.profile);
         }
         //show staff events in calendar
           async setStaffEvents(schedule: any) {
-            this.isLoading = true;
-            this.events = [];
-            if (this.viewFlag == 'CalView') {
-                this.currentMonthCalendarApi.removeAllEvents();
-            }
-            this.scheduleStartDate = schedule.start;
-            this.scheduleEndDate = schedule.end;
-            this.scheduleStatus = schedule.status;
-            this.currentMonthCalendarApi.gotoDate(schedule.start);
-            this.currentDate =
-                moment(schedule.start).format("ll") +
-                " - " +
-                moment(schedule.end).format("ll");
-                //events
-                 let payload = {
+            this.events = [];           
+            if(this.profileData.staffId == 0)
+            return;
+             //get all events
+             let payload = {
                 scheduleId: schedule.scheduleId,
                 staffId:this.profile.staffId
             };
-            if(this.profileData.staffId == 0)
-            return;
             await this.$store.dispatch("schedule/getStaffSchedule", payload)
            .then(() => {              
                     if (this.userSchedules.events != undefined) {
+                    //clear all existing events
+                    if (this.viewFlag == 'CalView') {
+                            this.currentMonthCalendarApi.removeAllEvents();
+                        }
+                    //add new events in calendar
                      this.userSchedules.events.forEach((event: Event) => {
-                        let cellTitle: string;
-                        event.assignmentId =
-                            event.type == "Need" || event.type == "Pending"
-                                ? event.id
-                                : 0;
+                        let cellTitle: string;                        
                         this.events.push(event);
 
                         cellTitle = this.getEventCellTitle(event);
@@ -1261,8 +1238,7 @@
                                 dailyEvents: event.dailyEvents
 
                             });
-                        }
-                        this.isLoading = false;
+                        }                       
                     })
                     if (this.viewFlag == 'CalView') {
                         this.currentMonthCalendarApi.changeView("dayGrid");
@@ -1277,6 +1253,16 @@
                     }
             } 
             });
+            this.scheduleStartDate = schedule.start;
+            this.scheduleEndDate = schedule.end;
+            this.scheduleStatus = schedule.status;
+            this.currentMonthCalendarApi.gotoDate(schedule.start);
+            this.currentDate =
+                moment(schedule.start).format("ll") +
+                " - " +
+                moment(schedule.end).format("ll");
+               
+           
             //filtered
               if (this.viewFlag == 'CalView') {
                 if (this.leftNavBar) {
@@ -1308,23 +1294,6 @@
                 }
               }
             
-        }
-
-        async getScheduleDetailsOnNavigation(index: Number): Promise<any> {
-            let payload = {
-                username: this.profileData.username,
-                index: index,
-            };
-            await this.$store
-                .dispatch("schedule/getAllUserSchedules", payload)
-                .then((res: any) => {
-                    return res.data;                     
-                })
-                .catch((err: any) => {
-                    if (err) {
-                        console.log(err); // Handle errors any way you want
-                    }
-                });
         }
 
         showModal() {
@@ -1370,7 +1339,7 @@
             if (this.checkIfFutureDate(selectInfo.end) || onDateNavigation) {
                 var scheduleEventType: any;
                 let selfScheduleDeptIds: any;
-                const checkSchedules = this.userSchedules[this.currentShceduleIndex].events.some((schedules:any) => {
+                const checkSchedules = this.events.some((schedules:any) => {
                     scheduleEventType = schedules.type;
                    if(scheduleEventType == "Need" && moment(schedules.date).format("YYYY-MM-DD") == moment(selectInfo.start).format("YYYY-MM-DD"))
                     {
@@ -1396,11 +1365,9 @@
                     selfSchedule: isMultiDayAllowed,
                     request: this.checkIfFutureDate(selectInfo.start),
                     availability: this.isUnavailabilityAllowed,
-                    vacationBidding: false,
                     calSelectedDates: this.calSelectedDates,
-                    isSelfScheduledEvent: false,
                     status: this.scheduleStatus,
-                    scheduleId: (isMultiDayAllowed == true ? this.userSchedules[this.currentShceduleIndex].id : ""),
+                    scheduleId: (isMultiDayAllowed == true ? this.profile.schedules[this.currentShceduleIndex].id : ""),
                     SelfScheduleDepartments: selfScheduleDeptIds
                 }; /*needApproval: true,*/
                 if (new Date(selectInfo.start) < new Date(this.scheduleStartDate)) {
@@ -1601,9 +1568,9 @@
             }
             this.updateData = eventDate;
             var eventFound = false;
-            for (var i = 0; i < this.userSchedules.length; i++) {
-                if (eventDate >= new Date(this.userSchedules[i].startDate) && eventDate <= new Date(this.userSchedules[i].endDate)) {
-                    this.userSchedules[i].events.forEach((event: Event) => {
+            for (var i = 0; i < this.profile.schedules.length; i++) {
+                if (eventDate >= new Date(this.profile.schedules[i].start) && eventDate <= new Date(this.profile.schedules[i].end)) {
+                    this.events.forEach((event: Event) => {
                         if (eventDate.toDateString() == new Date(event.date).toDateString()) {
                             var cellTitle = this.getEventCellTitle(event);
                             this.processClickEvent(cellTitle, eventDate, event.id, this.needFV);
@@ -1772,13 +1739,12 @@
             if (this.currentShceduleIndex > 0) {
                 this.currentShceduleIndex -= 1;
             }
-            let prevWeek = this.profile.schedules[this.currentShceduleIndex];
+            let prevWeek = this.profile.schedules[this.currentShceduleIndex];           
+            await this.setStaffEvents(prevWeek); 
             this.scheduleStartDate = prevWeek.start;
             this.scheduleEndDate = prevWeek.end;
             this.scheduleStatus = prevWeek.status;
             this.currentMonthCalendarApi.gotoDate(prevWeek.start);
-            await this.setStaffEvents(prevWeek);
-            //localStorage.setItem("sIndex", this.currentShceduleIndex.toString());
         }
 
         getCurrentWeekSchedule(): any {

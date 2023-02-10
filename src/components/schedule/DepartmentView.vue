@@ -11,8 +11,8 @@
             </neu-col>
             <neu-col xxl="2" xl="3" lg="12" md="2" sm="6" cols="12">
                 <neu-select ref="ddlDepartment" interface="popover" :value="selectedDeptId" @v-neu-change="onDepartmentChange">
-                <neu-option ref="ddlDepartmentOption" v-for="department in facilityDepts" :value="department.deptId" :key="department.deptId">
-                    {{department.deptName}}
+                <neu-option ref="ddlDepartmentOption" v-for="department in facilityDepts" :value="department.departmentId" :key="department.departmentId">
+                    {{department.departmentName}}
                 </neu-option>
                 </neu-select>
             </neu-col>
@@ -29,12 +29,12 @@
                 </VueMultiselect>
             </neu-col>
             <neu-col xxl="2" xl="3" lg="12" md="2" sm="6" cols="12">
-                <VueMultiselect ref="ddlScheduleBlocks" v-model="selectedSkills"
-                        :options="skills"
+                <VueMultiselect ref="ddlScheduleBlocks" v-model="selectedScheduleBlock"
+                        :options="scheduleBlocks"
                         :multiple="true"
                         :searchable="true"
                         :close-on-select="true"
-                        @update:modelValue="onSkillSelect"
+                        @update:modelValue="onScheduleBlockSelect"
                         placeholder="Select Schedule Blocks"
                         label="description"
                         track-by="description">
@@ -42,8 +42,8 @@
             </neu-col>
             <neu-col xxl="2" xl="3" lg="12" md="2" sm="6" cols="12">
                 <neu-select ref="ddlPeriod" interface="popover" :value="selectedScheduleId" @v-neu-change="onScheduleChange">
-                    <neu-option ref="ddlPeriodOption" v-for="schedule in userSchedules" :key="schedule.id" :value="schedule.id">
-                        {{getSchedulePeriod(userSchedules.indexOf(schedule))}}
+                    <neu-option ref="ddlPeriodOption" v-for="schedule in userSchedulesData" :key="schedule.scheduleId" :value="schedule.scheduleId">
+                        {{getSchedulePeriod(userSchedulesData.indexOf(schedule))}}
                     </neu-option>
                 </neu-select>
             </neu-col>
@@ -103,7 +103,7 @@
                         {{ ds.lastName }},  {{ ds.firstName }}
                     </td>
                     <td class="neu-table__row-comfy neu-input__label td_column2" v-bind:class="{ 'hideSkillCol': columnToggle }">
-                        {{ !columnToggle ? ds.skill: '' }}
+                        {{ !columnToggle ? getCommmaSepSkills(ds.skills) : '' }}
                     </td>
                     <td v-for="day in days" :key="days.indexOf(day)+'_row'" class="neu-table__row-comfy neu-input__label"
                     v-bind:class="applyCSS(day,ds)"
@@ -112,7 +112,11 @@
                     </td>
                 </tr>
             </table>
-        </div>
+            <div class="col-sm-12 neu-margin--top-20 neu-text--caption neu-text--align-center mTop0">
+                <span class="neu-text--bold">Important Note </span>: Shift assignments display on the date of the shift's actual start time.
+            </div>
+    </div>
+    
 </template>
 
 <script lang="ts">
@@ -125,8 +129,10 @@
     import { Multiselect } from 'vue-multiselect';
     import { useAppInsights } from '../../store/modules/AppInsights'
     import {
-        NeuIcon
+        NeuIcon,NeuSelect,NeuOption,NeuRow,NeuCol,NeuDivider
     } from '@neutron/vue'
+    import { Staff } from '@/models/staff.model';
+    import { ScheduleBlocks } from '@/models/schedule-blocks.model';
 
     class Props{
         readonly currentScheduleId!: string;
@@ -134,23 +140,23 @@
     @Options({
         components: { 
             VueMultiselect : Multiselect,NeuIcon
-            //NeuSelect,NeuOption,NeuRow,NeuCol,NeuDivider
+            //,NeuSelect,NeuOption,NeuRow,NeuCol,NeuDivider
          },
          computed: {
                 ...mapState('profile', ['profileData','appInsightEventData']),
-                ...mapState('schedule', ['departmentSchedules','userSchedules'])
+                ...mapState('schedule', ['departmentSchedules'])
             },
     })
     export default class DepartmentView extends Vue.with(Props) {
 
         public profileData!: any;
-        public departmentSchedules!: DepartmentStaff[];
-        public userSchedules!: any;
+        public departmentSchedules!: DepartmentStaff;
         appInsightEventData!: any;
 
+        public userSchedulesData: any;
         days: Date[] = [];
-        sortedDSList: DepartmentStaff[] = [];
-        sortedDSListforSkills: DepartmentStaff[] = [];
+        sortedDSList: Staff[] = [];
+        sortedDSListforSkills: Staff[] = [];
         sortOrder: string = 'asc';
         sortArrow: string = 'arrow_upward';
         facilities: any = [];
@@ -159,6 +165,8 @@
         selectedDeptId: number = 0;
         skills: any = [];
         selectedSkillId: number = 0;
+        scheduleBlocks: ScheduleBlocks[] = [];
+        selectedScheduleBlock: string = "";
         facilityName: string = '';
         departmentName: string = '';
         skillName!: string;
@@ -178,62 +186,33 @@
             if(this.profileData?.first == "" || this.profileData?.first == null || this.profileData?.first == undefined)
             {
                 await this.$store.dispatch('profile/getProfileDetails','');
-                await this.getFiltersData();
-                await this.showScheduleDays();
-                await this.getDepartmentSchedule();
-                localStorage.setItem("visitedDepartmentView", "true");
-                useAppInsights().trackEvent({name:'ViewDepartment',properties: 
-                JSON.parse(JSON.stringify(this.appInsightEventData))}); 
-            } else{
-                await this.getFiltersData();
-                await this.showScheduleDays();
-                await this.getDepartmentSchedule();
-                localStorage.setItem("visitedDepartmentView", "true");
-                useAppInsights().trackEvent({name:'ViewDepartment',properties: 
-                JSON.parse(JSON.stringify(this.appInsightEventData))});
-            }            
+            } 
+            await this.getFiltersData();
+            await this.showScheduleDays();
+            await this.getDepartmentSchedule();
+            localStorage.setItem("visitedDepartmentView", "true");
+            useAppInsights().trackEvent({name:'ViewDepartment',properties: 
+            JSON.parse(JSON.stringify(this.appInsightEventData))});           
         }
 
         async getFiltersData() {
             if (this.profileData != null && this.profileData?.username != null) {
-                var objPrimaryFacilityDepartment = {
-                    facilityId: this.profileData.facilityId,
-                    coid: this.profileData.coid,
-                    facilityName: this.profileData.facilityName,
-                    deptId: this.profileData.deptId,
-                    deptCode: this.profileData.deptCode,
-                    deptName: this.profileData.deptName,
-                    effective: "",
-                    expires: ""
-                }
-                const deptIndex = this.profileData?.secondaryDepartments?.findIndex((x:any) => x.deptId == objPrimaryFacilityDepartment.deptId);
-                if (deptIndex > -1) {
-                    this.profileData?.secondaryDepartments?.splice(deptIndex, 1);
-                }
-                this.profileData?.secondaryDepartments?.push(objPrimaryFacilityDepartment);
-
-                this.facilities = this.removeDuplicatesFromArrayByProperty(this.profileData.secondaryDepartments, 'facilityId');                
+                this.facilities = this.removeDuplicatesFromArrayByProperty(this.profileData.schedules, 'facilityId');                
                 this.selectedFacilityId = (localStorage.getItem("selFacId") == null ? this.profileData.facilityId : Number(localStorage.getItem("selFacId")));               
-                this.facilityDepts = this.profileData?.secondaryDepartments?.filter((x:any) => x.facilityId == this.selectedFacilityId);
-                this.selectedDeptId = (localStorage.getItem("selDepId") == null ? this.profileData.deptId : Number(localStorage.getItem("selDepId")));               
+                this.facilityDepts = this.profileData?.schedules?.filter((x:any) => x.facilityId == this.selectedFacilityId);
+                this.facilityDepts = this.removeDuplicatesFromArrayByProperty(this.facilityDepts, 'departmentId');
+                this.selectedDeptId = (localStorage.getItem("selDepId") == null ? this.profileData.departmentId : Number(localStorage.getItem("selDepId")));               
 
-                if (this.userSchedules?.length  == 0 || this.userSchedules == undefined) {
-                    var payload = {
-                        username: this.profileData.username,
-                        index: this.currentShceduleIndex,
-                    };
-
-                    await this.$store.dispatch("schedule/getAllUserSchedules", payload);
-                }
-
-                if (this.userSchedules != undefined) {
-                    this.selectedScheduleId = this.userSchedules[this.currentShceduleIndex]?.id;
-                    let Schedule = this.userSchedules.filter((x:any)=> x.id == this.selectedScheduleId)[0]
-                    this.selectedScheduleName = this.getSchedulePeriod(this.userSchedules.indexOf(Schedule));
+                //var schData = this.profileData?.schedules;
+                this.userSchedulesData = this.profileData?.schedules;
+                if (this.userSchedulesData != undefined) {
+                    this.selectedScheduleId = this.userSchedulesData[this.currentShceduleIndex]?.scheduleId;
+                    let Schedule = this.userSchedulesData.filter((x:any)=> x.scheduleId == this.selectedScheduleId)[0]
+                    this.selectedScheduleName = this.getSchedulePeriod(this.userSchedulesData.indexOf(Schedule));
                 }
 
                 this.selectedFacilityName =  this.facilities?.filter((x:any)=> x.facilityId == this.selectedFacilityId)[0]?.facilityName;
-                this.selectedDeptName = this.facilityDepts?.filter((y:any)=> y.deptId == this.selectedDeptId)[0]?.deptName;
+                this.selectedDeptName = this.facilityDepts?.filter((y:any)=> y.departmentId == this.selectedDeptId)[0]?.departmentName;
             }
         }
 
@@ -255,34 +234,40 @@
         }, [])
 
         async getDepartmentSchedule() {
-            if(this.userSchedules != undefined && this.userSchedules != null){
+            if(this.userSchedulesData != undefined && this.userSchedulesData != null){
                 var payload = {
-                    startDate: this.userSchedules[this.currentShceduleIndex]?.startDate,
-                    endDate: this.userSchedules[this.currentShceduleIndex]?.endDate,
                     deptId: this.selectedDeptId,
-                    username: this.profileData.username,
+                    scheduleId: this.selectedScheduleId,
                 };
 
-                    if(this.selectedDeptId > 0)
-                    {
-                    await this.$store
-                    .dispatch("schedule/getDepartmentSchedule", payload)
-                    .then((res: any) => {
-                        this.skills = this.removeDuplicatesSkillsFromArrayByProperty(this.departmentSchedules, 'skill');
-                        this.selectedSkills = localStorage.getItem("selSkills") == null ? this.skills?.filter((x:any) => x.skill == "All") : JSON.parse(localStorage.getItem("selSkills") as any);
-                        this.sortedDSList = this.departmentSchedules;
-                        this.sortedDSListforSkills = this.departmentSchedules;
-                        this.getLastUpdatedDate();
-                        this.getSortedDSData('');
-                        this.sortDSListForFilteredSkills('');
-                        this.selectedSkillList = Array.prototype.map.call(this.selectedSkills, function(item) { return item.description; }).join(",");
-                    })
-                    .catch((err: any) => {
-                        if (err) {
-                            console.log(err); // Handle errors any way you want
-                        }
+                if(this.selectedDeptId > 0)
+                {
+                await this.$store
+                .dispatch("schedule/getDepartmentSchedule", payload)
+                .then((res: any) => {
+                    this.getLastUpdatedDate();
+                    let result = this.departmentSchedules?.staff?.map((a:any) => a.skills);
+                    result.forEach((obj:any) => {
+                        Object.entries(obj).forEach(([key, value]) => {   
+                            this.skills.push({"description": value, "skill": value });
+                        }); 
                     });
+                    this.scheduleBlocks = this.departmentSchedules?.scheduleBlocks;
+                    this.skills = this.removeDuplicatesSkillsFromArrayByProperty(this.skills, 'skill');
+                    this.selectedSkills = localStorage.getItem("selSkills") == null ? this.skills?.filter((x:any) => x.skill == "All") : JSON.parse(localStorage.getItem("selSkills") as any);
+                    this.selectedScheduleBlock = this.skills?.filter((x:any) => x.skill == "All");
+                    this.selectedSkillList = Array.prototype.map.call(this.selectedSkills, function(item) { return item.description; }).join(",");
+                    this.sortedDSList = this.departmentSchedules?.staff;
+                    this.sortedDSListforSkills = this.departmentSchedules?.staff;                    
+                    this.getSortedDSData('');
+                    this.sortDSListForFilteredSkills('');                    
+                })
+                .catch((err: any) => {
+                    if (err) {
+                        console.log(err); // Handle errors any way you want
                     }
+                });
+                }
             }
         }
 
@@ -295,9 +280,9 @@
 
         async showScheduleDays() {
             this.days = [];
-            if(this.userSchedules != undefined && this.userSchedules != null){
-                var date1 = new Date(this.userSchedules[this.currentShceduleIndex]?.startDate);
-                var daysInSchedule = this.profileData.weeksInSchedule * 7;
+            if(this.userSchedulesData != undefined && this.userSchedulesData != null){
+                var date1 = new Date(this.userSchedulesData[this.currentShceduleIndex]?.start);
+                var daysInSchedule = this.profileData?.weeksInSchedule * 7;
                 for (var i = 0; i < daysInSchedule; i++) {
                     var d = new Date(date1);
                     d.setDate(date1.getDate() + i);
@@ -310,17 +295,17 @@
             if (flag == 'clicked') {
                 this.sortArrow = (this.sortOrder == 'asc' ? 'arrow_downward' : 'arrow_upward');
                 this.sortOrder = (this.sortOrder == 'asc' ? 'desc' : 'asc');
-                this.sortedDSList = this.sortedDSList.slice().sort((a, b) => (a.lastName as any) > (b.lastName as any) ? (this.sortOrder == 'asc' ? 1 : -1) : ((a.lastName as any) < (b.lastName as any) ? (this.sortOrder == 'asc' ? -1 : 1) : 0));
+                this.sortedDSList = this.sortedDSList?.slice().sort((a: any, b: any) => (a.lastName as any) > (b.lastName as any) ? (this.sortOrder == 'asc' ? 1 : -1) : ((a.lastName as any) < (b.lastName as any) ? (this.sortOrder == 'asc' ? -1 : 1) : 0));
             }
             else {
                 this.sortOrder = 'asc';
                 this.sortArrow = 'arrow_upward';
-                this.sortedDSList = this.sortedDSList.slice().sort((a, b) => (a.lastName as any) > (b.lastName as any) ? 1 : -1);
+                this.sortedDSList = this.sortedDSList?.slice().sort((a: any , b: any) => (a.lastName as any) > (b.lastName as any) ? 1 : -1);
             }
 
-            var loggedInStaff = this.sortedDSList?.find(x => x.staffId == this.profileData.staffId);
+            var loggedInStaff = this.sortedDSList?.find((x: any) => x.staffId == this.profileData.staffId);
             if (loggedInStaff != undefined) {
-                var loggedInStaffIndex = this.sortedDSList?.findIndex(x => x.staffId == this.profileData.staffId);
+                var loggedInStaffIndex = this.sortedDSList?.findIndex((x: any) => x.staffId == this.profileData.staffId);
                 this.sortedDSList.splice(loggedInStaffIndex, 1);
                 this.sortedDSList.unshift(loggedInStaff);
             }
@@ -340,18 +325,18 @@
             }
             if(ds!=null)
             {               
-                let objDeptStaff = this.sortedDSList.find(x => x.staffId == ds.staffId);
-                let objDeptAssignment = objDeptStaff?.assignments.filter(x => moment(new Date(x.date)).format("MM/DD/yyyy") == moment(new Date(date)).format("MM/DD/yyyy"));
+                let objDeptStaff = this.sortedDSList.find((x: any) => x.staffId == ds.staffId);
+                let objDeptAssignment = objDeptStaff?.assignments.filter((x:any) => moment(new Date(x.start)).format("MM/DD/yyyy") == moment(new Date(date)).format("MM/DD/yyyy"));
                 if (objDeptAssignment != undefined) {
-                    objDeptAssignment?.forEach(shift => {               
-                    if(shift.isOverTime == true)
+                    objDeptAssignment?.forEach((shift:any) => {               
+                    if(shift?.isOverTime == true)
                     {
                         if(getcss == '')
                         getcss = 'overtimeshift_bg_color';
                         else
                         getcss = getcss + " " + 'overtimeshift_bg_color';                        
                     }
-                    if(shift.isChargeShift == true)
+                    if(shift?.isChargeShift == true)
                     {
                         if(getcss == '')
                         getcss = 'boldClass';
@@ -368,13 +353,13 @@
             return moment(date).format("D");
         }
 
-        showCellData(dayValue:any, dsObject:any) {           
+        showCellData(dayValue:any, dsObject:any) { 
             let shiftCode = '';           
-            var objDepartmentStaff = this.sortedDSList.find(x => x.staffId == dsObject.staffId);
-            var objDepartmentAssignment = objDepartmentStaff?.assignments.filter(x => moment(new Date(x.date)).format("MM/DD/yyyy") == moment(new Date(dayValue)).format("MM/DD/yyyy"));
+            var objDepartmentStaff = this.sortedDSList.find((x: any) => x.staffId == dsObject.staffId);
+            var objDepartmentAssignment = objDepartmentStaff?.assignments.filter((x:any) => moment(new Date(x.start)).format("MM/DD/yyyy") == moment(new Date(dayValue)).format("MM/DD/yyyy"));
             if (objDepartmentAssignment != undefined) {
-                objDepartmentAssignment?.forEach(shift => {
-                shiftCode += shift.shiftCode + '\n';               
+                objDepartmentAssignment?.forEach((shift: any) => {
+                    shiftCode += shift?.departmentShiftCode + '\n';               
                 });               
                 return  shiftCode.substring(0, shiftCode.length - 1);
             }
@@ -389,18 +374,18 @@
 
         async onFacilityChange(event:any) {
             this.selectedFacilityId = event.target.value;
-            this.facilityDepts = this.profileData.secondaryDepartments?.filter((x:any) => x.facilityId == event.target.value);
+            this.facilityDepts = this.profileData?.schedules?.filter((x:any) => x.facilityId == event.target.value);
             if (this.selectedFacilityId == this.profileData.facilityId) {
-                this.selectedDeptId = this.profileData.deptId;
+                this.selectedDeptId = this.profileData.departmentId;
             }
             else {
-                this.selectedDeptId = this.facilityDepts != null ? this.facilityDepts[0]?.deptId : 0;
+                this.selectedDeptId = this.facilityDepts != null ? this.facilityDepts[0]?.departmentId : 0;
             }
             localStorage.setItem("selFacId", this.selectedFacilityId?.toString());
             localStorage.setItem("selDepId", this.selectedDeptId?.toString());
             localStorage.removeItem("selSkills");
             this.selectedFacilityName =  this.facilities?.filter((x:any)=> x.facilityId == this.selectedFacilityId)[0]?.facilityName;
-            this.selectedDeptName = this.facilityDepts?.filter((y:any)=> y.deptId == this.selectedDeptId)[0]?.deptName;
+            this.selectedDeptName = this.facilityDepts?.filter((y:any)=> y.departmentId == this.selectedDeptId)[0]?.departmentName;
             await this.getDepartmentSchedule();
         }
 
@@ -408,7 +393,7 @@
             this.selectedDeptId = event.target.value;
             localStorage.setItem("selDepId", this.selectedDeptId?.toString());
             localStorage.removeItem("selSkills");
-            this.selectedDeptName = this.facilityDepts?.filter((y:any)=> y.deptId == this.selectedDeptId)[0]?.deptName;
+            this.selectedDeptName = this.facilityDepts?.filter((y:any)=> y.departmentId == this.selectedDeptId)[0]?.departmentName;
             await this.getDepartmentSchedule();
         }
 
@@ -416,11 +401,11 @@
             this.selectedSkills = lastSelectItem?.skill == "All" ? items.filter((x:any) => x.skill == "All") : items.filter((x:any) => x.skill != "All");
             this.lastSelectedSkills = lastSelectItem;
 
-            this.sortedDSListforSkills = this.sortedDSListforSkills.slice().sort((a, b) => (a.lastName as any) > (b.lastName as any) ? 1 : -1);
+            this.sortedDSListforSkills = this.sortedDSListforSkills.slice().sort((a: any , b: any) => (a.lastName as any) > (b.lastName as any) ? 1 : -1);
 
-            var loggedInStaff = this.sortedDSListforSkills?.find(x => x.staffId == this.profileData?.staffId);
+            var loggedInStaff = this.sortedDSListforSkills?.find((x: any) => x.staffId == this.profileData?.staffId);
             if (loggedInStaff != undefined) {
-                var loggedInStaffIndex = this.sortedDSListforSkills?.findIndex(x => x.staffId == this.profileData?.staffId);
+                var loggedInStaffIndex = this.sortedDSListforSkills?.findIndex((x: any) => x.staffId == this.profileData?.staffId);
                 this.sortedDSListforSkills.splice(loggedInStaffIndex, 1);
                 this.sortedDSListforSkills.unshift(loggedInStaff);
             }
@@ -430,21 +415,25 @@
             this.sortDSListForFilteredSkills("skill"); 
         }
 
+        onScheduleBlockSelect(items:any, lastSelectItem:any) {
+            this.selectedScheduleBlock = lastSelectItem?.description == "All" ? items.filter((x:any) => x.description == "All") : items.filter((x:any) => x.description != "All");
+        }
+
         sortDSListForFilteredSkills(flag:string) {
             if (this.selectedSkills?.length > 0 && this.selectedSkills?.find((x:any) => x.skill == "All") == undefined) {
                 var finalArray:any = [];
                 for (var i = 0; i < this.selectedSkills.length; i++) {
-                    var searchedArray = this.sortedDSListforSkills?.filter(x => x.skill == this.selectedSkills[i].description);
+                    var searchedArray = this.sortedDSListforSkills?.filter((x: any) => x.skill == this.selectedSkills[i].description);
                     if (searchedArray.length > 0) {
                         Array.prototype.push.apply(finalArray, searchedArray);
                     }
                 }
                 this.sortedDSList = finalArray;
-                this.sortedDSList = this.sortedDSList.slice().sort((a, b) => (a.lastName as any) > (b.lastName as any) ? 1 : -1);
+                this.sortedDSList = this.sortedDSList.slice().sort((a: any, b: any) => (a.lastName as any) > (b.lastName as any) ? 1 : -1);
 
-                var loggedInStaff1 = this.sortedDSList?.find(x => x.staffId == this.profileData.staffId);
+                var loggedInStaff1 = this.sortedDSList?.find((x: any) => x.staffId == this.profileData.staffId);
                 if (loggedInStaff1 != undefined) {
-                    var loggedInStaffIndex1 = this.sortedDSList?.findIndex(x => x.staffId == this.profileData.staffId);
+                    var loggedInStaffIndex1 = this.sortedDSList?.findIndex((x: any) => x.staffId == this.profileData.staffId);
                     this.sortedDSList.splice(loggedInStaffIndex1, 1);
                     this.sortedDSList.unshift(loggedInStaff1);
                 }
@@ -461,22 +450,32 @@
         }
 
         getSchedulePeriod(indexVal:number) {
-            var scheduleDate = (
-                moment(this.userSchedules[indexVal]?.startDate).format("ll") +
+            var scheduleDate = "";
+            if(this.userSchedulesData != undefined && this.userSchedulesData.length != 0) {
+                scheduleDate = (
+                moment(this.userSchedulesData[indexVal]?.start).format("ll") +
                 " - " +
-                moment(this.userSchedules[indexVal]?.endDate).format("ll"));
+                moment(this.userSchedulesData[indexVal]?.end).format("ll"));
+            }
             return scheduleDate;
         }
 
         async onScheduleChange(value:any) {
             this.selectedScheduleId = value.target.value;
-            var schedule = this.userSchedules?.find((x:any) => x.id == value.target.value);
-            this.currentShceduleIndex = this.userSchedules?.indexOf(schedule);
+            var schedule = this.userSchedulesData?.find((x:any) => x.scheduleId == value.target.value);
+            this.currentShceduleIndex = this.userSchedulesData?.indexOf(schedule);
             localStorage.setItem("sIndex", this.currentShceduleIndex?.toString());
-            let Schedule = this.userSchedules?.filter((x:any)=> x.id == this.selectedScheduleId)[0];
-            this.selectedScheduleName = this.getSchedulePeriod(this.userSchedules?.indexOf(Schedule));
+            let Schedule = this.userSchedulesData?.filter((x:any)=> x.scheduleId == this.selectedScheduleId)[0];
+            this.selectedScheduleName = this.getSchedulePeriod(this.userSchedulesData?.indexOf(Schedule));
             this.showScheduleDays();
             await this.getDepartmentSchedule();
+        }
+
+        getCommmaSepSkills(skills: any){
+            if(skills != null && skills.length != 0)
+                return skills.join(', ');  
+            else
+                return "";
         }
 
         hideColumns(){
@@ -502,7 +501,7 @@
     {
         .deptTableContainer{
             overflow:auto !important;
-            height:410px;
+            height:480px;
         }
 
         .deptTable{
@@ -720,6 +719,12 @@
                 padding-bottom: 5px;
             }
 
+        }
+        @media (min-width: 576px){
+            .col-sm-12 {
+                /* flex: 0 0 100%; */
+                max-width: 100%;
+            }
         }
     }
     @media print{

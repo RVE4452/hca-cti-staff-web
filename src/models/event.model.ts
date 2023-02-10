@@ -4,7 +4,6 @@ export interface Event {
      type: string;
      status: string;
      description: string;
-     changed: boolean;
      isWeekend: boolean;
      assignmentId: number;
      needId: string;
