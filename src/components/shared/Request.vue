@@ -384,7 +384,7 @@
             };  
 
             this.$store
-                .dispatch("schedule/GetRequestDetails", payload)
+                .dispatch("Requests/NonProductive", payload)
                 .then((res: any) => {
                     if (this.requestDetail != undefined) {
                         this.data.shift = this.requestDetail.departmentShiftId;
