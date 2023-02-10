@@ -9,7 +9,7 @@
           <ErrorNotification  :errorMsg="errorMsg" :errorType="errorType" />
           </div>       
         <div class="col-12">
-          <neu-label content="Facility" position="fixed" >
+          <neu-label position="fixed" >Facility
           </neu-label>
           <neu-input 
             type="text"
@@ -20,7 +20,7 @@
           />
         </div>
         <div class="col-12 neu-margin--top-20">
-          <neu-label for="txtDepartment"  content="Department" position="fixed" ></neu-label>
+          <neu-label for="txtDepartment"  position="fixed" >Department</neu-label>
           <neu-input
             type="text"
             name="Department"
@@ -31,7 +31,7 @@
           />
         </div>
         <div class="col-12 neu-margin--top-20">
-          <neu-label for="txtSkill" content="Skill" position="fixed"></neu-label>
+          <neu-label for="txtSkill" position="fixed">Skill</neu-label>
           <neu-input
             type="text"
             name="Skill"
@@ -42,7 +42,7 @@
           />
         </div>
         <div class="col-12 neu-margin--top-20">
-          <neu-label for="txtShift" content="Shift" position="fixed"></neu-label>
+          <neu-label for="txtShift" position="fixed">Shift</neu-label>
           <neu-input
             type="text"
             name="Shift"
