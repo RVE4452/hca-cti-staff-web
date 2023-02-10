@@ -31,7 +31,7 @@
                                  'pa2 custom-border pointer' ,
                                  {
                                  'neu-background--cerulean-25' :
-                                 data.selectedDate.indexOf(dates)>
+                                 selectedDate.indexOf(dates)>
                                 -1,
                                 },
                                 ]"
@@ -49,7 +49,7 @@
                         <div class="col-12">
                             <label for="approval_code" class="neu-input__label">Select Shift</label>
                             <template v-if="!additionalRequestEvent">
-                                <model-list-select :list="data.availableShifts"
+                                <!-- <model-list-select :list="availableShifts"
                                                 name="ddlShift"
                                                    v-bind:class="[
                   'dropdown dropdown-input',
@@ -57,14 +57,30 @@
                 ]"
                                                    :isDisabled="widthdrawMode(additionalRequestEvent)"
                                                    @input="shiftChange(additionalRequestEvent)"
-                                                   v-model="data.shift"
+                                                   v-model="shift"
                                                    option-value="id"
                                                    option-text="name"
                                                    placeholder="select item">
-                                </model-list-select>
+                                </model-list-select> -->
+                                <neu-select ref="RVE4452_32493_UI_Testing_Staff_Non-Productive_Request_Panel_Tab" interface="popover" name="ddlShift" v-model="shift"
+                                    @v-neu-change="shiftChange(additionalRequestEvent)">
+
+                                    <neu-option ref="ddlShiftOptions" v-for="shift in departmentShift" :value="shift.departmentId"
+                                        :key="shift.departmentId">
+                                        {{ shift.departmentName }}
+                                    </neu-option>
+                                </neu-select>
                             </template>
                             <template v-if="additionalRequestEvent">
-                                <model-list-select :list="data.availableShifts"
+                                <neu-select ref="RVE4452_32493_UI_Testing_Staff_Non-Productive_Request_Panel_Tab" interface="popover" name="ddlShift" v-model="defaultShift"
+                                    @v-neu-change="shiftChange(additionalRequestEvent)">
+
+                                    <neu-option ref="ddlShiftOptions" v-for="shift in departmentShift" :value="shift.departmentId"
+                                        :key="shift.departmentId">
+                                        {{ shift.departmentName }}
+                                    </neu-option>
+                                </neu-select>
+                                <!-- <model-list-select :list="availableShifts"
                                                 name="ddlShift"
                                                    v-bind:class="[
                   'dropdown dropdown-input',
@@ -72,11 +88,11 @@
                 ]"
                                                    :isDisabled="widthdrawMode(additionalRequestEvent)"
                                                    @input="shiftChange(additionalRequestEvent)"
-                                                   v-model="data.defaultShift"
+                                                   v-model="defaultShift"
                                                    option-value="id"
                                                    option-text="name"
                                                    placeholder="select item">
-                                </model-list-select>
+                                </model-list-select> -->
                             </template>
                         </div>
                     </div>
@@ -89,7 +105,7 @@
                                         <template v-if="!additionalRequestEvent">
                                             <input :disabled="getDisableDuration(additionalRequestEvent)"
                                                    name="txtStartTime"
-                                                   v-model="data.startTime"
+                                                   v-model="startTime"
                                                    v-bind:class="[
                         'neu-input__text-field',
                         {
@@ -101,7 +117,7 @@
                                         <template v-if="additionalRequestEvent">
                                             <input :disabled="getDisableDuration(additionalRequestEvent)"
                                                    name="txtStartTime"
-                                                   v-model="data.defaultStartTime"
+                                                   v-model="defaultStartTime"
                                                    v-bind:class="[
                         'neu-input__text-field',
                         {
@@ -114,7 +130,7 @@
                                     <div class="col-6">
                                         <label for="partof_day" class="neu-input__label">Duration</label>
                                         <template v-if="!additionalRequestEvent">
-                                            <model-list-select :list="data.durationList"
+                                            <model-list-select :list="durationList"
                                                             name="ddlDuration"
                                                                v-bind:class="[
                         'neu-input__text-field',
@@ -123,14 +139,14 @@
                         },
                       ]"
                                                                :isDisabled="getDisableDuration(additionalRequestEvent)"
-                                                               v-model="data.duration"
+                                                               v-model="duration"
                                                                option-value="value"
                                                                option-text="label"
                                                                placeholder="select item">
                                             </model-list-select>
                                         </template>
                                         <template v-if="additionalRequestEvent">
-                                            <model-list-select :list="data.durationList"
+                                            <model-list-select :list="durationList"
                                                             name="ddlDuration"
                                                                v-bind:class="[
                         'neu-input__text-field',
@@ -139,7 +155,7 @@
                         },
                       ]"
                                                                :isDisabled="getDisableDuration(additionalRequestEvent)"
-                                                               v-model="data.defaultDuration"
+                                                               v-model="defaultDuration"
                                                                option-value="value"
                                                                option-text="label"
                                                                placeholder="select item">
@@ -162,11 +178,11 @@
                                         ]"
                                     :disabled="widthdrawMode(additionalRequestEvent)"
                                     :maxlength="maxCommentsCharacters"
-                                    v-model="data.comment"
+                                    v-model="comment"
                                     name="Comment"
                                 ></textarea>
                                 <br>
-                                <span class="commentCharacterCountText">Remaining {{ maxCommentsCharacters - (data.comment!= undefined ? data.comment.length: 0) }}  characters.</span>
+                                <span class="commentCharacterCountText">Remaining {{ maxCommentsCharacters - (comment!= undefined ? comment.length: 0) }}  characters.</span>
                             </template>
                             <template v-if="additionalRequestEvent">
                                  <textarea
@@ -176,11 +192,11 @@
                                         ]"
                                     :disabled="widthdrawMode(additionalRequestEvent)"
                                     :maxlength="maxCommentsCharacters"
-                                    v-model="data.defaultComment"
+                                    v-model="defaultComment"
                                     name="Comment"
                                 ></textarea>
                                 <br>
-                                <span class="commentCharacterCountText">Remaining {{ maxCommentsCharacters - (data.defaultComment!= undefined ? data.defaultComment.length: 0) }}  characters.</span>
+                                <span class="commentCharacterCountText">Remaining {{ maxCommentsCharacters - (defaultComment!= undefined ? defaultComment.length: 0) }}  characters.</span>
                             </template>
                         </div>
                     </div>
@@ -191,7 +207,7 @@
             <div class="row">
                 <div class="col-12">
                     <button @click="FireAction(additionalRequestEvent)"
-                            v-bind:name="'btn' + (currentEvent.type == 'Request' && additionalRequestEvent == false ? 'Withdraw' : 'AddToSchedule')"
+                            v-bind:name="'btn' + (currentEvent?.type == 'Request' && additionalRequestEvent == false ? 'Withdraw' : 'AddToSchedule')"
                             data-test="fire-action"
                             :class="[
               'd-block mb4 mt4 neu-button w-100 neu-text--white',
@@ -200,7 +216,7 @@
                 : 'neu-background--denim'
             ]"
                             :disabled="(disableSubmit(additionalRequestEvent) || isImpersonating)">
-                        {{currentEvent.type == "Request" && additionalRequestEvent == false ? "Withdraw" : "Add to Schedule"}}
+                        {{currentEvent?.type == "Request" && additionalRequestEvent == false ? "Withdraw" : "Add to Schedule"}}
                     </button>
                 </div>
             </div>
@@ -221,8 +237,8 @@
     import { mapState } from "vuex";
     import ErrorNotification from "./ErrorNotification.vue";
     import ConfirmMsgPopUp from "@/components/shared/ConfirmMsgPopUp.vue";
-    //import { ModelListSelect } from 'vue-search-select'
-    //import Loading from 'vue-loading-overlay';
+    // import { ModelListSelect } from 'vue-search-select'
+    // import Loading from 'vue-loading-overlay';
     import 'vue-loading-overlay/dist/vue-loading.css';
     import { useAppInsights } from '../../store/modules/AppInsights'
     
@@ -239,13 +255,12 @@
             },
         components: {
             ErrorNotification,
-            //ModelListSelect,
-            //Loading,
+            // ModelListSelect,
+            // Loading,
             ConfirmMsgPopUp
         },
     })
-    export default class Request extends Vue.with(Props) {
-       
+    export default class Request extends Vue {       
         public requestDetail!: any;
         public data!: any;
         availiableDates: string[] = [];
@@ -267,26 +282,40 @@
         public userSchedules!: any;
         isImpersonating!: boolean;
         appInsightEventData!: any;
+        startTime: string = "";
+        defaultStartTime: string = "";
+        duration: string = "";
+        defaultDuration: string = "";
+        shift: string = "";
+        defaultShift: string = "";
+        minutes:  string = "";
+        hours: number = 0;
+        startDateTime: string ="";
+        durationList = [];
+        availableShifts=[];
+        comment: string = "";
+        defaultComment:string = ""
+        
 
-        constructor() {
-            super();
-            this.data = {
-                selectedDate: [],
-                startTime: "",
-                defaultStartTime: "",
-                duration: "",
-                defaultDuration: "",
-                shift: "",
-                defaultShift: "",
-                minutes: "",
-                hours: 0,
-                startDateTime: "",
-                durationList: [],
-                availableShifts: [],
-                comment: "",
-                defaultComment: "",
-            };
-        }
+        // constructor() {
+        //     super();
+        //     this.data = {
+        //         selectedDate: [],
+        //         startTime: "",
+        //         defaultStartTime: "",
+        //         duration: "",
+        //         defaultDuration: "",
+        //         shift: "",
+        //         defaultShift: "",
+        //         minutes: "",
+        //         hours: 0,
+        //         startDateTime: "",
+        //         durationList: [],
+        //         availableShifts: [],
+        //         comment: "",
+        //         defaultComment: "",
+        //     };
+        // }
 
         async mounted(): Promise<void> {
             await this.loadData();
@@ -296,17 +325,17 @@
             try {
                 this.generateTimeList(this.maxTimeDuration);
                 this.buttonCaption =
-                    this.currentEvent.type == "Request" ? "Withdraw" : "Add to Schedule";
+                    this.currentEvent?.type == "Request" ? "Withdraw" : "Add to Schedule";
                 await this.getSelectedDates();
-                if (this.currentEvent.type == "Request") {
+                if (this.currentEvent?.type == "Request") {
                     this.getRequestEvent();
                     this.disableduration = false;
                 }
-                this.data.defaultStartTime = "";
-                this.data.defaultDuration = "";
-                this.data.defaultShift = "";
-                this.data.availableShifts = [];
-                this.data.defaultComment = "";
+                this.defaultStartTime = "";
+                this.defaultDuration = "";
+                this.defaultShift = "";
+                this.departmentShift = [];
+                this.defaultComment = "";
 
                 for (var i = 0; i < this.profileData.departmentShifts.length; i++)
                 {
@@ -318,26 +347,26 @@
                     if ((this.profileData.departmentShifts[i].effective === null)
                         && (this.profileData.departmentShifts[i].expires === null))
                     {
-                        this.data.availableShifts.push(this.profileData.departmentShifts[i]);
+                        this.departmentShift.push(this.profileData.departmentShifts[i]);
                     }
                     else if ((this.profileData.departmentShifts[i].effective !== null)
                             && (this.profileData.departmentShifts[i].expires !== null)) 
                     {
                         if((this.profileData.departmentShifts[i].effective <= selectedDate) && (this.profileData.departmentShifts[i].expires >= selectedDate))
                         {
-                            this.data.availableShifts.push(this.profileData.departmentShifts[i]);
+                            this.departmentShift.push(this.profileData.departmentShifts[i]);
                         }
                     }
                     else if (((this.profileData.departmentShifts[i].effective === null)) && (selectedDate <=  moment(this.profileData.departmentShifts[i].expires)))
                     {
                         
-                        this.data.availableShifts.push(this.profileData.departmentShifts[i]);
+                        this.departmentShift.push(this.profileData.departmentShifts[i]);
                         
                     } 
                     else if(((this.profileData.departmentShifts[i].expires === null)) && (selectedDate >= moment(this.profileData.departmentShifts[i].effective)))
                     {
                         
-                        this.data.availableShifts.push(this.profileData.departmentShifts[i]);
+                        this.departmentShift.push(this.profileData.departmentShifts[i]);
                         
                     }
                 }
@@ -354,11 +383,11 @@
                     value: hour + 1,
                 });
             }
-            this.data.durationList = hours;
+            this.durationList = hours;
         }
 
         widthdrawMode(additionalRequestEvent:any): boolean {
-            return Boolean(this.currentEvent.type == "Request" && additionalRequestEvent == false);
+            return Boolean(this.currentEvent?.type == "Request" && additionalRequestEvent == false);
         }
 
         async getSelectedDates(): Promise<void> {
@@ -374,7 +403,7 @@
                 this.availiableDates.push(date);
                 currentDate.setDate(currentDate.getDate() + 1);
             }
-            this.data.selectedDate = JSON.parse(JSON.stringify(this.availiableDates));
+            this.selectedDate = JSON.parse(JSON.stringify(this.availiableDates));
         }
 
         getRequestEvent() {
@@ -384,10 +413,10 @@
             };  
 
             this.$store
-                .dispatch("Requests/NonProductive", payload)
+                .dispatch("schedule/GetRequestDetails", payload)
                 .then((res: any) => {
                     if (this.requestDetail != undefined) {
-                        this.data.shift = this.requestDetail.departmentShiftId;
+                        this.shift = this.requestDetail.departmentShiftId;
                         var requestEventStartDateTime = new Date(
                             this.requestDetail.startTime
                         );
@@ -395,9 +424,9 @@
                             "hh:mm"
                         );
                         var requestHours = this.requestDetail.hours;
-                        this.data.duration = requestHours;
-                        this.data.startTime = requeststartTime;
-                        this.data.comment = this.requestDetail.comment;
+                        this.duration = requestHours;
+                        this.startTime = requeststartTime;
+                        this.comment = this.requestDetail.comment;
                     }
                 })
                 .catch((err: any) => {
@@ -410,7 +439,7 @@
         async FireAction(additionalRequestEvent:any) {
             if (!this.widthdrawMode(additionalRequestEvent)) {
                 //If there is no email address present in profile then doesn't allow them to send Non-productive shift request
-                var selectedShift =  this.data.availableShifts.find((x:any)=> x.id == this.data.shift);           
+                var selectedShift =  this.departmentShift.find((x:any)=> x.id == this.shift);           
                 if(this.profileData.email == null || 
                     this.profileData.email == undefined || this.profileData.email == "")
                 {
@@ -429,34 +458,34 @@
                         this.calSelectedDates.endDate.getTime() -
                         this.calSelectedDates.endDate.getTimezoneOffset() * 60000
                     ).toISOString(),
-                    comment: additionalRequestEvent ? this.data.defaultComment : this.data.comment,
+                    comment: additionalRequestEvent ? this.defaultComment : this.comment,
                     email: this.profileData.email,
                     shifts: [] as any[],
                 };
-                for (var i = 0; i < this.data.selectedDate.length; i++) {
-                    var eventStartDateTime = new Date(this.data.selectedDate[i]);
+                for (var i = 0; i < this.selectedDate.length; i++) {
+                    var eventStartDateTime = new Date(this.selectedDate[i]);
                     if (!additionalRequestEvent) {
                         eventStartDateTime.setHours(
-                            Number(this.data.startTime.split(":")[0]),
-                            Number(this.data.startTime.split(":")[1])
+                            Number(this.startTime.split(":")[0]),
+                            Number(this.startTime.split(":")[1])
                         );
                     }
                     else {
                         eventStartDateTime.setHours(
-                            Number(this.data.defaultStartTime.split(":")[0]),
-                            Number(this.data.defaultStartTime.split(":")[1])
+                            Number(this.defaultStartTime.split(":")[0]),
+                            Number(this.defaultStartTime.split(":")[1])
                         );
                     }
                     eventStartDateTime.setFullYear(
                         this.calSelectedDates.startDate.getFullYear()
                     );
                     let objReq = {
-                        departmentShiftId: additionalRequestEvent ? this.data.defaultShift : this.data.shift,
+                        departmentShiftId: additionalRequestEvent ? this.defaultShift : this.shift,
                         startDateTime: new Date(
                             eventStartDateTime.getTime() -
                             eventStartDateTime.getTimezoneOffset() * 60000
                         ).toISOString(), // Add Time
-                        hours: Number(additionalRequestEvent ? this.data.defaultDuration : this.data.duration), // Add Hours
+                        hours: Number(additionalRequestEvent ? this.defaultDuration : this.duration), // Add Hours
                         minutes: 0,
                     };
 
@@ -512,7 +541,7 @@
         }
 
         selectDates(date: string): void {
-            const selectedDates: any = this.data.selectedDate;
+            const selectedDates: any = this.selectedDate;
             const index = selectedDates.indexOf(date);
             if (index > -1) {
                 selectedDates.splice(index, 1);
@@ -526,10 +555,10 @@
             let defaultStartTime = this.formatTime(this.profileData.partOfDayStartTime).toString();
             
             this.generateTimeList(this.maxTimeDuration);
-            this.data.duration = defaultDuration;
-            this.data.defaultDuration = defaultDuration;
-            this.data.startTime = defaultStartTime;
-            this.data.defaultStartTime = defaultStartTime;
+            this.duration = defaultDuration;
+            this.defaultDuration = defaultDuration;
+            this.startTime = defaultStartTime;
+            this.defaultStartTime = defaultStartTime;
             this.disableduration = true;            
 
             if (this.showErrorMsg) {
@@ -544,13 +573,13 @@
 
         getDisableDuration(additionalRequestEvent:any) {
             var isDisabled = false;
-            if (this.currentEvent.type == "Request" && !additionalRequestEvent) {
+            if (this.currentEvent?.type == "Request" && !additionalRequestEvent) {
                 isDisabled = false;
             }
-            else if (this.currentEvent.type == "Request" && additionalRequestEvent) {
+            else if (this.currentEvent?.type == "Request" && additionalRequestEvent) {
                 isDisabled = this.disableduration;
             }
-            else if (this.currentEvent.type != "Request") {
+            else if (this.currentEvent?.type != "Request") {
                 isDisabled = this.disableduration;
             }
             return !isDisabled;
@@ -560,23 +589,23 @@
             if (this.isLoading) {
                 returnValue = true;
             }
-            else if (this.currentEvent.type == "Request" && !additionalRequestEvent) {
+            else if (this.currentEvent?.type == "Request" && !additionalRequestEvent) {
                 returnValue = false;
             }
-            else if (this.currentEvent.type == "Request" && additionalRequestEvent) {
+            else if (this.currentEvent?.type == "Request" && additionalRequestEvent) {
                 returnValue = Boolean(
-                    this.data.defaultShift &&
-                    this.data.defaultStartTime &&
-                    this.data.defaultDuration &&
-                    this.data.selectedDate.length > 0
+                    this.defaultShift &&
+                    this.defaultStartTime &&
+                    this.defaultDuration &&
+                    this.selectedDate.length > 0
                 ) != true;
             }
             else {
                 returnValue = Boolean(
-                    this.data.shift &&
-                    this.data.startTime &&
-                    this.data.duration &&
-                    this.data.selectedDate.length > 0
+                    this.shift &&
+                    this.startTime &&
+                    this.duration &&
+                    this.selectedDate.length > 0
                 ) != true;
             }
             return returnValue;
@@ -651,7 +680,7 @@
                         (event: Event) =>
                             new Date(event.date) >= weekStartDate &&
                             new Date(event.date) <= weekEndDate && event.isCommitment == true &&
-                            (event.type == "Pending" || event.type == "Assignment" || event.type == "Request")
+                            (event?.type == "Pending" || event?.type == "Assignment" || event?.type == "Request")
                     );
 
                     weekEvents.forEach((event: Event) => {
@@ -671,7 +700,7 @@
                             (event: Event) =>
                                 new Date(event.date) >= new Date(currsched.startDate) &&
                                 new Date(event.date) <= new Date(currsched.endDate) &&
-                                (event.type == "Pending" || event.type == "Assignment" || event.type == "Request") &&
+                                (event?.type == "Pending" || event?.type == "Assignment" || event?.type == "Request") &&
                                 event.isWeekend
                         );
 

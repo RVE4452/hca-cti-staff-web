@@ -223,7 +223,8 @@ const actions: ActionTree<Schedule, RootState> = {
     },
     
      GetRequestDetails({ commit, rootState }, payload: any) {
-        const api = `${process.env.VUE_APP_APIURL}/Schedules/Requests/${payload.id}/${payload.username}`;
+        // const api = `${process.env.VUE_APP_APIURL}/Schedules/Requests/${payload.id}/${payload.username}`;
+        const api = `${process.env.VUE_APP_APIURL}/Requests/NonProductives`;
 
         return http
             .get(api)

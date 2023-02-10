@@ -62,7 +62,7 @@
                <open-need :currentEvent="currentEvent" @showSuccessMsgPopUp="showSuccessModal" @closeSharedModal="close"></open-need> 
             </div>
             <div v-if="tabCurrent === 'Request'">
-                <h3>Request</h3>
+                <Request />
                 <!-- <Request :key="counter" :currentEvent="currentEvent" :additionalRequestEvent="false" :calSelectedDates="sharedRequest.calSelectedDates" @closeSharedModal="close" @showSuccessMsgPopUp="showSuccessModal" /> -->
             </div>
 
@@ -92,7 +92,7 @@
     // import Request from './Request.vue';
     // import RequestedTrade from "./RequestedTrade.vue";
     import DayPreferenceView from './DayPreference.vue'
-    import OpenNeed from './OpenNeed.vue';
+    // import OpenNeed from './OpenNeed.vue';
     import TradeShift from './TradeShift.vue';
     import Request from './Request.vue';
     
@@ -126,9 +126,9 @@
             // PotentialTrade,
             Detail,
             ShiftMemberDetail,
-            //Request,
+            Request,
             // RequestedTrade,
-            OpenNeed,
+            // OpenNeed,
             TradeShift,
             DayPreferenceView,
             NeuHeader,
