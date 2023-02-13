@@ -25,7 +25,7 @@ interface Schedule {
     openNeedsFacilities: any,
     openNeedsDepartments: any,
     openNeedsShiftDetails: any,
-    departmentSchedules: object[],
+    departmentSchedules: DepartmentStaff[],
     payrollDetails: object[],
     defaultSelfSchedules: any,
     orAssignmentDetail: any
@@ -59,7 +59,7 @@ const mutations: MutationTree<Schedule> = {
     },
 
    
-    setAllMySchedules(state,schedules: any) {
+    setStaffSchedule(state,schedules: any) {
         state.userSchedules = schedules;
         state.isLoading = false;
     },
@@ -194,13 +194,12 @@ const mutations: MutationTree<Schedule> = {
     // ACTIONS
     //actions
 const actions: ActionTree<Schedule, RootState> = {
-    getAllUserSchedules({ commit, rootState },payload: any){
-        const api = `${process.env.VUE_APP_APIURL}/Schedules/${payload.username}?index=${payload.index}`
-
+    getStaffSchedule({ commit, rootState },payload: any){
+        const api = `${process.env.VUE_APP_APIURL}/Staff/${payload.staffId}/Schedule/${payload.scheduleId}`
         return http
             .get(api)
             .then((res: any) => {
-                commit('setAllMySchedules', res.data)
+                commit('setStaffSchedule', res.data)
                 return res
             })
             .catch((err: AxiosError) => {
@@ -210,7 +209,7 @@ const actions: ActionTree<Schedule, RootState> = {
     },
    
      getAssignmentDetail({ commit, rootState }, payload: any) {
-        const api = `${process.env.VUE_APP_APIURL}/Schedules/Assignments/${payload.id}/${payload.username}`
+        const api = `${process.env.VUE_APP_APIURL}/Assignments/${payload.id}`
 
         return http
             .get(api)
@@ -571,7 +570,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      getDepartmentSchedule({ commit, rootState },payload: any){
-        const api = `${process.env.VUE_APP_APIURL}/Schedules/DepartmentSchedules/${payload.deptId}/${payload.startDate}/${payload.endDate}/${payload.username}`;
+        const api = `${process.env.VUE_APP_APIURL}/Departments/${payload.deptId}/Schedules/${payload.scheduleId}`;
 
         return http
             .get(api)

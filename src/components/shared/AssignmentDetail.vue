@@ -9,18 +9,18 @@
           <ErrorNotification  :errorMsg="errorMsg" :errorType="errorType" />
           </div>       
         <div class="col-12">
-          <neu-label content="Facility" position="fixed" >
+          <neu-label position="fixed" >Facility
           </neu-label>
           <neu-input 
             type="text"
             name="Facility"
             id="txtFacility"
-            :value="assignmentDetail.facilityName"
+            :value="currentEvent.facilityName"
             :readonly="enableField.indexOf('facilityName') === -1"            
           />
         </div>
         <div class="col-12 neu-margin--top-20">
-          <neu-label for="txtDepartment"  content="Department" position="fixed" ></neu-label>
+          <neu-label for="txtDepartment"  position="fixed" >Department</neu-label>
           <neu-input
             type="text"
             name="Department"
@@ -31,24 +31,24 @@
           />
         </div>
         <div class="col-12 neu-margin--top-20">
-          <neu-label for="txtSkill" content="Skill" position="fixed"></neu-label>
+          <neu-label for="txtSkill" position="fixed">Skill</neu-label>
           <neu-input
             type="text"
             name="Skill"
             id="txtSkill"
-            v-model="assignmentDetail.skill"
-            :value="assignmentDetail.skill"
+            v-model="currentEvent.skillDescription"
+            :value="currentEvent.skillDescription"
             :readonly="enableField.indexOf('skill') < 0"
           />
         </div>
         <div class="col-12 neu-margin--top-20">
-          <neu-label for="txtShift" content="Shift" position="fixed"></neu-label>
+          <neu-label for="txtShift" position="fixed">Shift</neu-label>
           <neu-input
             type="text"
             name="Shift"
             id="txtShift"
-            v-model="assignmentDetail.shift"
-            :value="assignmentDetail.shift"
+            v-model="currentEvent.departmentShiftDescription"
+            :value="currentEvent.departmentShiftDescription"
             :readonly="enableField.indexOf('shift') < 0"
           />
         </div>
@@ -81,13 +81,13 @@ export default class AssignmentDetail extends Vue.with(Props) {
     public assignmentDetail!: any;
     public profileData!: any;
 
-    isLoaded: boolean = false;
+    isLoaded: boolean = true;
     showErrorMsg: boolean = false;
      errorMsg: string = '';
      errorType: string = 'error';
 
     async mounted() {
-        this.getEventDetail();
+        //this.getEventDetail();
     }
 
     getEventDetail() {
@@ -103,7 +103,7 @@ export default class AssignmentDetail extends Vue.with(Props) {
         });
     }
   get getDept() {
-            return this.assignmentDetail.departmentCode + " (" + this.assignmentDetail.departmentName + ")";
+            return this.currentEvent.departmentCode + " (" + this.currentEvent.departmentName + ")";
         }
   formatDate(date: Date): string {
     return moment(date).format("dddd, MMM DD YYYY");

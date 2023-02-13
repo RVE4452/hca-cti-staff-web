@@ -1,49 +1,34 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import DayPreference from '@/components/shared/DayPreference.vue';
 import Vuex from 'vuex';
-import { departmentSchedules, profileData, userSchedules } from '../../src/mocks/mockSpecData';
+import { staff } from '../../src/mocks/mockSpecData';
 
 const store = new Vuex.Store({
     modules: {
       "profile": {
         namespaced: true,
         state: {
-          profileData: profileData,
+          profileData: staff,
           appInsightEventData: []
         },
         actions: {
           getProfileDetails: jest.fn()
         }
-      },
-      "schedule": {
-        namespaced: true,
-        state: {
-          userSchedules: userSchedules,
-          departmentSchedules: departmentSchedules
-        },
-        actions: {
-          getDepartmentSchedule: jest.fn(),
-          getAllUserSchedules: jest.fn()
-        }
       }
     },
   })
-  let wrapper: any;
-  wrapper = shallowMount (DayPreference, {
+ 
+ const wrapper = shallowMount (DayPreference, {
     store,
     data: () => {
       return {
         appInsightEventData: {},
-        departmentSchedules: [],
-        userSchedules: [],
         profileData: []
       }
     },
     props: {
       appInsightEventData: {},
-      profileData: profileData,
-      departmentSchedules: departmentSchedules,
-      userSchedules: userSchedules
+      profileData: staff
     },
     global: {
       mocks: {
@@ -53,7 +38,7 @@ const store = new Vuex.Store({
 });
 
   describe("Testing on onPreferenceChange", () => {
-    wrapper.vm.profileData = profileData;
+    wrapper.vm.profileData = staff;
     it("check prop values in onPreferenceChange", async ()=> {  
       const value = "Required"
            

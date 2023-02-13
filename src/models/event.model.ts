@@ -1,12 +1,11 @@
 
 export interface Event {
-     id: string;
+     id: number;
      type: string;
      status: string;
      description: string;
-     changed: boolean;
      isWeekend: boolean;
-     assignmentId: string;
+     assignmentId: number;
      needId: string;
      requestId: string;
      requestShiftId: number;

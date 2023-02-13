@@ -1,48 +1,38 @@
-import { shallowMount } from '@vue/test-utils'
-import Detail from './Detail.vue';
-import { createLocalVue } from '@vue/test-utils'
+import { mount, shallowMount } from '@vue/test-utils';
+import Detail from '@/components/shared/AssignmentDetail.vue';
 import Vuex from "vuex";
 
-describe('Describe', () => {
+ describe('Assignment detail page test', () => {
     const mockAssignmentDetail = {
-        actualStartTime: '2021-07-20T16:27:35.299Z',
-        actualEndTime: '2021-07-20T16:27:35.299Z',
+        facilityName: 'TEST',
+        departmentCode: '2023-02-10T16:27:35.299Z',
+        departmentName: 'test dept',
         shiftMembers: []
     };
     const mockState = {
-        assignmentDetail: mockAssignmentDetail
+        currentEvent: mockAssignmentDetail
     }
     const mockAction = {
         'schedule/getAssignmentDetail': jest.fn(),
     }
     
-    const defaultPops =  {
+    const currentEventData =  {
         id: '876545678',
-        date: '2021-07-20T16:27:35.299Z'
+        date: '2023-02-10T16:27:35.299Z'
     }
-    const localVue = createLocalVue()
-    localVue.use(Vuex);
+   
 
-    describe('Template', () => {
-        let wrapper;
+    describe('Template - Test all UI control in template', () => {
+        let wrapper:any;
         beforeEach(() => {
             const copyState = JSON.parse(JSON.stringify(mockState));
-            wrapper = shallowMount(Detail, {
-              localVue,
-              store: new Vuex.Store({
-                  modules: {
-                     schedule: {
-                      namespaced: true,
-                      state: () => (copyState)
-                     }
-                  },
-                actions: {...mockAction}
-              }),
-              propsData: { currentEvent: defaultPops, enableField: [] }
-            });
+            wrapper = shallowMount(Detail, {               
+                data: () => {
+                    return { currentEvent: currentEventData, enableField: [] }}
+              });
           });
-        it('should render 4 field', () => {
-            expect(wrapper.findAll('.neu-input').length).toBe(4)
+   it('should render 4 field', () => {
+            expect(wrapper.findAll('neu-input').length).toBe(4)
         })
         it('should render Facility field', () => {
             expect(wrapper.text().includes('Facility')).toBe(true);
@@ -59,11 +49,10 @@ describe('Describe', () => {
     });
 
     describe('Methods', () => {
-        let wrapper;
+        let wrapper:any;
         beforeEach(() => {
             const copyState = JSON.parse(JSON.stringify(mockState));
-            wrapper = shallowMount(Detail, {
-              localVue,
+            wrapper = mount(Detail, {
               store: new Vuex.Store({
                   modules: {
                      schedule: {
@@ -73,19 +62,20 @@ describe('Describe', () => {
                   },
                 actions: {...mockAction}
               }),
-              propsData: { currentEvent: defaultPops, enableField: [] }
+              data: () => {
+                return { currentEvent: currentEventData, enableField: [] }}
             });
           });
         
-        it('getEventDetail', () => {
+        it('Get shift member details', () => {
             wrapper.vm.getEventDetail = jest.fn().mockImplementation(() => Promise.resolve());
             wrapper.vm.getEventDetail().then(() => {
                 expect(wrapper.vm.isLoaded).toBe(true);
             })
             
         });
-        it('formatDate', () => {
-            expect(wrapper.vm.formatDate('2021-07-20T16:27:35.299Z')).toBe('Tuesday, Jul 20 2021');
+        it('validate date format', () => {
+            expect(wrapper.vm.formatDate('2023-02-10T16:27:35.299Z')).toBe('Friday, Feb 10 2023');
         });
     });
 });
