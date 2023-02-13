@@ -170,17 +170,15 @@
            
 
         created() {
-            //super(props);
-            
-            const sharedRequest = JSON.parse(JSON.stringify(this.sharedRequest));
-            const currentEvent = JSON.parse(JSON.stringify(this.currentEvent));  
+            const sharedRequest = this.sharedRequest;
+            const currentEvent = this.currentEvent;  
             let tabfocused= 0;
             this.newTabList = this.tabList.filter((eachTab)=>{
                 return this.TabId[sharedRequest.type].includes(eachTab.id);
             })
-            this.newTabList.map((item)=>{
+            this.newTabList.map((item:any)=>{
                 if(sharedRequest.assignmentDetail && item.id ==="Details") {
-                    item.show= true;
+                    item.show = true;
                     item.focused =tabfocused==0 ?true:false;
                     this.tabCurrent = item.focused?item.id:this.tabCurrent;
                     tabfocused++;
@@ -201,7 +199,7 @@
                 }
 
                 if(sharedRequest.request && item.id ==="Request") {
-                    item.show= true;
+                    item.show = true;
                     item.focused =tabfocused==0 ?true:false;
                     this.tabCurrent = item.focused?item.id:this.tabCurrent;
                     tabfocused++;
