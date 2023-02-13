@@ -64,35 +64,21 @@
                                 </model-list-select> -->
                                 <neu-select ref="RVE4452_32493_UI_Testing_Staff_Non-Productive_Request_Panel_Tab" interface="popover" name="ddlShift" v-model="shift"
                                     @v-neu-change="shiftChange(additionalRequestEvent)">
-
-                                    <neu-option ref="ddlShiftOptions" v-for="shift in departmentShift" :value="shift.departmentId"
-                                        :key="shift.departmentId">
-                                        {{ shift.departmentName }}
+                                    <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts" :value="shift.departmentShiftId"
+                                        :key="shift.departmentShiftId">
+                                        {{ shift.description }}
                                     </neu-option>
                                 </neu-select>
                             </template>
                             <template v-if="additionalRequestEvent">
                                 <neu-select ref="RVE4452_32493_UI_Testing_Staff_Non-Productive_Request_Panel_Tab" interface="popover" name="ddlShift" v-model="defaultShift"
-                                    @v-neu-change="shiftChange(additionalRequestEvent)">
-
-                                    <neu-option ref="ddlShiftOptions" v-for="shift in departmentShift" :value="shift.departmentId"
-                                        :key="shift.departmentId">
-                                        {{ shift.departmentName }}
+                                    @v-neu-change="shiftChange(additionalRequestEvent)"
+                                >
+                                    <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts" :value="shift.departmentShiftId"
+                                        :key="shift.departmentShiftId">
+                                        {{ shift.description }}
                                     </neu-option>
-                                </neu-select>
-                                <!-- <model-list-select :list="availableShifts"
-                                                name="ddlShift"
-                                                   v-bind:class="[
-                  'dropdown dropdown-input',
-                  { 'readonly_text_field bg-transparent': widthdrawMode(additionalRequestEvent) },
-                ]"
-                                                   :isDisabled="widthdrawMode(additionalRequestEvent)"
-                                                   @input="shiftChange(additionalRequestEvent)"
-                                                   v-model="defaultShift"
-                                                   option-value="id"
-                                                   option-text="name"
-                                                   placeholder="select item">
-                                </model-list-select> -->
+                                </neu-select>                              
                             </template>
                         </div>
                     </div>
@@ -105,7 +91,7 @@
                                         <template v-if="!additionalRequestEvent">
                                             <input :disabled="getDisableDuration(additionalRequestEvent)"
                                                    name="txtStartTime"
-                                                   v-model="startTime"
+                                                   input="startTime"
                                                    v-bind:class="[
                         'neu-input__text-field',
                         {
@@ -115,9 +101,9 @@
                                                    type="time" />
                                         </template>
                                         <template v-if="additionalRequestEvent">
-                                            <input :disabled="getDisableDuration(additionalRequestEvent)"
+                                            <neu-input :disabled="getDisableDuration(additionalRequestEvent)"
                                                    name="txtStartTime"
-                                                   v-model="defaultStartTime"
+                                                   input="defaultStartTime"
                                                    v-bind:class="[
                         'neu-input__text-field',
                         {
@@ -127,70 +113,60 @@
                                                    type="time" />
                                         </template>
                                     </div>
+
                                     <div class="col-6">
                                         <label for="partof_day" class="neu-input__label">Duration</label>
                                         <template v-if="!additionalRequestEvent">
-                                            <model-list-select :list="durationList"
-                                                            name="ddlDuration"
-                                                               v-bind:class="[
-                        'neu-input__text-field',
-                        {
-                          'readonly_text_field bg-transparent': getDisableDuration(additionalRequestEvent),
-                        },
-                      ]"
-                                                               :isDisabled="getDisableDuration(additionalRequestEvent)"
-                                                               v-model="duration"
-                                                               option-value="value"
-                                                               option-text="label"
-                                                               placeholder="select item">
-                                            </model-list-select>
-                                        </template>
-                                        <template v-if="additionalRequestEvent">
-                                            <model-list-select :list="durationList"
-                                                            name="ddlDuration"
-                                                               v-bind:class="[
-                        'neu-input__text-field',
-                        {
-                          'readonly_text_field bg-transparent': getDisableDuration(additionalRequestEvent),
-                        },
-                      ]"
-                                                               :isDisabled="getDisableDuration(additionalRequestEvent)"
-                                                               v-model="defaultDuration"
-                                                               option-value="value"
-                                                               option-text="label"
-                                                               placeholder="select item">
-                                            </model-list-select>
+                                            <neu-select
+                                                interface="popover"
+                                                name="ddlDuration"
+                                                v-bind:class="[
+                                                    {
+                                                        'readonly_text_field bg-transparent':
+                                                        getDisableDuration(additionalRequestEvent),
+                                                    },
+                                                ]">                                              
+                                                    <neu-option
+                                                    v-for="duration in durationList"
+                                                    :value="duration.value"
+                                                    :key="duration.value"
+                                                    v-model="duration">
+                                                    {{ duration.label }}
+                                                    </neu-option>
+                                            </neu-select>
                                         </template>
 
+                                        <template v-if="additionalRequestEvent">
+                                            <neu-select interface="popover" name="ddlDuration" v-bind:class="[
+                                            'neu-input__text-field',
+                                            {
+                                            'readonly_text_field bg-transparent': getDisableDuration(additionalRequestEvent),
+                                            },
+                                            ]">
+                                                <neu-option v-for="duration in durationList" :value="duration.value" :key="duration.value"
+                                                    v-model="defaultDuration">
+                                                    {{ duration.label }}
+                                                </neu-option>
+                                            </neu-select>
+                                        </template>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Comments: textarea -->
                     <div class="row pt3">
                         <div class="col-12">
                             <label for="approval_code" class="neu-input__label">Comments (Optional)</label>
                             <template v-if="!additionalRequestEvent">
-                                <textarea
-                                    v-bind:class="[
-                                        'neu-input__textarea',
-                                        { 'readonly_text_field bg-transparent starttimecolor': widthdrawMode(additionalRequestEvent) },
-                                        ]"
-                                    :disabled="widthdrawMode(additionalRequestEvent)"
-                                    :maxlength="maxCommentsCharacters"
-                                    v-model="comment"
-                                    name="Comment"
-                                ></textarea>
+                            <textarea 
+                                    :maxlength="maxCommentsCharacters" v-model="comment" name="Comment"></textarea>
                                 <br>
                                 <span class="commentCharacterCountText">Remaining {{ maxCommentsCharacters - (comment!= undefined ? comment.length: 0) }}  characters.</span>
                             </template>
                             <template v-if="additionalRequestEvent">
                                  <textarea
-                                    v-bind:class="[
-                                        'neu-input__textarea',
-                                        { 'readonly_text_field bg-transparent starttimecolor': widthdrawMode(additionalRequestEvent) },
-                                        ]"
-                                    :disabled="widthdrawMode(additionalRequestEvent)"
                                     :maxlength="maxCommentsCharacters"
                                     v-model="defaultComment"
                                     name="Comment"
@@ -206,18 +182,18 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <button @click="FireAction(additionalRequestEvent)"
-                            v-bind:name="'btn' + (currentEvent?.type == 'Request' && additionalRequestEvent == false ? 'Withdraw' : 'AddToSchedule')"
+                    <neu-button @click="FireAction(additionalRequestEvent)"
+                            input:name="'btn' + (currentEvent?.type == 'Request' && additionalRequestEvent == false ? 'Withdraw' : 'AddToSchedule')"
                             data-test="fire-action"
                             :class="[
               'd-block mb4 mt4 neu-button w-100 neu-text--white',
               disableSubmit(additionalRequestEvent) || isImpersonating
                 ? 'neu-button--blue-disabled'
                 : 'neu-background--denim'
-            ]"
+                ]"
                             :disabled="(disableSubmit(additionalRequestEvent) || isImpersonating)">
                         {{currentEvent?.type == "Request" && additionalRequestEvent == false ? "Withdraw" : "Add to Schedule"}}
-                    </button>
+                    </neu-button>
                 </div>
             </div>
         </div>
@@ -237,8 +213,6 @@
     import { mapState } from "vuex";
     import ErrorNotification from "./ErrorNotification.vue";
     import ConfirmMsgPopUp from "@/components/shared/ConfirmMsgPopUp.vue";
-    // import { ModelListSelect } from 'vue-search-select'
-    // import Loading from 'vue-loading-overlay';
     import 'vue-loading-overlay/dist/vue-loading.css';
     import { useAppInsights } from '../../store/modules/AppInsights'
     
@@ -255,8 +229,6 @@
             },
         components: {
             ErrorNotification,
-            // ModelListSelect,
-            // Loading,
             ConfirmMsgPopUp
         },
     })
