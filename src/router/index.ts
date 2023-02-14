@@ -6,6 +6,7 @@ import InvalidAccount from "@/components/error/InvalidAccount.vue";
 import ErrorAccount from "@/components/error/ErrorAccount.vue";
 import SystemMaintenance from "@/components/error/SystemMaintenance.vue";
 import MySchedule from "@/components/schedule/MyScheduleView.vue"
+import DepartmentView from "@/components/schedule/DepartmentView.vue"
 import Profile from "@/components/profile/Profile.vue";
 import store from '../store/index'
 
@@ -26,7 +27,7 @@ const routes = [
     },
     {
         path: '/Department',
-        component: MySchedule,
+        component: DepartmentView,
         props: { viewFlag: 'DeptView' }
     }, 
     {

@@ -1,13 +1,27 @@
 
 
-import {DepartmentAssignment} from './department-assignment.model';
+import { CancelReasons } from './cancel-reasons.model';
+import { DepartmentShifts } from './department-shifts.model';
+import { ScheduleBlocks } from './schedule-blocks.model';
+import { Staff } from './staff.model';
 
 export interface DepartmentStaff {
-    
-   staffId: number;
-   firstName: string;
-   lastName: string;
-   skill: string;
-   charge: boolean;
-   assignments: DepartmentAssignment[];
+   departmentId:number;
+   start: Date;
+   end: Date;
+   status: string;
+   scheduleId: number;
+   facilityId: number;
+   coid: number;
+   facilityName: string;
+   departmentCode: number;
+   departmentName: string;
+   createdBy: string;
+   created: Date;
+   updatedBy: string;
+   updated: Date;
+   staff: Staff[];
+   scheduleBlocks: ScheduleBlocks[];
+   departmentShifts: DepartmentShifts[];
+   cancelReasons: CancelReasons[];
 }
