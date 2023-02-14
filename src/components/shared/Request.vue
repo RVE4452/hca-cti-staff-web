@@ -395,7 +395,7 @@ export default class Request extends Vue.with(Props) {
     }
 
     generateTimeList(maxDuration: any): void {
-        const hours: any = []
+        const hours: any = [];
         for (let hour = 0; hour < maxDuration; hour++) {
             hours.push({
                 label: `${hour + 1} hour`,
