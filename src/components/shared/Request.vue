@@ -165,31 +165,16 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <p>Fire Action {{ FireAction(additionalRequestEvent) }}</p>
+                    <!-- <p>Fire Action {{ FireAction(additionalRequestEvent) }}</p> -->
                     <button color="primary" fill="raised" class="d-block"
-                        uj6@click="FireAction(additionalRequestEvent)"
+                        @click="FireAction(additionalRequestEvent)"
                         :disabled="(bindDisabled || isImpersonating)"
                         v-bind:name="'btn' + (currentEvent?.type == 'Request' && additionalRequestEvent == false ? 'Withdraw' : 'AddToSchedule')"
                         data-test="fire-action"
                     >
                         Add to Schedule
                     </button>
-                    <!-- <p>Fire Action{{ FireAction(additionalRequestEvent) }}</p>
-                    <p>{{ disableSubmit(additionalRequestEvent) || isImpersonating }}</p> -->
-
-                    <!-- <button @click="FireAction(additionalRequestEvent)"
-                            v-bind:name="'btn' + (currentEvent?.type == 'Request' && additionalRequestEvent == false ? 'Withdraw' : 'AddToSchedule')"
-                            data-test="fire-action"
-                            color="primary"
-                            fill="raised"
-                            :class="[
-              'd-block mb4 mt4 neu-button w-100 neu-text--white',
-              disableSubmit(additionalRequestEvent) || isImpersonating
-                ? 'neu-button--blue-disabled'
-                : 'neu-background--denim'            ]"
-                            :disabled="(disableSubmit(additionalRequestEvent) || isImpersonating)">
-                        {{currentEvent?.type == "Request" && additionalRequestEvent == false ? "Withdraw" : "Add to Schedule"}}
-                    </button> -->
+                    
                 </div>
             </div>
         </div>
@@ -274,27 +259,6 @@
         availableShifts=[];
         comment: string = "";
         defaultComment:string = "";
-            
-
-        // constructor() {
-        //     super();
-        //     this.data = {
-        //         selectedDate: [],
-        //         startTime: "",
-        //         defaultStartTime: "",
-        //         duration: "",
-        //         defaultDuration: "",
-        //         shift: "",
-        //         defaultShift: "",
-        //         minutes: "",
-        //         hours: 0,
-        //         startDateTime: "",
-        //         durationList: [],
-        //         availableShifts: [], 
-        //         comment: "",
-        //         defaultComment: "",
-        //     };
-        // }
 
         async mounted(): Promise<void> {
             await this.loadData();
@@ -465,14 +429,14 @@
                     );
                     let objReq = {
                         departmentShiftId: additionalRequestEvent ? this.defaultShift : this.shift,
-                        // startDateTime: new Date(
-                        //     eventStartDateTime.getTime() -
-                        //     eventStartDateTime.getTimezoneOffset() * 60000
-                        // ).toISOString(), // Add Time
                         startDateTime: new Date(
                             eventStartDateTime.getTime() -
                             eventStartDateTime.getTimezoneOffset() * 60000
-                        ), // Add Time
+                        ).toISOString(), // Add Time
+                        // startDateTime: new Date(
+                        //     eventStartDateTime.getTime() -
+                        //     eventStartDateTime.getTimezoneOffset() * 60000
+                        // ), // Add Time
                         hours: Number(additionalRequestEvent ? this.defaultDuration : this.duration), // Add Hours
                         minutes: 0,
                     };
