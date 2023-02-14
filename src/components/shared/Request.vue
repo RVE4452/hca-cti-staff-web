@@ -49,20 +49,8 @@
                         <div class="col-12">
                             <label for="approval_code" class="neu-input__label">Select Shift</label>
                             <template v-if="!additionalRequestEvent">
-                                <!-- <model-list-select :list="availableShifts"
-                                                name="ddlShift"
-                                                   v-bind:class="[
-                  'dropdown dropdown-input',
-                  { 'readonly_text_field bg-transparent': widthdrawMode(additionalRequestEvent) },
-                ]"
-                                                   :isDisabled="widthdrawMode(additionalRequestEvent)"
-                                                   @input="shiftChange(additionalRequestEvent)"
-                                                   v-model="shift"
-                                                   option-value="id"
-                                                   option-text="name"
-                                                   placeholder="select item">
-                                </model-list-select> -->
-                                <neu-select ref="RVE4452_32493_UI_Testing_Staff_Non-Productive_Request_Panel_Tab" interface="popover" name="ddlShift" v-model="shift"
+                                <neu-select 
+                                ref="RVE4452_32493_UI_Testing_Staff_Non-Productive_Request_Panel_Tab" interface="popover" name="ddlShift" v-model="shift"
                                     @v-neu-change="shiftChange(additionalRequestEvent)">
                                     <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts" :value="shift.departmentShiftId"
                                         :key="shift.departmentShiftId">
@@ -70,6 +58,7 @@
                                     </neu-option>
                                 </neu-select>
                             </template>
+
                             <template v-if="additionalRequestEvent">
                                 <neu-select ref="RVE4452_32493_UI_Testing_Staff_Non-Productive_Request_Panel_Tab" interface="popover" name="ddlShift" v-model="defaultShift"
                                     @v-neu-change="shiftChange(additionalRequestEvent)"
@@ -82,14 +71,16 @@
                             </template>
                         </div>
                     </div>
+
                     <div class="row pt3">
                         <div class="col-12">
                             <div class="row">
                                 <div class="d-inline-flex w-100">
                                     <div class="col-6">
-                                        <label for="partof_day" class="neu-input__label">Start Time</label>
+                                        <label for="partof_day" class="neu-input__label">Start Time</label>                                        
                                         <template v-if="!additionalRequestEvent">
-                                            <input :disabled="getDisableDuration(additionalRequestEvent)"
+                                            {{ getDisableDuration(additionalRequestEvent) }}
+                                            <input :disabled="false"
                                                    name="txtStartTime"
                                                    input="startTime"
                                                    v-bind:class="[
@@ -100,8 +91,9 @@
                       ]"
                                                    type="time" />
                                         </template>
+                                        
                                         <template v-if="additionalRequestEvent">
-                                            <neu-input :disabled="getDisableDuration(additionalRequestEvent)"
+                                            <input :disabled="true"
                                                    name="txtStartTime"
                                                    input="defaultStartTime"
                                                    v-bind:class="[
@@ -116,39 +108,26 @@
 
                                     <div class="col-6">
                                         <label for="partof_day" class="neu-input__label">Duration</label>
-                                        <template v-if="!additionalRequestEvent">
-                                            <neu-select
-                                                interface="popover"
-                                                name="ddlDuration"
-                                                v-bind:class="[
-                                                    {
-                                                        'readonly_text_field bg-transparent':
-                                                        getDisableDuration(additionalRequestEvent),
-                                                    },
-                                                ]">                                              
-                                                    <neu-option
-                                                    v-for="duration in durationList"
-                                                    :value="duration.value"
-                                                    :key="duration.value"
-                                                    v-model="duration">
-                                                    {{ duration.label }}
-                                                    </neu-option>
-                                            </neu-select>
-                                        </template>
 
-                                        <template v-if="additionalRequestEvent">
-                                            <neu-select interface="popover" name="ddlDuration" v-bind:class="[
-                                            'neu-input__text-field',
-                                            {
-                                            'readonly_text_field bg-transparent': getDisableDuration(additionalRequestEvent),
-                                            },
-                                            ]">
-                                                <neu-option v-for="duration in durationList" :value="duration.value" :key="duration.value"
-                                                    v-model="defaultDuration">
-                                                    {{ duration.label }}
+                                        <!-- <p>additionalRequestEvent {{additionalRequestEvent}}</p> -->
+                                        <div v-if="!additionalRequestEvent">
+                                            <!-- <p>Disabled: True</p> -->
+                                            <neu-select
+                                            id="durationOne"
+                                            interface="popover"
+                                            name="ddlDuration" 
+                                            v-bind="bindDisabled"                    >                                              
+                                                <neu-option
+                                                  v-for="duration in durationList"
+                                                  :value="duration.value"
+                                                  :key="duration.value"                                                  
+                                                >
+                                                  {{ duration.label }}
                                                 </neu-option>
                                             </neu-select>
-                                        </template>
+                                        </div>
+                                        
+                                       
                                     </div>
                                 </div>
                             </div>
@@ -160,17 +139,21 @@
                         <div class="col-12">
                             <label for="approval_code" class="neu-input__label">Comments (Optional)</label>
                             <template v-if="!additionalRequestEvent">
-                            <textarea 
-                                    :maxlength="maxCommentsCharacters" v-model="comment" name="Comment"></textarea>
+                            <neu-textarea 
+                                    :maxlength="maxCommentsCharacters" v-model="comment" name="Comment"></neu-textarea>
                                 <br>
                                 <span class="commentCharacterCountText">Remaining {{ maxCommentsCharacters - (comment!= undefined ? comment.length: 0) }}  characters.</span>
+
+                                <span>{{comment.value}}</span>
+                                <!-- <span>{{comment.length}}</span> -->
+                                
                             </template>
                             <template v-if="additionalRequestEvent">
-                                 <textarea
+                                 <neu-textarea
                                     :maxlength="maxCommentsCharacters"
                                     v-model="defaultComment"
                                     name="Comment"
-                                ></textarea>
+                                ></neu-textarea>
                                 <br>
                                 <span class="commentCharacterCountText">Remaining {{ maxCommentsCharacters - (defaultComment!= undefined ? defaultComment.length: 0) }}  characters.</span>
                             </template>
@@ -182,18 +165,31 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <neu-button @click="FireAction(additionalRequestEvent)"
-                            input:name="'btn' + (currentEvent?.type == 'Request' && additionalRequestEvent == false ? 'Withdraw' : 'AddToSchedule')"
+                    <p>Fire Action {{ FireAction(additionalRequestEvent) }}</p>
+                    <button color="primary" fill="raised" class="d-block"
+                        uj6@click="FireAction(additionalRequestEvent)"
+                        :disabled="(bindDisabled || isImpersonating)"
+                        v-bind:name="'btn' + (currentEvent?.type == 'Request' && additionalRequestEvent == false ? 'Withdraw' : 'AddToSchedule')"
+                        data-test="fire-action"
+                    >
+                        Add to Schedule
+                    </button>
+                    <!-- <p>Fire Action{{ FireAction(additionalRequestEvent) }}</p>
+                    <p>{{ disableSubmit(additionalRequestEvent) || isImpersonating }}</p> -->
+
+                    <!-- <button @click="FireAction(additionalRequestEvent)"
+                            v-bind:name="'btn' + (currentEvent?.type == 'Request' && additionalRequestEvent == false ? 'Withdraw' : 'AddToSchedule')"
                             data-test="fire-action"
+                            color="primary"
+                            fill="raised"
                             :class="[
               'd-block mb4 mt4 neu-button w-100 neu-text--white',
               disableSubmit(additionalRequestEvent) || isImpersonating
                 ? 'neu-button--blue-disabled'
-                : 'neu-background--denim'
-                ]"
+                : 'neu-background--denim'            ]"
                             :disabled="(disableSubmit(additionalRequestEvent) || isImpersonating)">
                         {{currentEvent?.type == "Request" && additionalRequestEvent == false ? "Withdraw" : "Add to Schedule"}}
-                    </neu-button>
+                    </button> -->
                 </div>
             </div>
         </div>
@@ -221,12 +217,23 @@
         currentEvent!: any;
         additionalRequestEvent!: any;
         dayChanged!: any;
+        
     }
     @Options({
          computed: {
                 ...mapState('schedule', ['requestDetail','userSchedules']),
                 ...mapState('profile',['profileData','isAdmin','isImpersonating','appInsightEventData'])
-            },
+                
+        },
+        disabled:{
+            type: Boolean,
+            default:false
+        },
+        data(){
+            return{
+                bindDisabled: this.disabled !== false ?  { disabled: 'disabled' }:{}
+            }
+        },
         components: {
             ErrorNotification,
             ConfirmMsgPopUp
@@ -266,8 +273,8 @@
         durationList = [];
         availableShifts=[];
         comment: string = "";
-        defaultComment:string = ""
-        
+        defaultComment:string = "";
+            
 
         // constructor() {
         //     super();
@@ -283,7 +290,7 @@
         //         hours: 0,
         //         startDateTime: "",
         //         durationList: [],
-        //         availableShifts: [],
+        //         availableShifts: [], 
         //         comment: "",
         //         defaultComment: "",
         //     };
@@ -309,36 +316,40 @@
                 this.departmentShift = [];
                 this.defaultComment = "";
 
-                for (var i = 0; i < this.profileData.departmentShifts.length; i++)
+                for (var i = 0; i < this.profileData?.departmentShifts?.length; i++)
                 {
+                    // let selectedDate = moment(new Date(
+                    //     this.calSelectedDates?.startDate.getTime() -
+                    //     this.calSelectedDates?.startDate.getTimezoneOffset() * 60000
+                    // ).toISOString());
                     let selectedDate = moment(new Date(
-                        this.calSelectedDates.startDate.getTime() -
-                        this.calSelectedDates.startDate.getTimezoneOffset() * 60000
-                    ).toISOString());
+                        this.calSelectedDates?.startDate.getTime() -
+                        this.calSelectedDates?.startDate.getTimezoneOffset() * 60000
+                    ));
                     
-                    if ((this.profileData.departmentShifts[i].effective === null)
-                        && (this.profileData.departmentShifts[i].expires === null))
+                    if ((this.profileData?.departmentShifts[i].effective === null)
+                        && (this.profileData?.departmentShifts[i].expires === null))
                     {
-                        this.departmentShift.push(this.profileData.departmentShifts[i]);
+                        this.departmentShift?.push(this.profileData.departmentShifts[i]);
                     }
-                    else if ((this.profileData.departmentShifts[i].effective !== null)
-                            && (this.profileData.departmentShifts[i].expires !== null)) 
+                    else if ((this.profileData?.departmentShifts[i].effective !== null)
+                            && (this.profileData?.departmentShifts[i].expires !== null)) 
                     {
-                        if((this.profileData.departmentShifts[i].effective <= selectedDate) && (this.profileData.departmentShifts[i].expires >= selectedDate))
+                        if((this.profileData?.departmentShifts[i].effective <= selectedDate) && (this.profileData?.departmentShifts[i].expires >= selectedDate))
                         {
-                            this.departmentShift.push(this.profileData.departmentShifts[i]);
+                            this.departmentShift?.push(this.profileData?.departmentShifts[i]);
                         }
                     }
-                    else if (((this.profileData.departmentShifts[i].effective === null)) && (selectedDate <=  moment(this.profileData.departmentShifts[i].expires)))
+                    else if (((this.profileData?.departmentShifts[i].effective === null)) && (selectedDate <=  moment(this.profileData?.departmentShifts[i].expires)))
                     {
                         
-                        this.departmentShift.push(this.profileData.departmentShifts[i]);
+                        this.departmentShift?.push(this.profileData?.departmentShifts[i]);
                         
                     } 
-                    else if(((this.profileData.departmentShifts[i].expires === null)) && (selectedDate >= moment(this.profileData.departmentShifts[i].effective)))
+                    else if(((this.profileData?.departmentShifts[i].expires === null)) && (selectedDate >= moment(this.profileData?.departmentShifts[i].effective)))
                     {
                         
-                        this.departmentShift.push(this.profileData.departmentShifts[i]);
+                        this.departmentShift?.push(this.profileData?.departmentShifts[i]);
                         
                     }
                 }
@@ -363,10 +374,10 @@
         }
 
         async getSelectedDates(): Promise<void> {
-            var startSD = moment(this.calSelectedDates.startDate, "M/D/YYYY");
-            var endSD = moment(this.calSelectedDates.endDate, "M/D/YYYY");
+            var startSD = moment(this.calSelectedDates?.startDate, "M/D/YYYY");
+            var endSD = moment(this.calSelectedDates?.endDate, "M/D/YYYY");
             var diffDays = endSD.diff(startSD, "days");
-            let currentDate: Date = new Date(this.calSelectedDates.startDate);
+            let currentDate: Date = new Date(this.calSelectedDates?.startDate);
             this.availiableDates = [];
             for (var i = 0; i < diffDays; i++) {
                 const date = moment(currentDate)
@@ -411,7 +422,7 @@
         async FireAction(additionalRequestEvent:any) {
             if (!this.widthdrawMode(additionalRequestEvent)) {
                 //If there is no email address present in profile then doesn't allow them to send Non-productive shift request
-                var selectedShift =  this.departmentShift.find((x:any)=> x.id == this.shift);           
+                var selectedShift =  this.departmentShift?.find((x:any)=> x.id == this.shift);           
                 if(this.profileData.email == null || 
                     this.profileData.email == undefined || this.profileData.email == "")
                 {
@@ -423,18 +434,19 @@
                 let requestBody = {
                     tenantId: this.profileData.tenantId,
                     startDate: new Date(
-                        this.calSelectedDates.startDate.getTime() -
-                        this.calSelectedDates.startDate.getTimezoneOffset() * 60000
-                    ).toISOString(),
+                        this.calSelectedDates?.startDate.getTime() -
+                        this.calSelectedDates?.startDate.getTimezoneOffset() * 60000
+                    ),
                     endDate: new Date(
-                        this.calSelectedDates.endDate.getTime() -
-                        this.calSelectedDates.endDate.getTimezoneOffset() * 60000
-                    ).toISOString(),
+                        this.calSelectedDates?.endDate.getTime() -
+                        this.calSelectedDates?.endDate.getTimezoneOffset() * 60000
+                    ),
                     comment: additionalRequestEvent ? this.defaultComment : this.comment,
                     email: this.profileData.email,
                     shifts: [] as any[],
+
                 };
-                for (var i = 0; i < this.selectedDate.length; i++) {
+                for (var i = 0; i < this.selectedDate?.length; i++) {
                     var eventStartDateTime = new Date(this.selectedDate[i]);
                     if (!additionalRequestEvent) {
                         eventStartDateTime.setHours(
@@ -453,10 +465,14 @@
                     );
                     let objReq = {
                         departmentShiftId: additionalRequestEvent ? this.defaultShift : this.shift,
+                        // startDateTime: new Date(
+                        //     eventStartDateTime.getTime() -
+                        //     eventStartDateTime.getTimezoneOffset() * 60000
+                        // ).toISOString(), // Add Time
                         startDateTime: new Date(
                             eventStartDateTime.getTime() -
                             eventStartDateTime.getTimezoneOffset() * 60000
-                        ).toISOString(), // Add Time
+                        ), // Add Time
                         hours: Number(additionalRequestEvent ? this.defaultDuration : this.duration), // Add Hours
                         minutes: 0,
                     };
@@ -464,7 +480,7 @@
                     requestBody.shifts.push(objReq);
                 }
                 this.isFullScreenLoading = true;
-                this.$store
+                this.$store                    
                     .dispatch("schedule/RequestSchedule", requestBody)
                     .then(() => {
                         // showing message in MyScheduleView Screen and close modal only on success
@@ -531,38 +547,47 @@
             this.defaultDuration = defaultDuration;
             this.startTime = defaultStartTime;
             this.defaultStartTime = defaultStartTime;
-            this.disableduration = true;            
+            this.disableduration = true;
+            this.bindDisabled = false;  
 
             if (this.showErrorMsg) {
                 this.showErrorMsg = false;
                 this.errorMsg = "";
             }
+
         }
 
         formatTime(t: Date): string {
             return moment(t).format("HH:mm:ss");
         }
 
+        
         getDisableDuration(additionalRequestEvent:any) {
+            
             var isDisabled = false;
             if (this.currentEvent?.type == "Request" && !additionalRequestEvent) {
-                isDisabled = false;
+                isDisabled = true;
             }
+            
             else if (this.currentEvent?.type == "Request" && additionalRequestEvent) {
                 isDisabled = this.disableduration;
             }
+            
             else if (this.currentEvent?.type != "Request") {
                 isDisabled = this.disableduration;
             }
             return !isDisabled;
         }
+
+        
         disableSubmit(additionalRequestEvent:any) {
-            var returnValue = true;
+            var returnValue = false;
             if (this.isLoading) {
                 returnValue = true;
             }
             else if (this.currentEvent?.type == "Request" && !additionalRequestEvent) {
-                returnValue = false;
+                // returnValue = false;
+                returnValue = true;
             }
             else if (this.currentEvent?.type == "Request" && additionalRequestEvent) {
                 returnValue = Boolean(

@@ -371,7 +371,8 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      RequestSchedule({ commit, rootState },psData){
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Requests`;
+        // const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Requests`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Requests/NonProductives`;
 
         return http
             .post(apiUrl, psData)

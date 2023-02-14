@@ -62,7 +62,8 @@
                <open-need :currentEvent="currentEvent" @showSuccessMsgPopUp="showSuccessModal" @closeSharedModal="close"></open-need> 
             </div>
             <div v-if="tabCurrent === 'Request'">
-                <Request />
+                <Request :key="counter" :currentEvent="currentEvent" :additionalRequestEvent="false" :calSelectedDates="sharedRequest.calSelectedDates" @closeSharedModal="close" @showSuccessMsgPopUp="showSuccessModal" />
+                
                 <!-- <Request :key="counter" :currentEvent="currentEvent" :additionalRequestEvent="false" :calSelectedDates="sharedRequest.calSelectedDates" @closeSharedModal="close" @showSuccessMsgPopUp="showSuccessModal" /> -->
             </div>
 
