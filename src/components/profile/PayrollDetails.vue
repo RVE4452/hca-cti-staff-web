@@ -153,6 +153,7 @@ export default class PayrollDetails extends Vue {
                 JSON.parse(JSON.stringify(this.appInsightEventData))
         });
     }
+    
     async getCurrentPayperiod() {
         if (this.userSchedules.length == 0) {
             var payload = {
