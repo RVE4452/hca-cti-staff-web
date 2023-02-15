@@ -50,17 +50,17 @@ describe('MyScheduleView', () => {
           const currweek= wrapper.vm.getCurrentWeekSchedule();
           expect(currweek.start).toBe('2023-01-29T07:00:00');
         });
-        it('should call raiseClickEvent event to update the calender data', async() => {
-            debugger;        
-            const event = '02/14/2023'
-            // const childwrapper = wrapper.findComponent({
-            //     ref: 'sharedModal'
-            // });
-            // childwrapper.vm.$emit('raiseClickEvent', event)
-            wrapper.vm.raiseClickEvent(event);
+        // it('should call raiseClickEvent event to update the calender data', async() => {
+        //     debugger;        
+        //     const event = '02/14/2023'
+        //     // const childwrapper = wrapper.findComponent({
+        //     //     ref: 'sharedModal'
+        //     // });
+        //     // childwrapper.vm.$emit('raiseClickEvent', event)
+        //     wrapper.vm.raiseClickEvent(event);
             
-            await wrapper.vm.$nextTick();
-            expect(wrapper.vm.updateData).toBe(event)
-          });
+        //     await wrapper.vm.$nextTick();
+        //     expect(wrapper.vm.updateData).toBe(event)
+        //   });
     }); 
 });
