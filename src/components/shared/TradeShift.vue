@@ -168,7 +168,7 @@
 
 <script lang="ts">
 import moment from "moment";
-import Detail from "./Detail.vue";
+import Detail from "./AssignmentDetail.vue";
 import ShiftMemberDetail from "./ShiftMemberDetail.vue";
 import { Options, Vue } from 'vue-class-component';
 import { mapState } from "vuex";

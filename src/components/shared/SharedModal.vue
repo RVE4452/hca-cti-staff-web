@@ -44,7 +44,7 @@
                 </span>
             </neu-tablist>           
             <div v-if="tabCurrent === 'Details'">
-                <detail :enableField="[]" :currentEvent="currentEvent" />
+                <assignment-detail :enableField="[]" :currentEvent="currentEvent" />
                 <!-- <shift-member-detail :currentEvent="currentEvent" :key="counter + 1" /> -->
                 <div class="container-fluid tc">
                     <div>
@@ -87,7 +87,7 @@
     import { Options, Vue } from 'vue-class-component';
     import { mapState } from "vuex";
     import ShiftMemberDetail from "./ShiftMemberDetail.vue";
-    import Detail from "./Detail.vue";
+    import AssignmentDetail from "./AssignmentDetail.vue";
     /*import Approval from "./Approval.vue";*/
     // import PotentialTrade from "./PotentialTrades.vue";
     // import Request from './Request.vue';
@@ -125,7 +125,7 @@
         components: {
             /*Approval,*/
             // PotentialTrade,
-            Detail,
+            AssignmentDetail,
             ShiftMemberDetail,
             Request,
             // RequestedTrade,
@@ -171,17 +171,15 @@
            
 
         created() {
-            //super(props);
-            
-            const sharedRequest = JSON.parse(JSON.stringify(this.sharedRequest));
-            const currentEvent = JSON.parse(JSON.stringify(this.currentEvent));  
+            const sharedRequest = this.sharedRequest;
+            const currentEvent = this.currentEvent;  
             let tabfocused= 0;
             this.newTabList = this.tabList.filter((eachTab)=>{
                 return this.TabId[sharedRequest.type].includes(eachTab.id);
             })
-            this.newTabList.map((item)=>{
+            this.newTabList.map((item:any)=>{
                 if(sharedRequest.assignmentDetail && item.id ==="Details") {
-                    item.show= true;
+                    item.show = true;
                     item.focused =tabfocused==0 ?true:false;
                     this.tabCurrent = item.focused?item.id:this.tabCurrent;
                     tabfocused++;
@@ -202,7 +200,7 @@
                 }
 
                 if(sharedRequest.request && item.id ==="Request") {
-                    item.show= true;
+                    item.show = true;
                     item.focused =tabfocused==0 ?true:false;
                     this.tabCurrent = item.focused?item.id:this.tabCurrent;
                     tabfocused++;
