@@ -43,7 +43,7 @@
                 <div class="col-12 neu-margin--top-20">
                     <neu-label for="txtShift" content="Shift" position="fixed"></neu-label>
                     <neu-input type="text" name="shift" id="txtShift" v-model="deptShiftDesc" :value="deptShiftDesc" readonly
-                    v-if="currentEvent?.type == 'Assignment' && currentEvent?.status  == 'Pending'" />
+                    v-if="currentEvent?.type != 'Need' || (currentEvent?.type == 'Assignment' && currentEvent?.status  == 'Pending')" />
                     <neu-select name="ddlShifts" class="ddl-shift" interface="popover" :value="data.selectedShift" @v-neu-change="onOpenNeedShiftChanges"  
                     v-if="currentEvent?.type == 'Need' || (currentEvent?.type == 'Assignment' && currentEvent?.status  != 'Pending')">
                         <neu-option  v-for="shift in data.shifts" :value="shift.id" :key="shift.id">
@@ -53,7 +53,7 @@
 
                     <div class="mt3" v-if="deptPartialShifts && deptPartialShifts?.length">
                         <neu-input type="checkbox" name="showPartial" id="chkShowPartial" v-model="showPartial" :value="showPartial"
-                            v-if="currentEvent?.type == 'Assignment' && currentEvent?.status  == 'Pending'" />
+                            v-if="currentEvent?.type != 'Need' || (currentEvent?.type == 'Assignment' && currentEvent?.status  == 'Pending')" />
                         <neu-label for="chkShowPartial" content="Show Partial Shift Options" position="fixed"></neu-label>
                     </div>
 
@@ -75,7 +75,7 @@
                     </label>
                 </div>
                 <div class="col-12">
-                    <div class="row" v-if="data.shiftMembers.length == 0">
+                    <div class="row" v-if="data?.shiftMembers?.length == 0">
                         <div class="col-12 neu-margin--top-20">
                             <p class="neu-text--tag neu-text--align-left">No Shift Member Found</p>
                         </div>
@@ -230,7 +230,7 @@
                 .dispatch("schedule/getOpenNeeds", payload)
                 .then((res) => {
                     this.facilities = this.openNeedsFacilities;
-                    this.hasNeedsInPrimaryDept = this.openNeedsDepartments?.filter((x:any) => x.departmentId == this.profileData?.deptId).length > 0;
+                    this.hasNeedsInPrimaryDept = this.openNeedsDepartments?.filter((x:any) => x.departmentId == this.profileData?.departmentId).length > 0;
                     this.selectedFacilityId = this.openNeedsFacilities?.find((x:any) => x.facilityId == this.profileData?.facilityId) == undefined
                         ? this.openNeedsFacilities[0]?.facilityId : this.profileData?.facilityId;
                     this.facilityName = this.openNeedsFacilities?.find((x:any) => x.facilityId == this.selectedFacilityId) == undefined
@@ -238,7 +238,7 @@
                     this.facilityDepts = this.openNeedsDepartments?.filter((x:any) => x.facilityId == this.selectedFacilityId);
 
                     if (this.selectedFacilityId == this.profileData?.facilityId) {
-                        this.selectedDeptId = this.profileData?.deptId;
+                        this.selectedDeptId = this.profileData?.departmentId;
                     }
                     else {
                         this.selectedDeptId = this.openNeedsDepartments?.find((x:any) => x.facilityId == this.selectedFacilityId)[0]?.departmentId;
@@ -303,27 +303,27 @@
                     if (this.assignmentDetail != undefined) {                        
                         this.facilityName = this.assignmentDetail.facilityName;
                         this.departmentName = this.assignmentDetail?.departmentCode;
-                        if(this.assignmentDetail.premiumLaborLevel){
+                        if(this.assignmentDetail?.premiumLaborLevel){
                                 this.assignmentDetail.description = this.assignmentDetail.shiftCode
                                     + " " + this.formatTime(this.assignmentDetail.startTime)
                                     + " - " + this.formatTime(this.assignmentDetail.endTime)
                                     + " (Incentive)";
                             }
                         else{
-                            this.assignmentDetail.description = this.assignmentDetail.shiftCode
-                            + " " + this.formatTime(this.assignmentDetail.startTime)
-                            + " - " + this.formatTime(this.assignmentDetail.endTime);
+                            this.assignmentDetail.description = this.assignmentDetail.departmentShift
+                            + " " + this.formatTime(this.assignmentDetail?.startTime)
+                            + " - " + this.formatTime(this.assignmentDetail?.endTime);
                         }
 
-                        this.deptShiftDesc = this.assignmentDetail.description;
-                        this.actualShiftStartTime = this.formatTime(this.assignmentDetail.actualStartTime);
-                        this.actualShiftEndTime = this.formatTime(this.assignmentDetail.actualEndTime);
-                        this.needid = this.assignmentDetail.needId;
-                        this.data.shiftMembers = this.assignmentDetail.shiftMembers.map((members:any) => {
+                        this.deptShiftDesc = this.assignmentDetail?.description;
+                        this.actualShiftStartTime = this.formatTime(this.assignmentDetail.start);
+                        this.actualShiftEndTime = this.formatTime(this.assignmentDetail.end);
+                        this.needid = this.assignmentDetail?.needId;
+                        this.data.shiftMembers = this.assignmentDetail?.shiftMembers?.map((members:any) => {
                             members.name = members.firstName + " " + members.lastName;
                             return members;
                         });
-                        this.skillName = this.assignmentDetail.skill;
+                        this.skillName = this.assignmentDetail?.skill;
                     }
                 })
                 .catch((err: any) => {
@@ -338,7 +338,7 @@
             this.facilityDepts = this.openNeedsDepartments?.filter((x:any) => x.facilityId == event.target.value);
             this.facilityName = this.facilities.find((f:any) => f.facilityId == event.target.value)?.facilityName;
             if (this.selectedFacilityId == this.profileData.facilityId) {
-                this.selectedDeptId = this.profileData?.deptId;
+                this.selectedDeptId = this.profileData?.departmentId;
             }
             else {
                 this.selectedDeptId = this.facilityDepts[0]?.departmentId;
@@ -539,21 +539,33 @@
                         });
 
                 } else {
+                    // const requestBody = {
+                    //     "needId": this.needid,
+                    //     "tenantId": this.profileData?.tenantId,
+                    //     "deptShiftId": this.selectedShiftId(),
+                    //     "date": this.currentEvent?.date,
+                    //     "deptId": this.selectedDeptId,
+                    //     "staffId": this.profileData?.staffId,
+                    //     "scheduleStartDate": this.scheduleStartDate,
+                    //     "scheduleEndDate": this.scheduleEndDate
+                    // };
+
                     const requestBody = {
-                        "needId": this.needid,
-                        "tenantId": this.profileData?.tenantId,
-                        "deptShiftId": this.selectedShiftId(),
-                        "date": this.currentEvent?.date,
-                        "deptId": this.selectedDeptId,
                         "staffId": this.profileData?.staffId,
-                        "scheduleStartDate": this.scheduleStartDate,
-                        "scheduleEndDate": this.scheduleEndDate
+                        "departmentId": this.selectedDeptId,
+                        "departmentShiftId": this.selectedShiftId(),
+                        "skillId": this.profileData?.skill,
+                        "start": this.scheduleStartDate,
+                        "end": this.scheduleEndDate,
+                        "expires": this.currentEvent?.date,
+                        "comment": "",
+                        "status": "",
+                        "managerComment": ""
                     };
                     this.isLoading = true;
                     this.$store
                         .dispatch("schedule/ScheduleOpenNeedRequest", requestBody)
                         .then((res) => {
-                            console.log("test777")
                             //showing message in MyScheduleView Screen and close modal only on success
                             this.isLoading = false;
                             this.$emit('showSuccessMsgPopUp');

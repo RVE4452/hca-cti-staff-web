@@ -70,11 +70,11 @@ const mutations: MutationTree<Schedule> = {
 
    
      setAssignmentDetail(state,detail: any) {
-        detail.shiftMembers.length > 0 ? detail.shiftMembers.map((member:any) => {
+        detail?.shiftMembers?.length > 0 ? detail?.shiftMembers?.map((member:any) => {
             member.name = member.firstName + ' ' + member.lastName;
             return member;
         }) : '';
-        detail.shift = detail.shiftCode + ' ' + detail.shiftDescription;
+        detail.shift = detail?.shiftCode + ' ' + detail?.shiftDescription;
         state.assignmentDetail = detail;
     },
 
@@ -281,10 +281,10 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      WithdrawEvent(payload:any) {
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/OpenNeedRequest/${payload.needid}?assignmentId=${payload.assignementid}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Requests/Needs/${payload.assignementid}`;
 
         return http
-            .delete(apiUrl)
+            .put(apiUrl)
             .then((res: AxiosResponse) => {
             })
             .catch((err: AxiosError) => {
@@ -555,7 +555,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      GetScheduleAssignmentDetail({ commit, rootState },id: string){
-        const api = `${process.env.VUE_APP_APIURL}/Schedules/Assignments/${id}`
+        const api = `${process.env.VUE_APP_APIURL}/Requests/Needs/${id}`
 
         return http
             .get(api)

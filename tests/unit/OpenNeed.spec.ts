@@ -20,7 +20,7 @@ const store = new Vuex.Store({
         namespaced: true,
         state: {
             openNeedShiftMembers: resultOpenNeed,
-            assignmentDetail: resultOpenNeed,
+            assignmentDetail: [],
             openNeedsFacilities: resultOpenNeed,
             openNeedsDepartments: resultOpenNeed,
             openNeedsShiftDetails: resultOpenNeed
@@ -53,7 +53,7 @@ const store = new Vuex.Store({
       appInsightEventData: {},
       profileData: profileData,
       openNeedShiftMembers: resultOpenNeed,
-      assignmentDetail: resultOpenNeed,
+      assignmentDetail: [],
       openNeedsFacilities: resultOpenNeed,
       openNeedsDepartments: resultOpenNeed,
       openNeedsShiftDetails: resultOpenNeed,
@@ -122,15 +122,16 @@ const store = new Vuex.Store({
       });
 
       describe("Testing on loadopenNeeds", () => {
-        wrapper.vm.assignmentDetail = resultOpenNeed; 
+        wrapper.vm.assignmentDetail = {
+          facilityName: "Frisbie Memorial Hospital",
+        }; 
         wrapper.vm.facilities = resultOpenNeed;
         it("check prop values in loadopenNeeds", async ()=> {
           wrapper.vm.loadopenNeeds();
           await wrapper.vm.$nextTick();
           expect(wrapper.vm.isLoaded).toBe(true);
-          //expect(wrapper.vm.facilityName).toBe("Frisbie Memorial Hospital");
-          expect(wrapper.vm.departmentName).toBe("");
-          expect(wrapper.vm.needid).toBe(undefined);         
+          expect(wrapper.vm.facilityName).toBe("Frisbie Memorial Hospital");
+          expect(wrapper.vm.skillName).toBe(undefined);         
         })
       });
 
