@@ -1,7 +1,7 @@
 <template>
 <div>
     <neu-container class="mw-100">         
-        <div class="schedulerMainDiv"  v-bind:class="{ 'panel-open': sharedToggle, 'posNone': isWelcomeModalVisible }">
+        <div class="schedulerMainDiv"  v-bind:class="{ 'panel-open': sharedToggle}">
             <neu-row v-if="viewFlag == 'CalView'">
                 <neu-col md="3" style="margin-left:-45px;">
                                 <h5>
@@ -87,6 +87,7 @@
                                                     @check-all="onCheckAllOption"
                                                     :toggleStatus="leftNavBar"></CalendarFilterPanel>
          <SharedModal v-if="sharedToggle"
+         ref="sharedModal"
                      :currentEvent="currentEvent"
                      :scheduleStartDate="scheduleStartDate"
                      :scheduleEndDate="scheduleEndDate"
@@ -122,7 +123,6 @@
     //import bus from '../../eventBus'
     import tippy from 'tippy.js';
     import 'tippy.js/dist/tippy.css';
-    import WelcomeMsgPopup from "../profile/WelcomeMsgPopup.vue";
     import ConfirmMsgPopUp from "../shared/ConfirmMsgPopUp.vue";
     import AlertPopUp from "../shared/AlertPopUp.vue";
     import { useAppInsights } from '../../store/modules/AppInsights';
@@ -151,7 +151,6 @@
                 CalendarFilterPanel,
                 SaveMsgPopUp,            
                 DepartmentView,
-                WelcomeMsgPopup,
                 ConfirmMsgPopUp,
                 AlertPopUp,
                 NotificationMsgPopUp,                
@@ -186,9 +185,7 @@
         };
         isPanelOpen: boolean = false;
         oidcUser!: any;        
-        profileData!: any;        
-        isAdmin!: boolean;        
-        isImpersonating!: boolean;       
+        profileData!: any;       
         appInsightEventData!: any;
         currentDate: string = "March, 2021";
         confirmMsgValue = "You have not submitted your shift requests. Are you sure you want to navigate away?";
@@ -197,14 +194,13 @@
         private backDate = new Date();
         private forwardDate = new Date();
         selectedDates: Array<string | string> = [];
-        isModalVisible = false;
 
         currentMonthCalendarApi: any = null;
         schedules: any;
         scheduleStatus = "Unknown";
         currentEvent: any =null;
 
-        updateData: string = "";
+        updateData = new Date() ;
         firstName: string = "";
         lastName: string = "";
         nameInitials: string = "";
@@ -217,7 +213,6 @@
         isUnavailabilityAllowed!: boolean;
 
         staffType: string = "";
-        objCommitmentSubmit: any = {};
         scheduleId!: string;
         weeksInSchedule: number = 4;
         currentShceduleIndex: number = 0;
@@ -225,7 +220,6 @@
         scheduleEndDate!: Date;
         isTierOpen: boolean = false;
         needFV = true;
-        isWelcomeModalVisible: boolean = false;
         isAllFilterChecked: boolean = true;
         localNextVar: any;
         navForward: any;
@@ -238,7 +232,11 @@
         errorMsgValue: string = "";
         errorClassFlag: string = "";
         isCalenderViewLoaded: boolean = false;
-       
+        userSchedules!: any;        
+        isLoading!: Boolean;
+        events: any = [];
+        sharedToggle: boolean = false;
+        counter: any = 0;
         
         beforeRouteLeave(to:any, from:any, next:any) {
             let warningMsgStatus = this.checkWarningMessage();
@@ -371,15 +369,7 @@
                         descriptionChild.innerHTML = "<span>+</span>";
                         descriptionChild.classList.add("openNeed-plusSign");
                         italicEl.appendChild(descriptionChild);
-                        //append PremiumLaborShift Icon
-                        var ispremiumLaborLevelIconVisible = arg.event.extendedProps.premiumLaborLevel;
-                        let premiumLaborLevelIcon = document.createElement("i");
-                        premiumLaborLevelIcon.innerHTML = "hourglass_empty";
-                        premiumLaborLevelIcon.classList.add("material-icons");
-                        premiumLaborLevelIcon.classList.add("hourGlsEmpty");
-                        if(ispremiumLaborLevelIconVisible){
-                            italicEl.appendChild(premiumLaborLevelIcon);
-                        }
+                        
                         if (eventChanged) {
                             //append left visual if change flag is true
                             let leftChild = document.createElement("div");
@@ -403,10 +393,7 @@
                             }
                         }
                         if (dailyEvents > 1) {
-                            italicEl.removeChild(descriptionChild);
-                            if(ispremiumLaborLevelIconVisible){
-                                italicEl.removeChild(premiumLaborLevelIcon);
-                            }
+                            italicEl.removeChild(descriptionChild);                            
                             child.classList.remove("openNeed-title");
                             if(arg.event.extendedProps.schedStatus == 'Posted' && arg.event.extendedProps.types.includes("Need"))
                             child.classList.add("openNeed-title-withschedule");
@@ -415,10 +402,7 @@
                         }
 
                         if (arg.event.extendedProps.filteredEventCount == 1 || arg.event.extendedProps.isAllFilterChecked == false) {
-                            italicEl.appendChild(descriptionChild);
-                            if(ispremiumLaborLevelIconVisible){
-                                italicEl.appendChild(premiumLaborLevelIcon);
-                            }
+                            italicEl.appendChild(descriptionChild);                           
                             child.classList.add("openNeed-title");
                             child.classList.remove("openNeed-title-fourweek");
                         }
@@ -695,16 +679,10 @@
                 };
             },
         };
-        
-        userSchedules!: any;        
-        isLoading!: Boolean;
-        events: any = [];
-        sharedToggle: boolean = false;
-        counter: any = 0;
 
         async created() { 
             await this.$store.dispatch("profile/getProfileDetails", "");           
-                if(this.profileData.username !== undefined)
+                if(this.profileData?.username !== undefined)
                 {
                     this.profile =  this.profileData;
                     if (localStorage.getItem("visitedDepartmentView") != null) {
@@ -719,7 +697,8 @@
 
         mounted() {
              // create a local variable of this
-             this.currentMonthCalendarApi = this.$refs.fullCalendarCurrentMonth.getApi();                 
+             
+             this.currentMonthCalendarApi = this.$refs?.fullCalendarCurrentMonth?.getApi();                 
              this.updateUserName();
         }
 
@@ -750,7 +729,6 @@
             this.sharedToggle = false;
             if (
                 this.sharedRequest.assignmentDetail ||
-                this.sharedRequest.selfSchedule ||
                 this.sharedRequest.availability ||
                 this.sharedRequest.tradeShift ||
                 this.sharedRequest.request ||
@@ -813,11 +791,11 @@
 
         updateUserName() {
             if (this.profileData != null) {
-                this.firstName = this.profileData.first;
-                this.lastName = this.profileData.last;
+                this.firstName = this.profileData?.first;
+                this.lastName = this.profileData?.last;
             } else {
-                this.firstName = this.oidcUser.firstName;
-                this.lastName = this.oidcUser.firstName;
+                this.firstName = this.oidcUser?.firstName;
+                this.lastName = this.oidcUser?.firstName;
             }
             if (this.firstName != undefined && this.lastName != undefined) {
                 this.nameInitials = this.firstName.charAt(0).toUpperCase() + this.lastName.charAt(0).toUpperCase();
@@ -1188,7 +1166,8 @@
             }
         }
         //get staff assigments for particular schedules
-        async getSchedules(currentDate: boolean = false) {  
+        async getSchedules(currentDate: boolean = false) { 
+            console.log(this.profileData); 
             this.weeksInSchedule = this.profileData.weeksInSchedule;         
                 if (currentDate) 
                 {                        
@@ -1235,7 +1214,12 @@
                                 description: event.description,
                                 descriptionCoid:  (event.coid + ' - ' + event.departmentCode),
                                 facilityDeptName:  (event.facilityName + ' - ' + event.departmentName),
-                                dailyEvents: event.dailyEvents
+                                dailyEvents: event.dailyEvents,
+                                needFV: this.needFV
+                                // filteredEventCount: 0,
+                                // isAllFilterChecked: true,
+                                // schedStatus: this.scheduleStatus,
+                                // types: event.dailyEventsType
 
                             });
                         }                       
@@ -1256,7 +1240,7 @@
             this.scheduleStartDate = schedule.start;
             this.scheduleEndDate = schedule.end;
             this.scheduleStatus = schedule.status;
-            this.currentMonthCalendarApi.gotoDate(schedule.start);
+            this.currentMonthCalendarApi?.gotoDate(schedule.start);
             this.currentDate =
                 moment(schedule.start).format("ll") +
                 " - " +
@@ -1362,7 +1346,6 @@
                 this.currentEvent = reset;  
                 this.sharedRequest = {
                     type: 1,
-                    selfSchedule: isMultiDayAllowed,
                     request: this.checkIfFutureDate(selectInfo.start),
                     availability: this.isUnavailabilityAllowed,
                     calSelectedDates: this.calSelectedDates,
@@ -1524,7 +1507,7 @@
                 });
         }
 
-        async raiseShiftTradeViewClickEvent(eventDate: any, shiftTradeOfferId: any, callback:any) {
+        async raiseShiftTradeViewClickEvent(eventDate: Date, shiftTradeOfferId: any, callback:any) {
             if (new Date(eventDate) < new Date(this.scheduleStartDate)) {
                 await this.prevMonth();
             }
@@ -1559,7 +1542,7 @@
             }
         }
 
-        async raiseClickEvent(eventDate: any, callback:any) {
+        async raiseClickEvent(eventDate: Date, callback:any) {
             if (new Date(eventDate) < new Date(this.scheduleStartDate)) {
                 await this.prevMonth();
             }
@@ -1677,12 +1660,10 @@
                 else if (event.type == "Unavailability") {
                     this.sharedRequest = {
                         type: 1,
-                        selfSchedule: false,
                         request: false,
                         availability: true,
                         calSelectedDates: {},
                         isUnavailabilityEvent: true,
-                        isSelfScheduledEvent: false,
                         status: this.scheduleStatus
                     }; /*needApproval: false,*/
                 }
@@ -1773,8 +1754,8 @@
             });
 
             this.currentShceduleIndex = this.profile.schedules.indexOf(currentsched);
-            this.scheduleStartDate = currentsched.start;
-            this.scheduleEndDate = currentsched.end;
+            this.scheduleStartDate = currentsched?.start;
+            this.scheduleEndDate = currentsched?.end;
 
             return currentsched;
         }
@@ -1791,34 +1772,8 @@
             const nextWeek = this.profile.schedules[this.currentShceduleIndex];           
             await this.setStaffEvents(nextWeek);
         }
-
-        showWelcomeModal(){
-            if(this.profileData.isFirstTimeLogin && 
-                !this.profileData.isAdmin) {
-                this.isWelcomeModalVisible = true;
-            }
-            else{
-                this.isWelcomeModalVisible = false;
-            }
-        }
-
-        async onCloseWelcomePopup(){
-            let data = {
-                        isFirstTimeLogin: true,
-                    };
-            await this.$store.dispatch('profile/updateWelcomePopupstatus', data)
-                .then((res: any) => {
-                    this.isWelcomeModalVisible = false;
-                })
-                .catch((err: any) => {
-                    if (err) {
-                        console.log(err);
-                        this.isWelcomeModalVisible = false;
-                    }
-                });
-        }
     }
-
+       
 </script>
 <style lang="css">
     .neu-dashboard__header {

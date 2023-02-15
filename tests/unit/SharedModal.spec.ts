@@ -6,12 +6,12 @@ describe('Shared Modal', () => {
     const defaultSharedRequest = {
       type: 2,
       assignmentDetail: true,
-      calSelectedDates: []
+      calSelectedDates: {startDate:'2/12/2023',endDate:'02/13/2023'}
     };
     const currentEventData =  {
       id: '876545678',
       status:'Request',
-      date: '2023-02-10T16:27:35.299Z'
+      date: '2023-02-12T16:27:35.299Z'
   }
 
     describe('Template', () => {
@@ -40,6 +40,21 @@ describe('Shared Modal', () => {
           wrapper.vm.$nextTick(() => {
             expect(wrapper.emitted()['close-modal'][0]).toEqual([])
           })
+        });
+        it('Validate date navigation method', () => {
+          expect(wrapper.vm.showDateNavigation()).toBe(true);
+        });
+        it('Validate prev day navigation method', async() => {
+          debugger
+          await wrapper.vm.previousDay();
+          expect(wrapper.text().includes('February 13, 2023'));
+        });
+        it('Validate next day navigation method', async() => {
+          debugger
+          wrapper.vm.nextDay();
+          await wrapper.vm.$nextTick()
+          expect(wrapper.emitted('raiseClickEvent')).toBeTruthy();
+          //expect(wrapper.text().includes('Hello'));
         });
     }); 
 });

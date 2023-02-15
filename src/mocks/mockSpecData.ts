@@ -83,6 +83,22 @@ export const profileData = {
             "productiveType": "NON-PRODUCTIVE"
         }
     ],
+    "schedules":[
+    {"coid": "11111",
+    "created": "2023-02-14T14:04:59.8466667",
+    "createdBy": "SYSADMN",
+    "departmentCode": "22222",
+    "departmentId": 12,
+    "departmentName": "Test Dept",
+    "end"   :"2023-02-25T07:00:00",
+    "facilityId": 12,
+    "facilityName":"Mock Facility",
+    "scheduleId":80,
+    "start": "2023-01-29T07:00:00",
+    "status":"Posted",
+    "updated":"2023-02-14T14:04:59.8466667",
+    "updatedBy": "SYSADMN"
+    }],
     "secondaryDepartments": [],
     "skills": [
         {
