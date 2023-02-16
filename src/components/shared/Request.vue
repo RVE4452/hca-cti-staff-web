@@ -391,7 +391,7 @@
                 let requestBody = {
                     staffId: this.profileData.staffId,
                     departmentId: this.profileData.departmentId,
-                    // departmentShiftId: this.profileData.departmentShiftId,
+                    departmentShiftId: additionalRequestEvent ? this.defaultShift : this.shift,
                     start: new Date(
                         this.calSelectedDates.startDate.getTime() -
                         this.calSelectedDates.startDate.getTimezoneOffset() * 60000
@@ -403,7 +403,8 @@
                     comment: additionalRequestEvent ? this.defaultComment : this.comment,
                     // status: this.status,
                     email: this.profileData.email,
-                    // shifts: [] as any[],
+                    status: "pending",
+                    // departmentShiftId: []
                 };
                 for (var i = 0; i < this.selectedDate?.length; i++) {
                     var eventStartDateTime = new Date(this.selectedDate[i]);
@@ -424,14 +425,14 @@
                     );
                     let objReq = {
                         departmentShiftId: additionalRequestEvent ? this.defaultShift : this.shift,
-                        startDateTime: new Date(
-                            eventStartDateTime.getTime() -
-                            eventStartDateTime.getTimezoneOffset() * 60000
-                        ).toISOString(), // Add Time
                         // startDateTime: new Date(
                         //     eventStartDateTime.getTime() -
                         //     eventStartDateTime.getTimezoneOffset() * 60000
-                        // ), // Add Time
+                        // ).toISOString(), // Add Time
+                        startDateTime: new Date(
+                            eventStartDateTime.getTime() -
+                            eventStartDateTime.getTimezoneOffset() * 60000
+                        ), // Add Time
                         hours: Number(additionalRequestEvent ? this.defaultDuration : this.duration), // Add Hours
                         minutes: 0,
                     };
