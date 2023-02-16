@@ -36,7 +36,7 @@
                                 },
                                 ]"
                                 >
-                                {{ dates }}
+                                <!-- {{ dates }} -->
                             </div>
                         </div>
                     </div>
@@ -49,25 +49,24 @@
                         <div class="col-12">
                             <label for="approval_code" class="neu-input__label">Select Shift</label>
                             <template v-if="!additionalRequestEvent">
-                                <neu-select 
+                                <select 
                                 ref="RVE4452_32493_UI_Testing_Staff_Non-Productive_Request_Panel_Tab" interface="popover" name="ddlShift" v-model="shift"
                                     @v-neu-change="shiftChange(additionalRequestEvent)">
-                                    <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts" :value="shift.departmentShiftId"
+                                    <option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts" :value="shift.departmentShiftId"
                                         :key="shift.departmentShiftId">
                                         {{ shift.description }}
-                                    </neu-option>
-                                </neu-select>
+                                    </option>
+                                </select>
                             </template>
 
                             <template v-if="additionalRequestEvent">
-                                <neu-select ref="RVE4452_32493_UI_Testing_Staff_Non-Productive_Request_Panel_Tab" interface="popover" name="ddlShift" v-model="defaultShift"
-                                    @v-neu-change="shiftChange(additionalRequestEvent)"
-                                >
-                                    <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts" :value="shift.departmentShiftId"
+                                <select ref="RVE4452_32493_UI_Testing_Staff_Non-Productive_Request_Panel_Tab" interface="popover" name="ddlShift" v-model="defaultShift"
+                                    @v-neu-change="shiftChange(additionalRequestEvent)"> 
+                                    <option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts" :value="shift.departmentShiftId"
                                         :key="shift.departmentShiftId">
                                         {{ shift.description }}
-                                    </neu-option>
-                                </neu-select>                              
+                                    </option>
+                                </select>                              
                             </template>
                         </div>
                     </div>
@@ -79,8 +78,8 @@
                                     <div class="col-6">
                                         <label for="partof_day" class="neu-input__label">Start Time</label>                                        
                                         <template v-if="!additionalRequestEvent">
-                                            {{ getDisableDuration(additionalRequestEvent) }}
-                                            <input :disabled="false"
+                                            <!-- {{ getDisableDuration(additionalRequestEvent) }} -->
+                                            <input
                                                    name="txtStartTime"
                                                    input="startTime"
                                                    v-bind:class="[
@@ -112,19 +111,18 @@
                                         <!-- <p>additionalRequestEvent {{additionalRequestEvent}}</p> -->
                                         <div v-if="!additionalRequestEvent">
                                             <!-- <p>Disabled: True</p> -->
-                                            <neu-select
+                                            <select
                                             id="durationOne"
                                             interface="popover"
-                                            name="ddlDuration" 
-                                            v-bind="bindDisabled"                    >                                              
-                                                <neu-option
+                                            name="ddlDuration" >                                              
+                                                <option
                                                   v-for="duration in durationList"
                                                   :value="duration.value"
                                                   :key="duration.value"                                                  
                                                 >
                                                   {{ duration.label }}
-                                                </neu-option>
-                                            </neu-select>
+                                                </option>
+                                            </select>
                                         </div>
                                         
                                        
@@ -139,8 +137,8 @@
                         <div class="col-12">
                             <label for="approval_code" class="neu-input__label">Comments (Optional)</label>
                             <template v-if="!additionalRequestEvent">
-                            <neu-textarea 
-                                    :maxlength="maxCommentsCharacters" v-model="comment" name="Comment"></neu-textarea>
+                            <textarea 
+                                    :maxlength="maxCommentsCharacters" v-model="comment" name="Comment"></textarea>
                                 <br>
                                 <span class="commentCharacterCountText">Remaining {{ maxCommentsCharacters - (comment!= undefined ? comment.length: 0) }}  characters.</span>
 
@@ -149,11 +147,11 @@
                                 
                             </template>
                             <template v-if="additionalRequestEvent">
-                                 <neu-textarea
+                                 <textarea
                                     :maxlength="maxCommentsCharacters"
                                     v-model="defaultComment"
                                     name="Comment"
-                                ></neu-textarea>
+                                ></textarea>
                                 <br>
                                 <span class="commentCharacterCountText">Remaining {{ maxCommentsCharacters - (defaultComment!= undefined ? defaultComment.length: 0) }}  characters.</span>
                             </template>
@@ -165,16 +163,12 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <!-- <p>Fire Action {{ FireAction(additionalRequestEvent) }}</p> -->
                     <button color="primary" fill="raised" class="d-block"
                         @click="FireAction(additionalRequestEvent)"
-                        :disabled="(bindDisabled || isImpersonating)"
+                        
                         v-bind:name="'btn' + (currentEvent?.type == 'Request' && additionalRequestEvent == false ? 'Withdraw' : 'AddToSchedule')"
                         data-test="fire-action"
-                    >
-                        Add to Schedule
-                    </button>
-                    
+                    >Add to Schedule</button>                    
                 </div>
             </div>
         </div>
@@ -188,7 +182,6 @@
 
 <script lang="ts">
     import { ORSchedule, Event } from "@/models";
-    //import plugins and modules
     import { Options, Vue } from 'vue-class-component';
     import moment from "moment";
     import { mapState } from "vuex";
@@ -201,8 +194,7 @@
         calSelectedDates!: any;
         currentEvent!: any;
         additionalRequestEvent!: any;
-        dayChanged!: any;
-        
+        dayChanged!: any;        
     }
     @Options({
          computed: {
@@ -212,11 +204,11 @@
         },
         disabled:{
             type: Boolean,
-            default:false
+            default:true
         },
         data(){
             return{
-                bindDisabled: this.disabled !== false ?  { disabled: 'disabled' }:{}
+                bindDisabled: this.disabled !== true ?  { disabled: 'disabled' }:{}
             }
         },
         components: {
@@ -224,7 +216,9 @@
             ConfirmMsgPopUp
         },
     })
-    export default class Request extends Vue {       
+
+   
+    export default class Request extends Vue.with(Props) {            
         public requestDetail!: any;
         public data!: any;
         availiableDates: string[] = [];
@@ -262,65 +256,62 @@
 
         async mounted(): Promise<void> {
             await this.loadData();
+            console.log(this.calSelectedDates)
         }
 
         async loadData() {
             try {
                 this.generateTimeList(this.maxTimeDuration);
                 this.buttonCaption =
-                    this.currentEvent?.type == "Request" ? "Withdraw" : "Add to Schedule";
+                    this.currentEvent.type == "Request" ? "Withdraw" : "Add to Schedule";
                 await this.getSelectedDates();
-                if (this.currentEvent?.type == "Request") {
+                if (this.currentEvent.type == "Request") {
                     this.getRequestEvent();
                     this.disableduration = false;
                 }
                 this.defaultStartTime = "";
                 this.defaultDuration = "";
                 this.defaultShift = "";
-                this.departmentShift = [];
+                this.availableShifts = [];
                 this.defaultComment = "";
 
-                for (var i = 0; i < this.profileData?.departmentShifts?.length; i++)
+                for (var i = 0; i < this.profileData.departmentShifts.length; i++)
                 {
-                    // let selectedDate = moment(new Date(
-                    //     this.calSelectedDates?.startDate.getTime() -
-                    //     this.calSelectedDates?.startDate.getTimezoneOffset() * 60000
-                    // ).toISOString());
                     let selectedDate = moment(new Date(
-                        this.calSelectedDates?.startDate.getTime() -
-                        this.calSelectedDates?.startDate.getTimezoneOffset() * 60000
-                    ));
+                        this.calSelectedDates.startDate.getTime() -
+                        this.calSelectedDates.startDate.getTimezoneOffset() * 60000
+                    ).toISOString());
                     
-                    if ((this.profileData?.departmentShifts[i].effective === null)
-                        && (this.profileData?.departmentShifts[i].expires === null))
+                    if ((this.profileData.departmentShifts[i].effective === null)
+                        && (this.profileData.departmentShifts[i].expires === null))
                     {
-                        this.departmentShift?.push(this.profileData.departmentShifts[i]);
+                        this.availableShifts.push(this.profileData.departmentShifts[i]);
                     }
-                    else if ((this.profileData?.departmentShifts[i].effective !== null)
-                            && (this.profileData?.departmentShifts[i].expires !== null)) 
+                    else if ((this.profileData.departmentShifts[i].effective !== null)
+                            && (this.profileData.departmentShifts[i].expires !== null)) 
                     {
-                        if((this.profileData?.departmentShifts[i].effective <= selectedDate) && (this.profileData?.departmentShifts[i].expires >= selectedDate))
+                        if((this.profileData.departmentShifts[i].effective <= selectedDate) && (this.profileData.departmentShifts[i].expires >= selectedDate))
                         {
-                            this.departmentShift?.push(this.profileData?.departmentShifts[i]);
+                            this.availableShifts.push(this.profileData.departmentShifts[i]);
                         }
                     }
-                    else if (((this.profileData?.departmentShifts[i].effective === null)) && (selectedDate <=  moment(this.profileData?.departmentShifts[i].expires)))
+                    else if (((this.profileData.departmentShifts[i].effective === null)) && (selectedDate <=  moment(this.profileData.departmentShifts[i].expires)))
                     {
                         
-                        this.departmentShift?.push(this.profileData?.departmentShifts[i]);
+                        this.availableShifts.push(this.profileData.departmentShifts[i]);
                         
                     } 
-                    else if(((this.profileData?.departmentShifts[i].expires === null)) && (selectedDate >= moment(this.profileData?.departmentShifts[i].effective)))
+                    else if(((this.profileData.departmentShifts[i].expires === null)) && (selectedDate >= moment(this.profileData.departmentShifts[i].effective)))
                     {
                         
-                        this.departmentShift?.push(this.profileData?.departmentShifts[i]);
+                        this.availableShifts.push(this.profileData.departmentShifts[i]);
                         
                     }
                 }
             } catch (error) {
                 console.log(error);
             }
-        }
+        }        
 
         generateTimeList(maxDuration: any): void {
             const hours: any = [];
@@ -338,10 +329,10 @@
         }
 
         async getSelectedDates(): Promise<void> {
-            var startSD = moment(this.calSelectedDates?.startDate, "M/D/YYYY");
-            var endSD = moment(this.calSelectedDates?.endDate, "M/D/YYYY");
-            var diffDays = endSD.diff(startSD, "days");
-            let currentDate: Date = new Date(this.calSelectedDates?.startDate);
+            var startDate = moment(this.calSelectedDates?.start, "M/D/YYYY");
+            var endDate = moment(this.calSelectedDates?.end, "M/D/YYYY");
+            var diffDays = endDate.diff(startDate, "days");
+            let currentDate: Date = new Date(this.calSelectedDates.startDate);
             this.availiableDates = [];
             for (var i = 0; i < diffDays; i++) {
                 const date = moment(currentDate)
@@ -384,8 +375,9 @@
         }
 
         async FireAction(additionalRequestEvent:any) {
+            // debugger
             if (!this.widthdrawMode(additionalRequestEvent)) {
-                //If there is no email address present in profile then doesn't allow them to send Non-productive shift request
+                //If there is no email address present in profile then doesn't allow them to send Non-productive shift request]
                 var selectedShift =  this.departmentShift?.find((x:any)=> x.id == this.shift);           
                 if(this.profileData.email == null || 
                     this.profileData.email == undefined || this.profileData.email == "")
@@ -395,20 +387,23 @@
                     return;
                 }
                 this.isLoading = true;
+                
                 let requestBody = {
-                    tenantId: this.profileData.tenantId,
-                    startDate: new Date(
-                        this.calSelectedDates?.startDate.getTime() -
-                        this.calSelectedDates?.startDate.getTimezoneOffset() * 60000
+                    staffId: this.profileData.staffId,
+                    departmentId: this.profileData.departmentId,
+                    // departmentShiftId: this.profileData.departmentShiftId,
+                    start: new Date(
+                        this.calSelectedDates.startDate.getTime() -
+                        this.calSelectedDates.startDate.getTimezoneOffset() * 60000
                     ),
-                    endDate: new Date(
-                        this.calSelectedDates?.endDate.getTime() -
-                        this.calSelectedDates?.endDate.getTimezoneOffset() * 60000
+                    end: new Date(
+                        this.calSelectedDates.endDate.getTime() -
+                        this.calSelectedDates.endDate.getTimezoneOffset() * 60000
                     ),
                     comment: additionalRequestEvent ? this.defaultComment : this.comment,
+                    // status: this.status,
                     email: this.profileData.email,
-                    shifts: [] as any[],
-
+                    // shifts: [] as any[],
                 };
                 for (var i = 0; i < this.selectedDate?.length; i++) {
                     var eventStartDateTime = new Date(this.selectedDate[i]);
