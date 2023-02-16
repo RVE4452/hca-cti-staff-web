@@ -210,7 +210,7 @@
         msgValue: string = "";
         classFlag: string = "";
         calSelectedDates: any = {};
-        isUnavailabilityAllowed!: boolean;
+        staffPreferenceAllowed!: boolean;
 
         staffType: string = "";
         scheduleId!: string;
@@ -1310,9 +1310,9 @@
                 new Date(startDate) <= new Date(todayDate) &&
                 new Date(endDate) <= new Date(todayDate)
             ) {
-                this.isUnavailabilityAllowed = false;
+                this.staffPreferenceAllowed = false;
             } else {
-                this.isUnavailabilityAllowed = this.profile.isUnavailabilityAllowed;
+                this.staffPreferenceAllowed = true;
             }
 
             this.calSelectedDates =  { startDate: selectInfo.start, endDate: selectInfo.end };
@@ -1336,7 +1336,7 @@
                     if ((scheduleEventType != "Need" && diffDays == 0) || (scheduleEventType == "Need" && diffDays == 0 && this.isDeptNeedCheck == false))
                         return;
                 }
-                this.sharedToggle = (this.isUnavailabilityAllowed || this.checkIfFutureDate(selectInfo.start) || onDateNavigation);
+                this.sharedToggle = (this.staffPreferenceAllowed || this.checkIfFutureDate(selectInfo.start) || onDateNavigation);
                 this.counter = this.counter + 1;
                 setTimeout(() => this.currentMonthCalendarApi.updateSize(), 300);
                 window.scrollTo(0, 0);
@@ -1347,7 +1347,7 @@
                 this.sharedRequest = {
                     type: 1,
                     request: this.checkIfFutureDate(selectInfo.start),
-                    availability: this.isUnavailabilityAllowed,
+                    staffPreferenceAllowed: this.staffPreferenceAllowed,
                     calSelectedDates: this.calSelectedDates,
                     status: this.scheduleStatus,
                     scheduleId: (isMultiDayAllowed == true ? this.profile.schedules[this.currentShceduleIndex].id : ""),
@@ -1609,10 +1609,10 @@
                     let todayDate = moment(new Date()).format("YYYY-MM-DD");
 
                     if (new Date(strClickEventDate) <= new Date(todayDate)) {
-                        this.isUnavailabilityAllowed = false;
+                        this.staffPreferenceAllowed = false;
                     }
                     else {
-                        this.isUnavailabilityAllowed = this.profile.isUnavailabilityAllowed;
+                        this.staffPreferenceAllowed = true;
                     }
                     if (moment(event.date) > moment().add(48,'hours')) {
                         this.isShiftTradeAllowed = true;
@@ -1625,6 +1625,7 @@
                     this.sharedRequest = {
                         type: 4,
                         tradeShift: this.isShiftTradeAllowed,
+                        staffPreferenceAllowed: this.staffPreferenceAllowed,
                         request: this.checkIfFutureDate(strClickEventDate),
                         status: this.scheduleStatus,
                         calSelectedDates: this.calSelectedDates,
@@ -1640,10 +1641,10 @@
                     let todayDate = moment(new Date()).format("YYYY-MM-DD");
 
                     if (new Date(strClickEventDate) <= new Date(todayDate)) {
-                        this.isUnavailabilityAllowed = false;
+                        this.staffPreferenceAllowed = false;
                     }
                     else {
-                        this.isUnavailabilityAllowed = this.profile.isUnavailabilityAllowed;
+                        this.staffPreferenceAllowed = true;
                     }
 
                     this.calSelectedDates ={ startDate: eventStart, endDate: clickEventNextDate };
@@ -1651,7 +1652,7 @@
                     this.sharedRequest = {
                         type: 1,
                         request: this.checkIfFutureDate(strClickEventDate),
-                        availability: this.isUnavailabilityAllowed,
+                        staffPreferenceAllowed: this.staffPreferenceAllowed,
                         calSelectedDates: this.calSelectedDates,
                         status: this.scheduleStatus,
                         SelfScheduleDepartments: event.selfScheduleDepartments                      

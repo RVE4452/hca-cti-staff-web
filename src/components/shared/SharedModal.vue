@@ -237,7 +237,7 @@ export default class SharedModal extends Vue.with(Props) {
         tabfocused++;
       }
 
-      if (sharedRequest.availability && item.id === "DayPreference") {
+      if (sharedRequest.staffPreferenceAllowed && item.id === "DayPreference") {
         item.show = true;
         item.focused = tabfocused == 0 ? true : false;
         this.tabCurrent = item.focused ? item.id : this.tabCurrent;
