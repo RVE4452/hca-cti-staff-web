@@ -5,7 +5,7 @@ env:
   NODE_VERSION: '16'  
 
   # Environment Variables
-  APP_VERSION: 0.6.0.0
+  APP_VERSION: 0.7.0.0
   IDP_URL: https://pfqa.idf.medcity.net
   IDP_LOGOUT: https://pfqa.idf.medcity.net/SSOLogout/logout.jsp
   IDP_CLIENT_ID: StaffPortal
