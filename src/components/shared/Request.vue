@@ -199,8 +199,7 @@
     @Options({
          computed: {
                 ...mapState('schedule', ['requestDetail','userSchedules']),
-                ...mapState('profile',['profileData','isAdmin','isImpersonating','appInsightEventData'])
-                
+                ...mapState('profile',['profileData','isAdmin','isImpersonating','appInsightEventData'])                
         },
         disabled:{
             type: Boolean,
@@ -390,20 +389,24 @@
                 
                 let requestBody = {
                     staffId: this.profileData.staffId,
+                    // skillId: this.profileData.skill,
+                    skillId: 89,
                     departmentId: this.profileData.departmentId,
                     departmentShiftId: additionalRequestEvent ? this.defaultShift : this.shift,
-                    start: new Date(
-                        this.calSelectedDates.startDate.getTime() -
-                        this.calSelectedDates.startDate.getTimezoneOffset() * 60000
+                    // start: "2023-02-25T00:02:00.000Z",
+                    start: new Date(                        
+                        this.calSelectedDates?.startDate.getTime() -
+                        this.calSelectedDates?.startDate.getTimezoneOffset() * 60000
                     ),
+                    // end: "2023-02-26T00:02:00.000Z",
                     end: new Date(
-                        this.calSelectedDates.endDate.getTime() -
-                        this.calSelectedDates.endDate.getTimezoneOffset() * 60000
+                        this.calSelectedDates?.endDate.getTime() -
+                        this.calSelectedDates?.endDate.getTimezoneOffset() * 60000
                     ),
                     comment: additionalRequestEvent ? this.defaultComment : this.comment,
                     // status: this.status,
                     email: this.profileData.email,
-                    status: "pending",
+                    status: "Pending",
                     // departmentShiftId: []
                 };
                 for (var i = 0; i < this.selectedDate?.length; i++) {
