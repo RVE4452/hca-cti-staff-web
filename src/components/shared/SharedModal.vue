@@ -88,8 +88,6 @@
         ></open-need>
       </div>
       <div v-if="tabCurrent === 'Request'">
-        <!-- <h3>Request</h3> -->
-        <!-- <Request  /> -->
         <Request :key="counter" :currentEvent="currentEvent" :additionalRequestEvent="false" :calSelectedDates="sharedRequest.calSelectedDates" @closeSharedModal="close" @showSuccessMsgPopUp="showSuccessModal" />
       </div>
 
