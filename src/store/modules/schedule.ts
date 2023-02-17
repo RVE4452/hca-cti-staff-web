@@ -323,7 +323,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      ScheduleOpenNeedRequest({ commit, rootState },payload){
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/OpenNeedRequest`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Requests/Needs`;
 
         return http
             .post(apiUrl, payload)
@@ -337,7 +337,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      getOpenNeeds({ commit, rootState },data: any){
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/OpenNeeds/${data.selectedDate}/${data.username}/${data.includePartials}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Staff/${data.staffId}/Needs/${data.date}`;
 
         return http
             .get(apiUrl)
