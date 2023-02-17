@@ -83,6 +83,22 @@ export const profileData = {
             "productiveType": "NON-PRODUCTIVE"
         }
     ],
+    "schedules":[
+    {"coid": "11111",
+    "created": "2023-02-14T14:04:59.8466667",
+    "createdBy": "SYSADMN",
+    "departmentCode": "22222",
+    "departmentId": 12,
+    "departmentName": "Test Dept",
+    "end"   :"2023-02-25T07:00:00",
+    "facilityId": 12,
+    "facilityName":"Mock Facility",
+    "scheduleId":80,
+    "start": "2023-01-29T07:00:00",
+    "status":"Posted",
+    "updated":"2023-02-14T14:04:59.8466667",
+    "updatedBy": "SYSADMN"
+    }],
     "secondaryDepartments": [],
     "skills": [
         {
@@ -3324,6 +3340,87 @@ export const departmentSchedulesNew = {
     ]
 }
 
-export const resultOpenNeed = [{"id":"cef47bce-8a04-435d-9f0c-47bb5a1a2966","tenantId":"bed1116d-cd91-41b9-bc60-edb0c42596b4","facilityId":12,"coid":"32905","facilityName":"Parkland Hospital","departmentId":110541,"departmentName":"PCU","departmentCode":"60702","departmentShiftId":185611,"type":"Open Need","shiftCode":"P","skillId":14,"skill":"CC","date":"2023-01-30T00:00:00","startTime":"2023-01-30T19:00:00","endTime":"2023-01-31T07:00:00","needStatusId":0,"needStatus":"No Status","shiftMembers":[{"username":"HNI4875","firstName":"Amanda","lastName":"Garnham (T)","skill":"RN","deptShiftId":null},{"username":"MJI5971","firstName":"Rudy","lastName":"Stensaas","skill":"RN","deptShiftId":null},{"username":"QPO5652","firstName":"Raymond","lastName":"Gingras(StaRN)","skill":"RN","deptShiftId":null}],"startDate":"0001-01-01T00:00:00","endDate":"0001-01-01T00:00:00","isPartial":false,"premiumLaborLevel":false,"isWeekend":false,"needId": 999}];
+export const resultOpenNeed = [
+    {
+      "id": "cef47bce-8a04-435d-9f0c-47bb5a1a2966",
+      "tenantId": "bed1116d-cd91-41b9-bc60-edb0c42596b4",
+      "facilityId": 12,
+      "coid": "32905",
+      "facilityName": "Parkland Hospital",
+      "departmentId": 110541,
+      "departmentName": "PCU",
+      "departmentCode": "60702",
+      "departmentShiftId": 185611,
+      "type": "Open Need",
+      "shiftCode": "P",
+      "skillId": 14,
+      "skill": "CC",
+      "date": "2023-01-30T00:00:00",
+      "startTime": "2023-01-30T19:00:00",
+      "endTime": "2023-01-31T07:00:00",
+      "needStatusId": 0,
+      "needStatus": "No Status",
+      "shiftMembers": [
+        {
+          "username": "HNI4875",
+          "firstName": "Amanda",
+          "lastName": "Garnham (T)",
+          "skill": "RN",
+          "deptShiftId": null
+        },
+        {
+          "username": "MJI5971",
+          "firstName": "Rudy",
+          "lastName": "Stensaas",
+          "skill": "RN",
+          "deptShiftId": null
+        },
+        {
+          "username": "QPO5652",
+          "firstName": "Raymond",
+          "lastName": "Gingras(StaRN)",
+          "skill": "RN",
+          "deptShiftId": null
+        }
+      ],
+      "startDate": "0001-01-01T00:00:00",
+      "endDate": "0001-01-01T00:00:00",
+      "isPartial": false,
+      "premiumLaborLevel": false,
+      "isWeekend": false,
+      "needId": 999
+    }
+];
 
-export const currentEvent = {id:"bed1116d-cd91-41b9-bc60-edb0c42596b4",type:"Need",status:"1 Needs",shiftCode:"",description:"01/08/2023 00:00:00,02/04/2023 00:00:00",date:"2023-01-30T00:00:00",hours:0,minutes:0,isWeekend:true,dailyEvents:2,changed:false,facilityId:0,facilityCoId:null,facilityName:null,departmentId:0,departmentName:null,departmentCode:null,isCommitment:false,isSelfScheduled:false,hasEventSelfScheduleNeedsInPrimaryDept:false,selfScheduleDepartments:null,isOvertime:false,actualStartTime:null,actualEndTime:null,productiveType:null,premiumLaborLevel:false,dailyEventsType:["Assignment","Need"],isTradableShift:false,assignmentId:"bb0598f8-867b-4a36-9af7-e22a37538be1"};
+export const currentEvent = {
+    id:"bed1116d-cd91-41b9-bc60-edb0c42596b4",
+    type:"Need",
+    status:"1 Needs",
+    shiftCode:"",
+    description:"01/08/2023 00:00:00,02/04/2023 00:00:00",
+    date:"2023-01-30T00:00:00",
+    hours:0,
+    minutes:0,
+    isWeekend:true,
+    dailyEvents:2,
+    changed:false,
+    facilityId:0,
+    facilityCoId:null,
+    facilityName:null,
+    departmentId:0,
+    departmentName:null,
+    departmentCode:null,
+    isCommitment:false,
+    isSelfScheduled:false,
+    hasEventSelfScheduleNeedsInPrimaryDept:false,
+    selfScheduleDepartments:null,
+    isOvertime:false,
+    actualStartTime:null,
+    actualEndTime:null,
+    productiveType:null,
+    premiumLaborLevel:false,
+    dailyEventsType:["Assignment","Need"],
+    isTradableShift:false,
+    assignmentId:"bb0598f8-867b-4a36-9af7-e22a37538be1"
+    
+};
