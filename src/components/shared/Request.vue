@@ -49,18 +49,18 @@
                         <div class="col-12">
                             <label for="approval_code" class="neu-input__label">Select Shift</label>
                             <template v-if="!additionalRequestEvent">
-                                <select 
-                                ref="RVE4452_32493_UI_Testing_Staff_Non-Productive_Request_Panel_Tab" interface="popover" name="ddlShift" v-model="shift"
+                                <neu-select 
+                                ref="RVE4452_32493_UI_Testing_Staff_Non-Productive_Request_Panel_Tab" interface="popover" name="ddlShift" :value="shift"
                                     @v-neu-change="shiftChange(additionalRequestEvent)">
-                                    <option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts" :value="shift.departmentShiftId"
+                                    <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts" :value="shift.departmentShiftId"
                                         :key="shift.departmentShiftId">
                                         {{ shift.description }}
-                                    </option>
-                                </select>
+                                    </neu-option>
+                                </neu-select>
                             </template>
 
                             <template v-if="additionalRequestEvent">
-                                <select ref="RVE4452_32493_UI_Testing_Staff_Non-Productive_Request_Panel_Tab" interface="popover" name="ddlShift" v-model="defaultShift"
+                                <select ref="RVE4452_32493_UI_Testing_Staff_Non-Productive_Request_Panel_Tab" interface="popover" name="ddlShift" :value="defaultShift"
                                     @v-neu-change="shiftChange(additionalRequestEvent)"> 
                                     <option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts" :value="shift.departmentShiftId"
                                         :key="shift.departmentShiftId">
@@ -187,8 +187,11 @@
     import { mapState } from "vuex";
     import ErrorNotification from "./ErrorNotification.vue";
     import ConfirmMsgPopUp from "@/components/shared/ConfirmMsgPopUp.vue";
-    import 'vue-loading-overlay/dist/vue-loading.css';
+    // import 'vue-loading-overlay/dist/vue-loading.css';
     import { useAppInsights } from '../../store/modules/AppInsights'
+    import {
+        NeuSelect,NeuOption,NeuLabel,NeuInput,NeuButton
+    } from '@neutron/vue'
     
     class Props{        
         calSelectedDates!: any;
@@ -211,6 +214,7 @@
             }
         },
         components: {
+            NeuSelect,NeuOption,NeuLabel,NeuInput,NeuButton,
             ErrorNotification,
             ConfirmMsgPopUp
         },
