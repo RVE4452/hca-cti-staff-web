@@ -108,7 +108,8 @@
                      :sharedRequest="sharedRequest"
                      :isPanelOpen="sharedToggle"
                      :counter="counter"
-                     :key="counter">
+                     :key="counter"
+                     :schedulePreferences="schedulePreferences">
         </SharedModal>       
     </neu-row>
     </neu-container>   
@@ -250,6 +251,7 @@
         errorMsgValue: string = "";
         errorClassFlag: string = "";
         isCalenderViewLoaded: boolean = false;
+        schedulePreferences:any={};
        
         
         beforeRouteLeave(to:any, from:any, next:any) {
@@ -1238,6 +1240,7 @@
             await this.$store.dispatch("schedule/getStaffSchedule", payload)
            .then(() => {              
                     if (this.userSchedules.events != undefined) {
+                        this.schedulePreferences = this.userSchedules.schedulePreferences;
                      this.userSchedules.events.forEach((event: Event) => {
                         let cellTitle: string;
                         event.assignmentId =
@@ -1631,8 +1634,6 @@
         }
 
         processClickEvent(cellTitle:string, eventStart:any, eventId:number, needFV:boolean) {
-            debugger
-            console.log(this.events);
              const event = cellTitle.includes("NEEDS")
                 ? this.events.find(
                     (event: Event) =>
@@ -1743,7 +1744,7 @@
                         event: this.checkIf48hour(event),
                         assignmentDetail: true,
                         status: this.scheduleStatus,
-                        availability:true
+                        availability:true,
                     };
                 }
             }

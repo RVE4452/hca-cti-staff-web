@@ -646,7 +646,7 @@ const actions: ActionTree<Schedule, RootState> = {
     },
 
     saveDayPreference({ commit, rootState },payload:any){
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Staff/SchedulePreferences/${payload.staffId}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Staff/SchedulePreferences/${payload.staffSchedulePreferenceId}`;
         
         return http
         .put(apiUrl,payload)

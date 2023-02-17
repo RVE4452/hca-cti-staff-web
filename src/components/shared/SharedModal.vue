@@ -67,7 +67,7 @@
             </div>
 
             <div v-if="tabCurrent === 'DayPreference'">
-                <day-preference-view />
+                <day-preference-view  :currentEvent="currentEvent"  :schedulePreferences="schedulePreferences" @showSuccessMsgPopUp="showSuccessModal" @closeSharedModal="close"/>
             </div> 
             <div v-if="tabCurrent === 'Event'">
                 <h3>Event</h3>
@@ -113,6 +113,7 @@
          counter!: any;
          scheduleStartDate!: Date;
          scheduleEndDate!: Date;
+         schedulePreferences!:any;
         
     }
     @Options({
@@ -171,7 +172,6 @@
 
         created() {
             //super(props);
-            
             const sharedRequest = JSON.parse(JSON.stringify(this.sharedRequest));
             const currentEvent = JSON.parse(JSON.stringify(this.currentEvent));  
             let tabfocused= 0;
