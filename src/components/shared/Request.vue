@@ -171,7 +171,12 @@ class Props {
         }
     },
     components: {
-        NeuSelect, NeuOption, NeuLabel, NeuInput, NeuButton, NeuTextarea,
+        NeuSelect, 
+        NeuOption, 
+        NeuLabel, 
+        NeuInput, 
+        NeuButton, 
+        NeuTextarea,
         ErrorNotification,
         ConfirmMsgPopUp
     },
@@ -213,6 +218,7 @@ export default class Request extends Vue.with(Props) {
     comment: string = "";
     defaultComment: string = "";
     skillId: any = '';
+    
 
     async mounted(): Promise<void> {
         await this.loadData();
@@ -244,7 +250,9 @@ export default class Request extends Vue.with(Props) {
             this.defaultDuration = "";
             this.defaultShift = "";
             this.availableShifts = [];
-            this.defaultComment = "";
+            this.defaultComment = "";  
+            const profileData:any[] = [];
+            
 
             for (var i = 0; i < this.profileData.departmentShifts.length; i++) {
                 let selectedDate = moment(new Date(
@@ -352,21 +360,18 @@ export default class Request extends Vue.with(Props) {
                 skillId: this.skillId,
                 departmentId: this.profileData.departmentId,
                 departmentShiftId: additionalRequestEvent ? this.defaultShift : this.shift,
-                // start: "2023-02-25T00:02:00.000Z",
                 start: new Date(
                     this.calSelectedDates?.startDate.getTime() -
                     this.calSelectedDates?.startDate.getTimezoneOffset() * 60000
                 ),
-                // end: "2023-02-26T00:02:00.000Z",
+                
                 end: new Date(
                     this.calSelectedDates?.endDate.getTime() -
                     this.calSelectedDates?.endDate.getTimezoneOffset() * 60000
                 ),
                 comment: additionalRequestEvent ? this.defaultComment : this.comment,
-                // status: this.status,
                 email: this.profileData.email,
                 status: "Pending",
-                // departmentShiftId: []
             };
             for (var i = 0; i < this.selectedDate?.length; i++) {
                 var eventStartDateTime = new Date(this.selectedDate[i]);
