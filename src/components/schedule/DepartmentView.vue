@@ -52,8 +52,7 @@
             </neu-col>
         </neu-row>        
     </div>
-    <neu-divider color="gray-100" dark="true" >
-    </neu-divider>
+    <neu-divider color="gray-100" dark="true" ></neu-divider>
     <!--Print Page Filters -->
     <div class="deptFiltersPrint">
             <table>

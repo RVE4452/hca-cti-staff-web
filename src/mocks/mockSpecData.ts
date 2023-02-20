@@ -3,7 +3,7 @@ export const profileData = {
     "staffId": 2127500,
     "tenantId": "bed1116d-cd91-41b9-bc60-edb0c42596b4",
     "tenantName": "Site5",
-    "tenantUrl": "https://site5.dev.fs.app.medcity.net/",
+    "tenantUrl": "https://ht-fps-cti-dev-appservice-api.azurewebsites.net",
     "email": "Brenna.Bober@hcahealthcare.com",
     "first": "BRENNA",
     "last": "BOBER",
