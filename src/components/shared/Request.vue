@@ -39,8 +39,7 @@
                         <div class="col-12">
                             <label for="approval_code" class="neu-input__label">Select Shift</label>
                             <template v-if="!additionalRequestEvent">
-                                <neu-select 
-                                    interface="popover" name="ddlShift" :value="shift" @v-neu-change="shiftChange">
+                                <neu-select interface="popover" name="ddlShift" :value="shift" @v-neu-change="shiftChange">
                                     <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts"
                                         :value="shift.departmentShiftId" :key="shift.departmentShiftId">
                                         {{ shift.description }}
@@ -49,8 +48,8 @@
                             </template>
 
                             <template v-if="additionalRequestEvent">
-                                <neu-select 
-                                    interface="popover" name="ddlShift" :value="defaultShift" @v-neu-change="shiftChange">
+                                <neu-select interface="popover" name="ddlShift" :value="defaultShift"
+                                    @v-neu-change="shiftChange">
                                     <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts"
                                         :value="shift.departmentShiftId" :key="shift.departmentShiftId">
                                         {{ shift.description }}
@@ -67,7 +66,8 @@
                                     <div class="col-6">
                                         <label for="partof_day" class="neu-input__label">Start Time</label>
                                         <template v-if="!additionalRequestEvent">
-                                            <neu-input name="txtStartTime" :disabled="bindDisabled" :input="startTime" :value:class="['neu-input__text-field']" type="time" />
+                                            <neu-input name="txtStartTime" :disabled="bindDisabled" :input="startTime"
+                                                :value:class="['neu-input__text-field']" type="time" />
                                         </template>
 
                                         <template v-if="additionalRequestEvent">
