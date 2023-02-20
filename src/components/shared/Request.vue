@@ -140,7 +140,6 @@ import moment from "moment";
 import { mapState } from "vuex";
 import ErrorNotification from "./ErrorNotification.vue";
 import ConfirmMsgPopUp from "@/components/shared/ConfirmMsgPopUp.vue";
-// import 'vue-loading-overlay/dist/vue-loading.css';
 import { useAppInsights } from '../../store/modules/AppInsights'
 
 class Props {
@@ -262,14 +261,10 @@ export default class Request extends Vue.with(Props) {
                     }
                 }
                 else if (((this.profileData.departmentShifts[i].effective === null)) && (selectedDate <= moment(this.profileData.departmentShifts[i].expires))) {
-
                     this.availableShifts.push(this.profileData.departmentShifts[i]);
-
                 }
                 else if (((this.profileData.departmentShifts[i].expires === null)) && (selectedDate >= moment(this.profileData.departmentShifts[i].effective))) {
-
                     this.availableShifts.push(this.profileData.departmentShifts[i]);
-
                 }
             }
         } catch (error) {
@@ -339,7 +334,6 @@ export default class Request extends Vue.with(Props) {
     }
 
     async FireAction(additionalRequestEvent: any) {
-        // debugger
         if (!this.widthdrawMode(additionalRequestEvent)) {
             //If there is no email address present in profile then doesn't allow them to send Non-productive shift request]
             var selectedShift = this.departmentShift?.find((x: any) => x.id == this.shift);
@@ -391,10 +385,6 @@ export default class Request extends Vue.with(Props) {
                 );
                 let objReq = {
                     departmentShiftId: additionalRequestEvent ? this.defaultShift : this.shift,
-                    // startDateTime: new Date(
-                    //     eventStartDateTime.getTime() -
-                    //     eventStartDateTime.getTimezoneOffset() * 60000
-                    // ).toISOString(), // Add Time
                     startDateTime: new Date(
                         eventStartDateTime.getTime() -
                         eventStartDateTime.getTimezoneOffset() * 60000
@@ -509,35 +499,6 @@ export default class Request extends Vue.with(Props) {
         }
         return !isDisabled;
     }
-
-
-    // disableSubmit(additionalRequestEvent: any) {
-    //     var returnValue = false;
-    //     if (this.isLoading) {
-    //         returnValue = true;
-    //     }
-    //     else if (this.currentEvent?.type == "Request" && !additionalRequestEvent) {
-    //         // returnValue = false;
-    //         returnValue = true;
-    //     }
-    //     else if (this.currentEvent?.type == "Request" && additionalRequestEvent) {
-    //         returnValue = Boolean(
-    //             this.defaultShift &&
-    //             this.defaultStartTime &&
-    //             this.defaultDuration &&
-    //             this.selectedDate.length > 0
-    //         ) != true;
-    //     }
-    //     else {
-    //         returnValue = Boolean(
-    //             this.shift &&
-    //             this.startTime &&
-    //             this.duration &&
-    //             this.selectedDate.length > 0
-    //         ) != true;
-    //     }
-    //     return returnValue;
-    // }
 
     async confirmedClicked() {
         this.isLoading = true;
