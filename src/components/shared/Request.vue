@@ -39,7 +39,7 @@
                         <div class="col-12">
                             <label for="approval_code" class="neu-input__label">Select Shift</label>
                             <template v-if="!additionalRequestEvent">
-                                <neu-select ref="RVE4452_32493_UI_Testing_Staff_Non-Productive_Request_Panel_Tab"
+                                <neu-select 
                                     interface="popover" name="ddlShift" :value="shift" @v-neu-change="shiftChange">
                                     <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts"
                                         :value="shift.departmentShiftId" :key="shift.departmentShiftId">
@@ -49,7 +49,7 @@
                             </template>
 
                             <template v-if="additionalRequestEvent">
-                                <neu-select ref="RVE4452_32493_UI_Testing_Staff_Non-Productive_Request_Panel_Tab"
+                                <neu-select 
                                     interface="popover" name="ddlShift" :value="defaultShift" @v-neu-change="shiftChange">
                                     <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts"
                                         :value="shift.departmentShiftId" :key="shift.departmentShiftId">
@@ -67,13 +67,7 @@
                                     <div class="col-6">
                                         <label for="partof_day" class="neu-input__label">Start Time</label>
                                         <template v-if="!additionalRequestEvent">
-                                            <neu-input name="txtStartTime" :disabled="bindDisabled" :input="startTime"
-                                                :value:class="[
-                                                    'neu-input__text-field',
-                                                    {
-                                                        'readonly_text_field starttimecolor': getDisableDuration(additionalRequestEvent),
-                                                    },
-                                                ]" type="time" />
+                                            <neu-input name="txtStartTime" :disabled="bindDisabled" :input="startTime" :value:class="['neu-input__text-field']" type="time" />
                                         </template>
 
                                         <template v-if="additionalRequestEvent">
@@ -517,33 +511,33 @@ export default class Request extends Vue.with(Props) {
     }
 
 
-    disableSubmit(additionalRequestEvent: any) {
-        var returnValue = false;
-        if (this.isLoading) {
-            returnValue = true;
-        }
-        else if (this.currentEvent?.type == "Request" && !additionalRequestEvent) {
-            // returnValue = false;
-            returnValue = true;
-        }
-        else if (this.currentEvent?.type == "Request" && additionalRequestEvent) {
-            returnValue = Boolean(
-                this.defaultShift &&
-                this.defaultStartTime &&
-                this.defaultDuration &&
-                this.selectedDate.length > 0
-            ) != true;
-        }
-        else {
-            returnValue = Boolean(
-                this.shift &&
-                this.startTime &&
-                this.duration &&
-                this.selectedDate.length > 0
-            ) != true;
-        }
-        return returnValue;
-    }
+    // disableSubmit(additionalRequestEvent: any) {
+    //     var returnValue = false;
+    //     if (this.isLoading) {
+    //         returnValue = true;
+    //     }
+    //     else if (this.currentEvent?.type == "Request" && !additionalRequestEvent) {
+    //         // returnValue = false;
+    //         returnValue = true;
+    //     }
+    //     else if (this.currentEvent?.type == "Request" && additionalRequestEvent) {
+    //         returnValue = Boolean(
+    //             this.defaultShift &&
+    //             this.defaultStartTime &&
+    //             this.defaultDuration &&
+    //             this.selectedDate.length > 0
+    //         ) != true;
+    //     }
+    //     else {
+    //         returnValue = Boolean(
+    //             this.shift &&
+    //             this.startTime &&
+    //             this.duration &&
+    //             this.selectedDate.length > 0
+    //         ) != true;
+    //     }
+    //     return returnValue;
+    // }
 
     async confirmedClicked() {
         this.isLoading = true;
