@@ -1,4 +1,3 @@
-import { userSchedules } from './../../src/mocks/mockSpecData';
 import { mount, shallowMount } from '@vue/test-utils'
 import PayrollDetails from '@/components/profile/PayrollDetails.vue';
 import Vuex from "vuex";
@@ -48,7 +47,6 @@ describe("computed prop",() => {
         },
         props: {
             appInsightEventData: {},
-            userSchedules: userSchedules,
             payrollDetails: payRollMockData,
             profileData: profileData
         },
