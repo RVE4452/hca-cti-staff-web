@@ -43,17 +43,18 @@
                 <div class="col-12 neu-margin--top-20">
                     <neu-label for="txtShift" content="Shift" position="fixed"></neu-label>
                     <neu-input type="text" name="shift" id="txtShift" v-model="deptShiftDesc" :value="deptShiftDesc" readonly
-                    v-if="currentEvent?.type == 'Assignment' && currentEvent?.status  == 'Pending'" />
+                    v-if="currentEvent?.type != 'Need' || (currentEvent?.type == 'Assignment' && currentEvent?.status  == 'Pending')" />
                     <neu-select name="ddlShifts" class="ddl-shift" interface="popover" :value="data.selectedShift" @v-neu-change="onOpenNeedShiftChanges"  
                     v-if="currentEvent?.type == 'Need' || (currentEvent?.type == 'Assignment' && currentEvent?.status  != 'Pending')">
                         <neu-option  v-for="shift in data.shifts" :value="shift.id" :key="shift.id">
-                            {{ shift.description }} {{shift.premiumLaborLevel ? ' (Incentive)': ''}}
+                            {{ shift.description }} 
+                            <!-- {{shift.premiumLaborLevel ? ' (Incentive)': ''}} -->
                         </neu-option>
                     </neu-select>
 
-                    <div class="mt3" v-if="deptPartialShifts && deptPartialShifts?.length">
+                    <!-- <div class="mt3" v-if="deptPartialShifts && deptPartialShifts?.length">
                         <neu-input type="checkbox" name="showPartial" id="chkShowPartial" v-model="showPartial" :value="showPartial"
-                            v-if="currentEvent?.type == 'Assignment' && currentEvent?.status  == 'Pending'" />
+                            v-if="currentEvent?.type != 'Need' || (currentEvent?.type == 'Assignment' && currentEvent?.status  == 'Pending')" />
                         <neu-label for="chkShowPartial" content="Show Partial Shift Options" position="fixed"></neu-label>
                     </div>
 
@@ -62,7 +63,7 @@
                         <neu-option v-for="shift in data.partialShifts" :value="shift.departmentShiftId" :key="shift.departmentShiftId">
                             {{ shift.description }} 
                         </neu-option>
-                    </neu-select>
+                    </neu-select> -->
                 </div>
             </div>
         </div>
@@ -75,7 +76,7 @@
                     </label>
                 </div>
                 <div class="col-12">
-                    <div class="row" v-if="data.shiftMembers.length == 0">
+                    <div class="row" v-if="data?.shiftMembers?.length == 0">
                         <div class="col-12 neu-margin--top-20">
                             <p class="neu-text--tag neu-text--align-left">No Shift Member Found</p>
                         </div>
@@ -161,6 +162,7 @@
         isLoaded: boolean = true;
         needid!: number;
         departmentShiftId!: string;
+        departmentShiftIdProd: string = "639"; // Production Shift added as per user stroy
         deptShiftDesc: string = '';
         deptShifts!: any;
         departmentPartialShiftId!: string;
@@ -207,9 +209,7 @@
                 (this.currentEvent?.type == "Assignment" && this.currentEvent?.status == "Pending") ? "Withdraw" : "Add to Schedule";
             this.buttonName =
                 (this.currentEvent?.type == "Assignment" && this.currentEvent?.status == "Pending") ? "btnWithdraw" : "btnAddToSchedule";
-            this.skillName =  this.profileData?.skills?.find((x:any) => x.primary == true ).description;
-            this.deptShifts = this.profileData?.departmentShifts?.filter((x:any) => x.canRequest == false);
-            
+                       
             if (this.currentEvent?.type == "Assignment" && this.currentEvent?.status == "Pending") {                
                 this.loadopenNeeds();
             } else {
@@ -217,20 +217,16 @@
             }
         }
 
-        loadopenNeedShiftMembers() {      
-            let dates = this.currentEvent?.description?.split(',');
+        loadopenNeedShiftMembers() { 
             const payload = {
-                selectedDate: this.currentEvent?.date,
-                username: this.profileData?.username,
-                start: moment(dates != undefined ? dates[0] : null).format("YYYY-MM-DD"),
-                end: moment(dates != undefined ? dates[1] : null).format("YYYY-MM-DD"),
-                includePartials: true,
+                date: this.currentEvent?.date,
+                staffId: this.profileData?.staffId,
             };   
             this.$store
                 .dispatch("schedule/getOpenNeeds", payload)
                 .then((res) => {
                     this.facilities = this.openNeedsFacilities;
-                    this.hasNeedsInPrimaryDept = this.openNeedsDepartments?.filter((x:any) => x.departmentId == this.profileData?.deptId).length > 0;
+                    this.hasNeedsInPrimaryDept = this.openNeedsDepartments?.filter((x:any) => x.departmentId == this.profileData?.departmentId).length > 0;
                     this.selectedFacilityId = this.openNeedsFacilities?.find((x:any) => x.facilityId == this.profileData?.facilityId) == undefined
                         ? this.openNeedsFacilities[0]?.facilityId : this.profileData?.facilityId;
                     this.facilityName = this.openNeedsFacilities?.find((x:any) => x.facilityId == this.selectedFacilityId) == undefined
@@ -238,12 +234,11 @@
                     this.facilityDepts = this.openNeedsDepartments?.filter((x:any) => x.facilityId == this.selectedFacilityId);
 
                     if (this.selectedFacilityId == this.profileData?.facilityId) {
-                        this.selectedDeptId = this.profileData?.deptId;
+                        this.selectedDeptId = this.profileData?.departmentId;
                     }
                     else {
                         this.selectedDeptId = this.openNeedsDepartments?.find((x:any) => x.facilityId == this.selectedFacilityId)[0]?.departmentId;
                     }
-                    this.primarySkillId = this.profileData?.skills?.find((x:any) => x.primary == true).id;
 
                     //remove duplicate from array having same shift code
                     const removeDuplicatesFromArrayByProperty = (arr:any, prop:any) => arr?.reduce((accumulator:any, currentValue:any) => {
@@ -253,29 +248,27 @@
                         return accumulator;
                     }, [])
 
-                    this.skills = removeDuplicatesFromArrayByProperty(res?.data?.map((x:any) => { return { id: x.skillId, description: x.skill } }), 'id');
-                    this.selectedSkillId = this.skills?.length ? this.skills[0]?.id : this.primarySkillId;
-                    this.deptShifts = this.openNeedsShiftDetails?.filter((x:any) => x.departmentId == this.selectedDeptId && !x.isPartial);
-                    const updatedShift: any = res?.data?.map((members:any) => {
-                        if(members.isPartial){
-                            members.description = members.shiftCode
-                                + " " + this.formatTime(members.startTime)
-                                + " - " + this.formatTime(members.endTime);
-                        }
-                        else{
-                            members.description = members.shiftCode
-                                + " " + this.formatTime(members.startTime)
-                                + " - " + this.formatTime(members.endTime);
-                        }
+                    this.skills = removeDuplicatesFromArrayByProperty(res?.data?.map((x:any) => { return { id: x.skillId, description: x.skill } }), 'skillId');
+                    this.selectedSkillId = this.skills?.length ? this.skills[0]?.id : "";
 
-                        members.key = members.id + '-' + members.departmentShiftId;
+                    const updatedShift: any = res?.data?.map((members:any) => {
+                        const shiftCode = "P"; //description: "Productive"
+                        const departmentShiftId = this.departmentShiftIdProd;
+                        members.departmentShiftId = departmentShiftId;
+                        members.shiftCode = shiftCode;
+                        members.description = shiftCode
+                            + " " + this.formatTime(members.start)
+                            + " - " + this.formatTime(members.end);
+
+                        members.key = members.description + '-' + departmentShiftId;
+                        members.id = members.description + '-' + departmentShiftId;
                         return members;
                     });
 
-                    this.data.allShifts = removeDuplicatesFromArrayByProperty(updatedShift, 'departmentShiftId');
-                    this.data.partialShifts = updatedShift?.filter((x:any) => x.isPartial);
-                    this.deptShifts = this.openNeedsShiftDetails?.filter((x:any) => x.departmentId == this.selectedDeptId && !x.isPartial);
-                    this.deptPartialShifts = this.openNeedsShiftDetails?.filter((x:any) => x.departmentId == this.selectedDeptId && x.isPartial);
+                    this.data.allShifts = removeDuplicatesFromArrayByProperty(updatedShift, 'description');
+                    //this.data.partialShifts = updatedShift?.filter((x:any) => x.isPartial);
+                    this.deptShifts = this.data?.allShifts?.filter((x:any) => x.departmentId == this.selectedDeptId);
+                    //this.deptPartialShifts = this.openNeedsShiftDetails?.filter((x:any) => x.departmentId == this.selectedDeptId && x.isPartial);
                     if(this.deptShifts?.length){
                         this.setShiftDetails(this.deptShifts[0]?.departmentShiftId, this.deptShifts[0]?.departmentId);
                     }
@@ -283,10 +276,11 @@
                         this.setShiftDetails(0, 0);
                     }
                     
-
-                    if (this.deptPartialShifts?.length){
-                        this.setPartialShiftDetails(this.deptPartialShifts[0]?.departmentShiftId, this.deptPartialShifts[0]?.departmentId);
-                    }
+                    this.actualShiftStartTime = this.formatTime(this.assignmentDetail.start);
+                    this.actualShiftEndTime = this.formatTime(this.assignmentDetail.end);
+                    // if (this.deptPartialShifts?.length){
+                    //     this.setPartialShiftDetails(this.deptPartialShifts[0]?.departmentShiftId, this.deptPartialShifts[0]?.departmentId);
+                    // }
                 })
                 .catch((err: any) => {
                     if (err) {
@@ -303,27 +297,27 @@
                     if (this.assignmentDetail != undefined) {                        
                         this.facilityName = this.assignmentDetail.facilityName;
                         this.departmentName = this.assignmentDetail?.departmentCode;
-                        if(this.assignmentDetail.premiumLaborLevel){
+                        if(this.assignmentDetail?.premiumLaborLevel){
                                 this.assignmentDetail.description = this.assignmentDetail.shiftCode
                                     + " " + this.formatTime(this.assignmentDetail.startTime)
                                     + " - " + this.formatTime(this.assignmentDetail.endTime)
                                     + " (Incentive)";
                             }
                         else{
-                            this.assignmentDetail.description = this.assignmentDetail.shiftCode
-                            + " " + this.formatTime(this.assignmentDetail.startTime)
-                            + " - " + this.formatTime(this.assignmentDetail.endTime);
+                            this.assignmentDetail.description = this.assignmentDetail.departmentShift
+                            + " " + this.formatTime(this.assignmentDetail?.startTime)
+                            + " - " + this.formatTime(this.assignmentDetail?.endTime);
                         }
 
-                        this.deptShiftDesc = this.assignmentDetail.description;
-                        this.actualShiftStartTime = this.formatTime(this.assignmentDetail.actualStartTime);
-                        this.actualShiftEndTime = this.formatTime(this.assignmentDetail.actualEndTime);
-                        this.needid = this.assignmentDetail.needId;
-                        this.data.shiftMembers = this.assignmentDetail.shiftMembers.map((members:any) => {
+                        this.deptShiftDesc = this.assignmentDetail?.description;
+                        this.actualShiftStartTime = this.formatTime(this.assignmentDetail.start);
+                        this.actualShiftEndTime = this.formatTime(this.assignmentDetail.end);
+                        this.needid = this.assignmentDetail?.needId;
+                        this.data.shiftMembers = this.assignmentDetail?.shiftMembers?.map((members:any) => {
                             members.name = members.firstName + " " + members.lastName;
                             return members;
                         });
-                        this.skillName = this.assignmentDetail.skill;
+                        this.skillName = this.assignmentDetail?.skill;
                     }
                 })
                 .catch((err: any) => {
@@ -338,13 +332,13 @@
             this.facilityDepts = this.openNeedsDepartments?.filter((x:any) => x.facilityId == event.target.value);
             this.facilityName = this.facilities.find((f:any) => f.facilityId == event.target.value)?.facilityName;
             if (this.selectedFacilityId == this.profileData.facilityId) {
-                this.selectedDeptId = this.profileData?.deptId;
+                this.selectedDeptId = this.profileData?.departmentId;
             }
             else {
                 this.selectedDeptId = this.facilityDepts[0]?.departmentId;
             }
-            this.departmentName = (this.facilityDepts.find((x:any) => x.departmentId == this.selectedDeptId) || {}).departmentCode;
-            this.deptShifts = this.openNeedsShiftDetails.filter((x:any) => x.departmentId == this.selectedDeptId);
+            this.departmentName = (this.facilityDepts?.find((x:any) => x.departmentId == this.selectedDeptId) || {}).departmentCode;
+            this.deptShifts = this.data?.allShifts?.filter((x:any) => x.departmentId == this.selectedDeptId);
             if (this.deptShifts?.length){
                 this.setShiftDetails(this.deptShifts[0].departmentShiftId, this.deptShifts[0].departmentId);
             }
@@ -352,15 +346,15 @@
                 this.setShiftDetails(0, 0);
             }
 
-            if (this.deptPartialShifts?.length){
-                this.setPartialShiftDetails(this.deptPartialShifts[0]?.departmentShiftId, this.deptPartialShifts[0]?.departmentId);
-            }
+            // if (this.deptPartialShifts?.length){
+            //     this.setPartialShiftDetails(this.deptPartialShifts[0]?.departmentShiftId, this.deptPartialShifts[0]?.departmentId);
+            // }
         }
 
         onOpenNeedDepartmentChange(event:any) {
             this.selectedDeptId = parseInt(event.target.value);
             this.departmentName = (this.openNeedsShiftDetails.find((x:any) => x.departmentId == event.target.value) || {}).departmentCode;
-            this.deptShifts = this.openNeedsShiftDetails.filter((x:any) => x.departmentId == event.target.value);
+            this.deptShifts = this.data?.allShifts?.filter((x:any) => x.departmentId == event.target.value);
             if (this.deptShifts?.length){
                 this.setShiftDetails(this.deptShifts[0].departmentShiftId, this.deptShifts[0].departmentId);
             }
@@ -368,17 +362,17 @@
                 this.setShiftDetails(0, 0);
             }
 
-            this.deptPartialShifts = this.openNeedsShiftDetails.filter((x:any) => x.departmentId == this.selectedDeptId && x.isPartial);
+            // this.deptPartialShifts = this.openNeedsShiftDetails.filter((x:any) => x.departmentId == this.selectedDeptId && x.isPartial);
 
-            if (this.deptPartialShifts?.length){
-                this.setPartialShiftDetails(this.deptPartialShifts[0]?.departmentShiftId, this.deptPartialShifts[0]?.departmentId);
-            }
+            // if (this.deptPartialShifts?.length){
+            //     this.setPartialShiftDetails(this.deptPartialShifts[0]?.departmentShiftId, this.deptPartialShifts[0]?.departmentId);
+            // }
         }
 
         onOpenNeedSkillChange(event:any) {
             this.selectedSkillId = event.target.value;
             this.skillName = this.skills?.find((x:any) => x.id == event.target.value).description;
-            this.deptShifts = this.openNeedsShiftDetails?.filter((x:any) => x.departmentId == this.selectedDeptId && x.skillId == event.target.value);
+            this.deptShifts = this.data?.allShifts?.filter((x:any) => x.departmentId == this.selectedDeptId && x.skillId == event.target.value);
             if (this.deptShifts?.length){
                 this.setShiftDetails(this.deptShifts[0]?.departmentShiftId, this.deptShifts[0]?.departmentId);
             }
@@ -386,35 +380,35 @@
                 this.setShiftDetails(0, 0);
             }
 
-            if (this.deptPartialShifts?.length){
-                this.setPartialShiftDetails(this.deptPartialShifts[0]?.departmentShiftId, this.deptPartialShifts[0]?.departmentId);
-            }
+            // if (this.deptPartialShifts?.length){
+            //     this.setPartialShiftDetails(this.deptPartialShifts[0]?.departmentShiftId, this.deptPartialShifts[0]?.departmentId);
+            // }
         }
 
         setShiftDetails(deptShiftId:number, deptId:number) {
-            var selectedDeptShift = this.deptShifts.find((x:any) => x.departmentShiftId == deptShiftId
-                && x.departmentId == deptId && !x.isPartial);
+            var selectedDeptShift = this.deptShifts?.find((x:any) => x.departmentShiftId == deptShiftId
+                && x.departmentId == deptId);
             var selectedShiftDetails: any
 
-            if (this.data.allShifts?.length > 0) {
-                this.data.shifts = this.data.allShifts.filter((shift: any) => { return shift.departmentId === this.selectedDeptId && !shift.isPartial && shift.skillId == this.selectedSkillId });
+            if (this.data?.allShifts?.length > 0) {
+                this.data.shifts = this.data?.allShifts?.filter((shift: any) => { return shift.departmentId === this.selectedDeptId && shift.skillId == this.selectedSkillId });
             }
             if (this.data.shifts.length > 0) {
                 this.data.shifts.sort();
 
                 selectedShiftDetails = this.data.shifts[0];
-                selectedDeptShift = this.deptShifts.find((x:any) => x.departmentShiftId == selectedShiftDetails.departmentShiftId
-                    && x.departmentId == selectedShiftDetails.departmentId && !x.isPartial);
+                selectedDeptShift = this.deptShifts?.find((x:any) => x.departmentShiftId == selectedShiftDetails.departmentShiftId
+                    && x.departmentId == selectedShiftDetails.departmentId);
                 
                 this.data.selectedShift = selectedDeptShift? selectedDeptShift.id : "";
             } else {
-                this.data.shifts = this.openNeedsShiftDetails?.filter((shift: any) => { return shift.departmentId === this.selectedDeptId && !shift.isPartial && shift.skillId == this.selectedSkillId });
+                this.data.shifts = this.openNeedsShiftDetails?.filter((shift: any) => { return shift.departmentId === this.selectedDeptId && shift.skillId == this.selectedSkillId });
                 if (this.data.shifts?.length > 0) {
                     this.data.shifts.sort();
 
                     selectedShiftDetails = this.data.shifts[0];
-                    selectedDeptShift = this.deptShifts.find((x:any) => x.departmentShiftId == selectedShiftDetails.departmentShiftId
-                        && x.departmentId == selectedShiftDetails.departmentId && !x.isPartial);
+                    selectedDeptShift = this.deptShifts?.find((x:any) => x.departmentShiftId == selectedShiftDetails.departmentShiftId
+                        && x.departmentId == selectedShiftDetails.departmentId);
                     
                     this.data.selectedShift = selectedDeptShift? selectedDeptShift.id : "";
                 }
@@ -424,11 +418,11 @@
             }
 
             if (selectedDeptShift){
-                this.deptShiftDesc = selectedDeptShift.shiftDescription;
-                this.shiftStartTime = selectedDeptShift.startTime;
-                this.shiftEndTime = selectedDeptShift.endTime;
+                this.deptShiftDesc = selectedDeptShift.description;
+                this.shiftStartTime = selectedDeptShift.start;
+                this.shiftEndTime = selectedDeptShift.end;
             }
-            this.onOpenNeedShiftChanges();
+            this.onOpenNeedShiftChanges(0);
         }
 
         setPartialShiftDetails(deptShiftId:number, deptId:number) {
@@ -454,17 +448,19 @@
             this.onOpenNeedPartialShiftChanges();
         }
 
-        onOpenNeedShiftChanges() {
+        onOpenNeedShiftChanges(event: any) {
+            var selectedShiftid = event == 0 ? this.data?.selectedShift : event.target.value;
+            this.data.selectedShift = selectedShiftid;
             const filteredShift: any = this.data?.shifts?.filter((shift: any) => {
-                return shift.id === this.data.selectedShift;
+                return shift.id === selectedShiftid;
             });
             if (filteredShift?.length){
-                this.needid = filteredShift[0].id;
-                this.actualShiftStartTime = this.formatTime(filteredShift[0].startTime);
-                this.actualShiftEndTime = this.formatTime(filteredShift[0].endTime);
-                this.departmentShiftId = filteredShift[0].departmentShiftId;
+                //this.needid = filteredShift[0].id;
+                this.actualShiftStartTime = this.formatTime(filteredShift[0].start);
+                this.actualShiftEndTime = this.formatTime(filteredShift[0].end);
+                this.departmentShiftId = this.departmentShiftIdProd; // filteredShift[0]?.departmentShiftId;
 
-                this.data.shiftMembers = filteredShift[0].shiftMembers.map((members:any) => {
+                this.data.shiftMembers = filteredShift[0]?.shiftMembers?.map((members:any) => {
                     members.name = members.firstName + " " + members.lastName;
                     return members;
                 });
@@ -475,9 +471,9 @@
                 this.errorMsg = "";
             }
 
-            if (this.deptPartialShifts?.length){
-                this.setPartialShiftDetails(this.deptPartialShifts[0]?.departmentShiftId, this.deptPartialShifts[0]?.departmentId);
-            }
+            // if (this.deptPartialShifts?.length){
+            //     this.setPartialShiftDetails(this.deptPartialShifts[0]?.departmentShiftId, this.deptPartialShifts[0]?.departmentId);
+            // }
         }
 
         onOpenNeedPartialShiftChanges() {
@@ -486,12 +482,12 @@
             });
             
             if (filteredShift?.length){
-                this.needid = filteredShift[0].id;
-                this.actualPartialShiftStartTime = this.formatTime(filteredShift[0].startTime);
-                this.actualPartialShiftEndTime = this.formatTime(filteredShift[0].endTime);
-                this.departmentPartialShiftId = filteredShift[0].departmentShiftId;
+                //this.needid = filteredShift[0].id;
+                this.actualPartialShiftStartTime = this.formatTime(filteredShift[0].start);
+                this.actualPartialShiftEndTime = this.formatTime(filteredShift[0].end);
+                this.departmentPartialShiftId = filteredShift[0]?.departmentShiftId;
 
-                this.data.shiftMembers = filteredShift[0].shiftMembers.map((members:any) => {
+                this.data.shiftMembers = filteredShift[0]?.shiftMembers?.map((members:any) => {
                     members.name = members.firstName + " " + members.lastName;
                     return members;
                 });
@@ -505,7 +501,8 @@
         }
 
         selectedShiftId(){
-            return this.data.partialShifts?.length && this.showPartial? this.departmentPartialShiftId : this.departmentShiftId;
+            return this.departmentShiftIdProd; 
+            // this.data.partialShifts?.length && this.showPartial? this.departmentPartialShiftId : this.departmentShiftId;
         }
 
         selectedShiftActualStartTime(){
@@ -539,21 +536,26 @@
                         });
 
                 } else {
+                    const filteredShift: any = this.data?.shifts?.filter((shift: any) => {
+                        return shift.id ===  this.data.selectedShift;
+                    });
+
                     const requestBody = {
-                        "needId": this.needid,
-                        "tenantId": this.profileData?.tenantId,
-                        "deptShiftId": this.selectedShiftId(),
-                        "date": this.currentEvent?.date,
-                        "deptId": this.selectedDeptId,
                         "staffId": this.profileData?.staffId,
-                        "scheduleStartDate": this.scheduleStartDate,
-                        "scheduleEndDate": this.scheduleEndDate
+                        "departmentId": this.selectedDeptId,
+                        "departmentShiftId": parseInt(this.selectedShiftId()),
+                        "skillId": this.selectedSkillId,
+                        "start": filteredShift?.length ? filteredShift[0].start : "",
+                        "end": filteredShift?.length ? filteredShift[0].end : "",
+                        "expires": filteredShift?.length ? filteredShift[0].end : "", //this.currentEvent?.date,
+                        "comment": "",
+                        "status": "Pending",
+                        "managerComment": ""
                     };
                     this.isLoading = true;
                     this.$store
                         .dispatch("schedule/ScheduleOpenNeedRequest", requestBody)
                         .then((res) => {
-                            console.log("test777")
                             //showing message in MyScheduleView Screen and close modal only on success
                             this.isLoading = false;
                             this.$emit('showSuccessMsgPopUp');

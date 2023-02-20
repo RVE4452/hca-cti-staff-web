@@ -70,11 +70,11 @@ const mutations: MutationTree<Schedule> = {
 
    
      setAssignmentDetail(state,detail: any) {
-        detail.shiftMembers.length > 0 ? detail.shiftMembers.map((member:any) => {
+        detail?.shiftMembers?.length > 0 ? detail?.shiftMembers?.map((member:any) => {
             member.name = member.firstName + ' ' + member.lastName;
             return member;
         }) : '';
-        detail.shift = detail.shiftCode + ' ' + detail.shiftDescription;
+        detail.shift = detail?.shiftCode + ' ' + detail?.shiftDescription;
         state.assignmentDetail = detail;
     },
 
@@ -281,10 +281,10 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      WithdrawEvent(payload:any) {
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/OpenNeedRequest/${payload.needid}?assignmentId=${payload.assignementid}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Requests/Needs/${payload.assignementid}`;
 
         return http
-            .delete(apiUrl)
+            .put(apiUrl)
             .then((res: AxiosResponse) => {
             })
             .catch((err: AxiosError) => {
@@ -323,7 +323,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      ScheduleOpenNeedRequest({ commit, rootState },payload){
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/OpenNeedRequest`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Requests/Needs`;
 
         return http
             .post(apiUrl, payload)
@@ -337,7 +337,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      getOpenNeeds({ commit, rootState },data: any){
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/OpenNeeds/${data.selectedDate}/${data.username}/${data.includePartials}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Staff/${data.staffId}/Needs/${data.date}`;
 
         return http
             .get(apiUrl)
@@ -555,7 +555,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      GetScheduleAssignmentDetail({ commit, rootState },id: string){
-        const api = `${process.env.VUE_APP_APIURL}/Schedules/Assignments/${id}`
+        const api = `${process.env.VUE_APP_APIURL}/Requests/Needs/${id}`
 
         return http
             .get(api)
