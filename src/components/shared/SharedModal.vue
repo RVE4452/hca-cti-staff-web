@@ -88,8 +88,7 @@
         ></open-need>
       </div>
       <div v-if="tabCurrent === 'Request'">
-        <h3>Request</h3>
-        <!-- <Request :key="counter" :currentEvent="currentEvent" :additionalRequestEvent="false" :calSelectedDates="sharedRequest.calSelectedDates" @closeSharedModal="close" @showSuccessMsgPopUp="showSuccessModal" /> -->
+        <Request :key="counter" :currentEvent="currentEvent" :additionalRequestEvent="false" :calSelectedDates="sharedRequest.calSelectedDates" @closeSharedModal="close" @showSuccessMsgPopUp="showSuccessModal" />
       </div>
 
       <div v-if="tabCurrent === 'DayPreference'">
@@ -149,7 +148,7 @@ class Props {
     // PotentialTrade,
     AssignmentDetail,
     ShiftMemberDetail,
-    //Request,
+    Request,
     // RequestedTrade,
     OpenNeed,
     TradeShift,
