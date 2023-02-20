@@ -44,7 +44,7 @@
                             size="small" v-for="payrollDetail in payrollDetails"
                             :key="payrollDetails.indexOf(payrollDetail)"> 
                             <neu-label slot="Schedule">                              
-                                <neu-container class="borderLine boxWidth">
+                                <neu-container class="borderLine boxWidth boxShadow">
                                     <div class="neu-input__label" v-if="payrollDetail.departmentId != 0">
                                         {{ formatDate(payrollDetail.start) }}
                                         <br />
@@ -58,7 +58,7 @@
                             </neu-label>
 
                             <neu-label slot="Actual">
-                            <neu-container class="borderLine boxWidth">
+                            <neu-container class="borderLine boxWidth boxShadow">
                                 <div class="neu-input__label"
                                     v-for="clockInOut in payrollDetail.clockInOuts"
                                     :key="payrollDetail.clockInOuts.indexOf(clockInOut)">
@@ -282,7 +282,6 @@ export default class PayrollDetails extends Vue {
 .text-left {
     text-align: left
 }
-
 .text-center {
     text-align: center
 }
@@ -334,6 +333,9 @@ export default class PayrollDetails extends Vue {
     justify-content: center;
     border: 1px solid silver;
     padding: 10px;
+}
+.boxShadow{
+    box-shadow: 0 0 5px #888888;
 }
 
 /* Media Query for Mobile Devices */
