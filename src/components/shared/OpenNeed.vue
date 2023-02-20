@@ -1,4 +1,4 @@
-g<template>
+<template>
     <div class="col-12 container-fluid pb4 pt3" v-if="isLoaded">
         <div class="neu-margin--bottom-20">
             <div class="row">

@@ -39,7 +39,8 @@
                         <div class="col-12">
                             <label for="approval_code" class="neu-input__label">Select Shift</label>
                             <template v-if="!additionalRequestEvent">
-                                <neu-select interface="popover" name="ddlShift" :value="shift" @v-neu-change="shiftChange">
+                                <neu-select                                     
+                                    interface="popover" name="ddlShift" :value="shift" @v-neu-change="shiftChange">
                                     <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts"
                                         :value="shift.departmentShiftId" :key="shift.departmentShiftId">
                                         {{ shift.description }}
@@ -48,7 +49,8 @@
                             </template>
 
                             <template v-if="additionalRequestEvent">
-                                <neu-select interface="popover" name="ddlShift" :value="defaultShift"
+                                <neu-select                                     
+                                    interface="popover" name="ddlShift" :value="defaultShift"
                                     @v-neu-change="shiftChange">
                                     <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts"
                                         :value="shift.departmentShiftId" :key="shift.departmentShiftId">
