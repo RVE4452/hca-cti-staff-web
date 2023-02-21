@@ -52,17 +52,17 @@ class Props{
         ...mapState('profile', ['profileData', 'appInsightEventData'])
     },
 })
-export default class AssignmentDetail extends Vue.with(Props) {
+export default class ShiftMemberDetail extends Vue.with(Props) {
  public shiftMembersDetail!: any;
  public scheduleId!: string;
   public profileData!: any;
   isLoaded: boolean = false;
   
   async mounted() {
-    this.getEventDetail();
+    this.getShiftMembersDetail();
   }
 
-  getEventDetail() {
+  getShiftMembersDetail() {
     var payload = { 
         deptId: this.currentEvent.departmentId,
         start: this.currentEvent.startTime,
