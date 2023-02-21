@@ -6,13 +6,14 @@ export const requestDetailsMockData = [
         "departmentShiftId": 633,
         "start": "2023-02-24T18:00:00.000Z",
         "end": "2023-02-25T00:00:00.000Z",
-        "comment": "Test Comments 999",
-        "email": "ADT4202@hca.corpad.net",
+        "comment": "",
+        "email": "ADT4201@hca.corpad.net",
         "status": "Pending"
     }
 ]
 
-export const profileData = {
-    "username": "ADT4202",
+export const profileMockData = {
+    "username": "ADT4201",
+    "ptoBalance": 40.51,
     "tenantUrl": "https://ht-fps-cti-dev-appservice-api.azurewebsites.net/"    
 }

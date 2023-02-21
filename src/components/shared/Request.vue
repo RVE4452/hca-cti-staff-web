@@ -153,13 +153,7 @@ class Props {
 @Options({
     computed: {
         ...mapState('schedule', ['requestDetail', 'userSchedules']),
-        ...mapState('profile', ['profileData', 'isAdmin', 'isImpersonating', 'appInsightEventData']),
-        charactersLeft() {
-            var char = this.eligibility.address.details.length,
-                limit = 140;
-
-            return (limit - char) + " / " + limit + "characters remaining";
-        }
+        ...mapState('profile', ['profileData', 'isAdmin', 'isImpersonating', 'appInsightEventData'])
     },
     disabled: {
         type: Boolean,
@@ -217,7 +211,7 @@ export default class Request extends Vue.with(Props) {
     availableShifts = [];
     comment: string = "";
     defaultComment: string = "";
-    skillId: any = '';
+    skillId: number = 0;
     
 
     async mounted(): Promise<void> {
@@ -234,7 +228,7 @@ export default class Request extends Vue.with(Props) {
             }
         })
         this.skillId = skills[0];
-    }
+    }    
 
     async loadData() {
         try {
