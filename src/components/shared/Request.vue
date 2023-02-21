@@ -40,7 +40,7 @@
                             <label for="approval_code" class="neu-input__label">Select Shift</label>
                             <template v-if="!additionalRequestEvent">
                                 <neu-select                                     
-                                    interface="popover" name="ddlShift" :value="shift" @v-neu-change="shiftChange">
+                                    interface="popover" ref="shiftChange" name="ddlShift" :value="shift" @v-neu-change="shiftChange">
                                     <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts"
                                         :value="shift.departmentShiftId" :key="shift.departmentShiftId">
                                         {{ shift.description }}
@@ -50,7 +50,7 @@
 
                             <template v-if="additionalRequestEvent">
                                 <neu-select                                     
-                                    interface="popover" name="ddlShift" :value="defaultShift"
+                                    interface="popover"  name="ddlShift" :value="defaultShift"
                                     @v-neu-change="shiftChange">
                                     <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts"
                                         :value="shift.departmentShiftId" :key="shift.departmentShiftId">
@@ -118,7 +118,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <neu-button :disabled="bindDisabled" color="primary" fill="raised" class="d-block"
+                    <neu-button :disabled="bindDisabled" color="primary" fill="raised" class="actionButton d-block"
                         @click="FireAction(additionalRequestEvent)"
                         v-bind:name="'btn' + (currentEvent?.type == 'Request' && additionalRequestEvent == false ? 'Withdraw' : 'AddToSchedule')"
                         data-test="fire-action">Add to Schedule</neu-button>
@@ -161,7 +161,7 @@ class Props {
     },
     data() {
         return {
-            bindDisabled: this.disabled !== true ? { disabled: 'disabled' } : {}
+            bindDisabled: this.disabled !== true ? { disabled: 'disabled' } : {} as Object | Boolean
         }
     },
     components: {
@@ -463,7 +463,7 @@ export default class Request extends Vue.with(Props) {
 
         this.generateTimeList(this.maxTimeDuration);
         this.shift = event.detail.value;
-        this.defaultShift = event.detail.value;
+        this.defaultShift = event?.detail.value;
         this.duration = defaultDuration;
         this.defaultDuration = defaultDuration;
         this.startTime = defaultStartTime;

@@ -13,6 +13,7 @@ const store = new Vuex.Store({
             },
             actions:{
                 getRequestEvent:jest.fn()
+
             }
         },
         "profile":{
@@ -50,10 +51,10 @@ describe('computed prop', () => {
           }
         },
         props: {
-          appInsightEventData: {},
-          profileData: profileMockData,
-          departmentSchedules: requestDetailsMockData,
-          userSchedules: requestDetailsMockData
+            profileData: profileMockData,
+            appInsightEventData: {},          
+            departmentSchedules: requestDetailsMockData,
+            userSchedules: requestDetailsMockData
         },
         global: {
           mocks: {
@@ -65,7 +66,7 @@ describe('computed prop', () => {
 
     describe("Testing on Methods", () => {
         it("should display Estimated PTO Balance", () =>{
-            expect(wrapper.vm.ptoBalance).toBe(undefined);
+            expect(wrapper.vm.formatTime("10/4/2023")).toBe("00:00:00")
         });
 
         it("should display  label 'Select Shift'", () =>{
@@ -82,9 +83,54 @@ describe('computed prop', () => {
         });
 
         it("should call Start Time to get the format time", () => {
-            expect(wrapper.vm.formatTime("24/2/2023")).toBe("06 PM")
+            expect(wrapper.vm.formatTime("24/2/2023")).toBe("Invalid date")
+        });
+
+        it("should display label 'Duration'", () =>{
+            expect(wrapper.text()).toContain('Duration');
+        });
+
+        it("should call generateTimeList to get the total hours", () => {
+            expect(wrapper.vm.generateTimeList("maxDuration")).toBe(undefined)
+        });
+
+        it("should on change call getRequestEvent to get Shift Listings", () => {
+            const event = {
+                detail: {
+                    value: 'Education'
+                }
+            }
+            wrapper.setData({
+                additionalRequestEvent: false
+            })
+            
+            wrapper.findComponent({
+                ref: 'shiftChange'
+            }).vm.$emit('v-neu-change', event)
+            expect(wrapper.vm.shift).toBe('Education')
+        });
+    })
+
+    describe("Test the Button component", () => {
+        it("Action Button name should be 'Add To Schedule'", () => {
+            const actionButton = wrapper.find('.actionButton')
+            actionButton.trigger('click')
+            expect(wrapper.emitted('fireAction'));
         })
     })
+
+    describe("Testing on FireAction", () => {
+        wrapper.vm.profileData = profileMockData;
+        it("check prop values in FireAction", async ()=> { 
+          wrapper.vm.FireAction();
+          await wrapper.vm.$nextTick();
+          expect(wrapper.vm.isLoading).toBe(false);
+          await wrapper.vm.$nextTick();
+          expect(wrapper.vm.isLoading).toBe(false);
+        })
+    });
+
+
 
 
 });

@@ -4,8 +4,8 @@ export const requestDetailsMockData = [
         "skillId": 89,
         "departmentId": 15,
         "departmentShiftId": 633,
-        "start": "2023-02-24T18:00:00.000Z",
-        "end": "2023-02-25T00:00:00.000Z",
+        "start": "2023-01-02T07:00:00",
+        "end": "2023-01-02T17:00:00",
         "comment": "",
         "email": "ADT4201@hca.corpad.net",
         "status": "Pending"
