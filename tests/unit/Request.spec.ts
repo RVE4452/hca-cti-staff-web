@@ -134,8 +134,4 @@ describe('computed prop', () => {
           expect(wrapper.vm.isLoading).toBe(false);
         })
     });
-
-
-
-
 });
