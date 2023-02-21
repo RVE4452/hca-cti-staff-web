@@ -103,10 +103,7 @@
                     <div class="row pt3">
                         <div class="col-12">
                             <label for="approval_code" class="neu-input__label">Comments (Optional)</label>
-                            <textarea :disabled="bindDisabled" v-bind:class="[
-                                'neu-textarea',
-                                { 'starttimecolor': widthdrawMode(additionalRequestEvent) },
-                            ]" :maxlength="maxCommentsCharacters" v-model="comment" name="Comment"></textarea>
+                            <textarea :disabled="bindDisabled" class="neu-textarea" :maxlength="maxCommentsCharacters" v-model="comment" name="Comment"></textarea>
                             <br>
                             <span class="commentCharacterCountText">Remaining {{ maxCommentsCharacters - (comment !=
                                 undefined ? comment.length : 0) }} characters.</span>

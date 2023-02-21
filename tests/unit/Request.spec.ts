@@ -109,7 +109,12 @@ describe('computed prop', () => {
             }).vm.$emit('v-neu-change', event)
             expect(wrapper.vm.shift).toBe('Education')
         });
+
+        it("should display label 'Comments (Optional)'", () =>{
+            expect(wrapper.text()).toContain('Comments (Optional)');
+        });
     })
+    
 
     describe("Test the Button component", () => {
         it("Action Button name should be 'Add To Schedule'", () => {
