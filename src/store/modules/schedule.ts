@@ -1,3 +1,4 @@
+import { ShiftMembers } from './../../models/shift-members.model';
 import http from "@/store/axios";
 import { Module, ActionTree, MutationTree } from 'vuex'
 import { RootState } from "../types";
@@ -27,8 +28,7 @@ interface Schedule {
     openNeedsShiftDetails: any,
     departmentSchedules: DepartmentStaff[],
     payrollDetails: object[],
-    defaultSelfSchedules: any,
-    orAssignmentDetail: any
+    shiftMembersDetail: any
 }
 //state
 const state: Schedule = {
@@ -49,8 +49,7 @@ const state: Schedule = {
     openNeedsShiftDetails: null,
     departmentSchedules:[],
     payrollDetails: [],
-    defaultSelfSchedules: null,
-    orAssignmentDetail: null
+    shiftMembersDetail: null
 }
    // mutations
 const mutations: MutationTree<Schedule> = {
@@ -76,6 +75,13 @@ const mutations: MutationTree<Schedule> = {
         }) : '';
         detail.shift = detail?.shiftCode + ' ' + detail?.shiftDescription;
         state.assignmentDetail = detail;
+    },
+    setShiftMembersDetail(state,shiftMembers: any) {
+        shiftMembers?.length > 0 ? shiftMembers?.map((member:any) => {
+            member.name = member.firstName + ' ' + member.lastName;
+            return member;
+        }) : '';
+        state.shiftMembersDetail = shiftMembers;
     },
 
     
@@ -180,16 +186,8 @@ const mutations: MutationTree<Schedule> = {
     
      setPayrollDetails(state,lstPayrollDetails: ScheduleActualCIOD[]): void {
         state.payrollDetails = lstPayrollDetails;
-    },
-
-    
-     setDefaultSelfSchedules(state,schedule: any): void {
-        state.defaultSelfSchedules = schedule;
-    },
-    
-     setORAssignmentDetail(state,detail: any): void {       
-        state.orAssignmentDetail = detail;
     }
+    
 }
     // ACTIONS
     //actions
@@ -215,6 +213,19 @@ const actions: ActionTree<Schedule, RootState> = {
             .get(api)
             .then((res: any) => {
                 commit('setAssignmentDetail', res.data);
+                return res
+            })
+            .catch((err: AxiosError) => {
+                console.log(err)
+            })
+    },
+    getShiftMembersDetail({ commit, rootState }, payload: any) {
+        const api = `${process.env.VUE_APP_APIURL}/Staff/ShiftMembers/${payload.deptId}/${payload.start}/${payload.end}`
+
+        return http
+            .get(api)
+            .then((res: any) => {
+                commit('setShiftMembersDetail', res.data);
                 return res
             })
             .catch((err: AxiosError) => {
@@ -600,51 +611,6 @@ const actions: ActionTree<Schedule, RootState> = {
             .catch((err: AxiosError) => {
                 console.log(err);
             });
-    },
-
-    // ACTIONS
-   
-     getDefaultSelfSchedules({ commit, rootState },payload){
-        const api = `${process.env.VUE_APP_APIURL}/Schedules/DefaultSchedules/${payload.username}`;
-
-        return http
-            .get(api)
-            .then((res: any) => {
-                commit('setDefaultSelfSchedules', res.data)
-                return res
-            })
-            .catch((err: AxiosError) => {
-                router.push('/erroraccount');
-            })
-
-    },
-
-    
-     UpdateDefaultSelfScheduleAppliedStatus({ commit, rootState },scheduleId: string){
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/DefaultSchedules/DefaultSelfScheduleApplied/${scheduleId}`;
-
-        return http
-            .post(apiUrl)
-            .then((res: AxiosResponse) => {
-            })
-            .catch((err: AxiosError) => {
-                console.log(err)
-                throw err;
-            });
-    },
-   
-     getORAssignmentDetails({ commit, rootState },payload: any){
-        const api = `${process.env.VUE_APP_APIURL}/Symphony/Procedures/${payload.date}/${payload.username}`
-
-        return http
-            .get(api)
-            .then((res: any) => {
-                commit('setORAssignmentDetail', res.data);
-                return res
-            })
-            .catch((err: AxiosError) => {               
-                 console.log(err)                
-            })
     }
 
 }
