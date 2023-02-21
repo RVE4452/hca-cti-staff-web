@@ -62,6 +62,7 @@ describe('computed prop', () => {
         },
       } 
   });
+  
   describe("Testing on methods",() => {
     it("should call getLastUpdatedDate to update the lastUpdatedDate", () => {
       wrapper.vm.getLastUpdatedDate();
