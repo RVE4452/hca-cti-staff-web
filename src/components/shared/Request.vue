@@ -40,7 +40,7 @@
                             <label for="approval_code" class="neu-input__label">Select Shift</label>
                             <template v-if="!additionalRequestEvent">
                                 <neu-select                                     
-                                    interface="popover" name="ddlShift" :value="shift" @v-neu-change="shiftChange">
+                                    interface="popover" ref="shiftChange" name="ddlShift" :value="shift" @v-neu-change="shiftChange">
                                     <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts"
                                         :value="shift.departmentShiftId" :key="shift.departmentShiftId">
                                         {{ shift.description }}
@@ -50,7 +50,7 @@
 
                             <template v-if="additionalRequestEvent">
                                 <neu-select                                     
-                                    interface="popover" name="ddlShift" :value="defaultShift"
+                                    interface="popover"  name="ddlShift" :value="defaultShift"
                                     @v-neu-change="shiftChange">
                                     <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts"
                                         :value="shift.departmentShiftId" :key="shift.departmentShiftId">
@@ -103,10 +103,7 @@
                     <div class="row pt3">
                         <div class="col-12">
                             <label for="approval_code" class="neu-input__label">Comments (Optional)</label>
-                            <textarea :disabled="bindDisabled" v-bind:class="[
-                                'neu-textarea',
-                                { 'starttimecolor': widthdrawMode(additionalRequestEvent) },
-                            ]" :maxlength="maxCommentsCharacters" v-model="comment" name="Comment"></textarea>
+                            <textarea :disabled="bindDisabled" class="neu-textarea" :maxlength="maxCommentsCharacters" v-model="comment" name="Comment"></textarea>
                             <br>
                             <span class="commentCharacterCountText">Remaining {{ maxCommentsCharacters - (comment !=
                                 undefined ? comment.length : 0) }} characters.</span>
@@ -118,7 +115,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <neu-button :disabled="bindDisabled" color="primary" fill="raised" class="d-block"
+                    <neu-button :disabled="bindDisabled" color="primary" fill="raised" class="actionButton d-block"
                         @click="FireAction(additionalRequestEvent)"
                         v-bind:name="'btn' + (currentEvent?.type == 'Request' && additionalRequestEvent == false ? 'Withdraw' : 'AddToSchedule')"
                         data-test="fire-action">Add to Schedule</neu-button>
@@ -153,13 +150,7 @@ class Props {
 @Options({
     computed: {
         ...mapState('schedule', ['requestDetail', 'userSchedules']),
-        ...mapState('profile', ['profileData', 'isAdmin', 'isImpersonating', 'appInsightEventData']),
-        charactersLeft() {
-            var char = this.eligibility.address.details.length,
-                limit = 140;
-
-            return (limit - char) + " / " + limit + "characters remaining";
-        }
+        ...mapState('profile', ['profileData', 'isAdmin', 'isImpersonating', 'appInsightEventData'])
     },
     disabled: {
         type: Boolean,
@@ -167,11 +158,16 @@ class Props {
     },
     data() {
         return {
-            bindDisabled: this.disabled !== true ? { disabled: 'disabled' } : {}
+            bindDisabled: this.disabled !== true ? { disabled: 'disabled' } : {} as Object | Boolean
         }
     },
     components: {
-        NeuSelect, NeuOption, NeuLabel, NeuInput, NeuButton, NeuTextarea,
+        NeuSelect, 
+        NeuOption, 
+        NeuLabel, 
+        NeuInput, 
+        NeuButton, 
+        NeuTextarea,
         ErrorNotification,
         ConfirmMsgPopUp
     },
@@ -212,7 +208,8 @@ export default class Request extends Vue.with(Props) {
     availableShifts = [];
     comment: string = "";
     defaultComment: string = "";
-    skillId: any = '';
+    skillId: number = 0;
+    
 
     async mounted(): Promise<void> {
         await this.loadData();
@@ -228,7 +225,7 @@ export default class Request extends Vue.with(Props) {
             }
         })
         this.skillId = skills[0];
-    }
+    }    
 
     async loadData() {
         try {
@@ -244,7 +241,9 @@ export default class Request extends Vue.with(Props) {
             this.defaultDuration = "";
             this.defaultShift = "";
             this.availableShifts = [];
-            this.defaultComment = "";
+            this.defaultComment = "";  
+            const profileData:any[] = [];
+            
 
             for (var i = 0; i < this.profileData.departmentShifts.length; i++) {
                 let selectedDate = moment(new Date(
@@ -352,21 +351,18 @@ export default class Request extends Vue.with(Props) {
                 skillId: this.skillId,
                 departmentId: this.profileData.departmentId,
                 departmentShiftId: additionalRequestEvent ? this.defaultShift : this.shift,
-                // start: "2023-02-25T00:02:00.000Z",
                 start: new Date(
                     this.calSelectedDates?.startDate.getTime() -
                     this.calSelectedDates?.startDate.getTimezoneOffset() * 60000
                 ),
-                // end: "2023-02-26T00:02:00.000Z",
+                
                 end: new Date(
                     this.calSelectedDates?.endDate.getTime() -
                     this.calSelectedDates?.endDate.getTimezoneOffset() * 60000
                 ),
                 comment: additionalRequestEvent ? this.defaultComment : this.comment,
-                // status: this.status,
                 email: this.profileData.email,
                 status: "Pending",
-                // departmentShiftId: []
             };
             for (var i = 0; i < this.selectedDate?.length; i++) {
                 var eventStartDateTime = new Date(this.selectedDate[i]);
@@ -464,7 +460,7 @@ export default class Request extends Vue.with(Props) {
 
         this.generateTimeList(this.maxTimeDuration);
         this.shift = event.detail.value;
-        this.defaultShift = event.detail.value;
+        this.defaultShift = event?.detail.value;
         this.duration = defaultDuration;
         this.defaultDuration = defaultDuration;
         this.startTime = defaultStartTime;
