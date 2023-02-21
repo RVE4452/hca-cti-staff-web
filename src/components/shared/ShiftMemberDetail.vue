@@ -3,20 +3,20 @@
     <div class="neu-margin--bottom-20 pb4 pt3">
          <div class="col-12">
           <p class="f3 h2 tl ttu">
-            {{ formatTime(this.assignmentDetail.actualStartTime) }} -
-            {{ formatTime(this.assignmentDetail.actualEndTime) }}
+            {{ formatTime(currentEvent.startTime) }} -
+            {{ formatTime(currentEvent.endTime) }}
           </p>
         </div>
         <div class="col-12 neu-margin--top-20">
-          <div v-if="assignmentDetail.shiftMembers.length == 0">          
+          <div v-if="shiftMembersDetail.length == 0">          
             <p class="neu-text--tag neu-text--align-left">No Shift Member Found</p>
          </div>
-          <div class="row" v-if="assignmentDetail.shiftMembers.length > 0">
+          <div class="row" v-if="shiftMembersDetail.length > 0">
             <div class="col-12 "><p class="neu-text--tag neu-text--align-left">SHIFT MEMBERS</p></div>            
             <div class="col-12 row mt3">
               <div
                 class="col-12 mt2 mb2"
-                v-for="shiftMember in assignmentDetail.shiftMembers"
+                v-for="shiftMember in shiftMembersDetail"
                 :key="shiftMember.username"
               >
                 <div class="d-flex">
@@ -48,28 +48,29 @@ class Props{
 @Options({
    computed: {
         ...mapState('oidcStore',['oidcUser']),
-         ...mapState('schedule',['assignmentDetail','scheduleId']),
+         ...mapState('schedule',['shiftMembersDetail','scheduleId']),
         ...mapState('profile', ['profileData', 'appInsightEventData'])
     },
 })
-export default class AssignmentDetail extends Vue.with(Props) {
- public assignmentDetail!: any;
+export default class ShiftMemberDetail extends Vue.with(Props) {
+ public shiftMembersDetail!: any;
  public scheduleId!: string;
   public profileData!: any;
   isLoaded: boolean = false;
   
   async mounted() {
-    this.getEventDetail();
+    this.getShiftMembersDetail();
   }
 
-  getEventDetail() {
+  getShiftMembersDetail() {
     var payload = { 
-        username: this.profileData.username, 
-        id: this.currentEvent.id
+        deptId: this.currentEvent.departmentId,
+        start: this.currentEvent.startTime,
+        end: this.currentEvent.endTime
     };  
 
     this.$store
-      .dispatch("schedule/getAssignmentDetail", payload)
+      .dispatch("schedule/getShiftMembersDetail", payload)
       .then(() => {
         this.isLoaded = true;
       })
