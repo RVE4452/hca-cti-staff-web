@@ -1,8 +1,23 @@
 import { currentEvent } from './../../src/mocks/mockSpecData';
 import { mount } from '@vue/test-utils'
 import SharedModal from '@/components/shared/SharedModal.vue';
+import Vuex from "vuex";
 
 describe('Shared Modal', () => {
+  const store = new Vuex.Store({
+    modules: {          
+      "schedule": {
+        namespaced: true,
+        state: {
+          shiftMembersDetail: []
+        },
+        actions: {
+         getShiftMembersDetail: jest.fn(),
+        }
+      }
+    },
+  })
+
     const defaultSharedRequest = {
       type: 2,
       assignmentDetail: true,
@@ -18,7 +33,12 @@ describe('Shared Modal', () => {
         let wrapper: any;
         beforeEach(() => {
             wrapper = mount(SharedModal, {
-              data: () =>  { return {sharedRequest: defaultSharedRequest , currentEvent: currentEventData}}
+              data: () =>  { return {sharedRequest: defaultSharedRequest , currentEvent: currentEventData}},
+              global: {
+                mocks: {
+                  $store:store
+                }
+              } 
             });
           });
         it('should render shared modal with header title Details', () => {
