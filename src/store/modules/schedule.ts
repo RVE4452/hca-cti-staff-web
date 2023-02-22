@@ -211,11 +211,12 @@ const actions: ActionTree<Schedule, RootState> = {
     },
 
     
-     WithdrawRequestEvent({ commit, rootState },requestId: string){
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Requests/${requestId}`;
+     WithdrawRequestEvent({ commit, rootState },payload:any){
+        // const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Requests/${requestId}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Requests/NonProductives/${payload.assignmentRequestId}`;
 
         return http
-            .delete(apiUrl)
+            .put(apiUrl)
             .then((res: AxiosResponse) => {
             })
             .catch((err: AxiosError) => {

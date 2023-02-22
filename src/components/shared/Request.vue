@@ -2,7 +2,7 @@
     <div class="col-12">
         <loading :active="isFullScreenLoading" :can-cancel="false" :height="128" :width="128" :color="loaderColor"
             :opacity="0.7" :is-full-page="true" />
-        <div class="bg-black-05 container-fluid">
+        <div class="container-fluid">
             <div class="row">
                 <div class="col-12 pt3">
                     <p>
@@ -115,16 +115,28 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <neu-button :disabled="bindDisabled" color="primary" fill="raised" class="actionButton d-block"
+                    <!-- <neu-button 
+                        :disabled="bindDisabled" 
+                        color="primary" 
+                        fill="raised" 
+                        class="actionButton d-block"
                         @click="FireAction(additionalRequestEvent)"
                         v-bind:name="'btn' + (currentEvent?.type == 'Request' && additionalRequestEvent == false ? 'Withdraw' : 'AddToSchedule')"
-                        data-test="fire-action">Add to Schedule</neu-button>
+                        data-test="fire-action">Add to Schedule</neu-button> -->
+                    <neu-button @click="FireAction(additionalRequestEvent)"
+                        v-bind:name="'btn' + (currentEvent.type == 'Request' && additionalRequestEvent == false ? 'Withdraw' : 'AddToSchedule')"
+                        data-test="fire-action"
+                        :class="[disableSubmit(additionalRequestEvent) || isImpersonating?'neu-button--blue-disabled': 'neu-background--denim']"
+                        :disabled="(disableSubmit(additionalRequestEvent) || isImpersonating)">
+                    {{currentEvent.type == "Request" && additionalRequestEvent == false ? "Withdraw" : "Add to Schedule"}}
+                </neu-button>
                 </div>
             </div>
         </div>
         <div v-if="isConfirmModalVisible">
-            <ConfirmMsgPopUp @cancelled="isConfirmModalVisible = false" @confirmed="confirmedClicked"
-                :msgValue="confirmMsgValue"></ConfirmMsgPopUp>
+            <ConfirmMsgPopUp @cancelled="isConfirmModalVisible = false"
+                             @confirmed="confirmedClicked"
+                             :msgValue="confirmMsgValue"></ConfirmMsgPopUp>
         </div>
     </div>
 </template>
@@ -348,7 +360,7 @@ export default class Request extends Vue.with(Props) {
 
             let requestBody = {
                 staffId: this.profileData.staffId,
-                skillId: this.skillId,
+                skillId: this.profileData.staffId,
                 departmentId: this.profileData.departmentId,
                 departmentShiftId: additionalRequestEvent ? this.defaultShift : this.shift,
                 start: new Date(
@@ -498,14 +510,42 @@ export default class Request extends Vue.with(Props) {
         return !isDisabled;
     }
 
+    disableSubmit(additionalRequestEvent: any) {
+            var returnValue = true;
+            if (this.isLoading) {
+                returnValue = true;
+            }
+            else if (this.currentEvent.type == "Request" && !additionalRequestEvent) {
+                returnValue = false;
+            }
+            else if (this.currentEvent.type == "Request" && additionalRequestEvent) {
+                returnValue = Boolean(
+                    this?.defaultShift &&
+                    this?.defaultStartTime &&
+                    this?.defaultDuration &&
+                    this?.selectedDate.length > 0
+                ) != true;
+            }
+            else {
+                returnValue = Boolean(
+                    this?.shift &&
+                    this?.startTime &&
+                    this?.duration &&
+                    this?.selectedDate.length > 0
+                ) != true;
+            }
+            return returnValue;
+        }
+
     async confirmedClicked() {
         this.isLoading = true;
         this.isConfirmModalVisible = false;
         this.isFullScreenLoading = true;
         await this.$store
-            .dispatch("schedule/WithdrawRequestEvent", this.requestDetail.requestId)
+            // .dispatch("schedule/WithdrawRequestEvent", this.requestDetail?.assignmentRequestId)
+            .dispatch("schedule/WithdrawRequestEvent", this.requestDetail?.assignmentRequestId)
             .then(() => {
-                this.isFullScreenLoading = false;
+                this.isFullScreenLoading = false;9
                 this.$emit("showSuccessMsgPopUp");
                 this.$emit("closeSharedModal");
             })
