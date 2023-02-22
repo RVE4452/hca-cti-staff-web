@@ -87,21 +87,9 @@ export default class AssignmentDetail extends Vue.with(Props) {
      errorType: string = 'error';
 
     async mounted() {
-        //this.getEventDetail();
+       
     }
 
-    getEventDetail() {
-        var payload = { 
-            username: this.profileData.username, 
-            id: this.currentEvent.id
-        };  
-
-        this.$store
-        .dispatch("schedule/getAssignmentDetail", payload)
-        .then(() => {
-            this.isLoaded = true;
-        });
-    }
   get getDept() {
             return this.currentEvent.departmentCode + " (" + this.currentEvent.departmentName + ")";
         }

@@ -1,3 +1,4 @@
+import { ShiftMembers } from './../../models/shift-members.model';
 import http from "@/store/axios";
 import { Module, ActionTree, MutationTree } from 'vuex'
 import { RootState } from "../types";
@@ -11,46 +12,34 @@ interface Schedule {
 
     // STATE
     userSchedules: object[],
-    acknowledge: Boolean,
     assignmentDetail: any,
     requestDetail: any,
     selfScheduleShiftMembers: any,
     openNeedShiftMembers: any,
-    pendingShiftDetails: any,
-    selfScheduleShiftDetails: any,
     isLoading: Boolean ,
     potentialTradeAssignment: any,
-    selfScheduleFacilities: any,
-    selfScheduleDepartments: any,
     openNeedsFacilities: any,
     openNeedsDepartments: any,
     openNeedsShiftDetails: any,
     departmentSchedules: DepartmentStaff[],
     payrollDetails: object[],
-    defaultSelfSchedules: any,
-    orAssignmentDetail: any
+    shiftMembersDetail: any
 }
 //state
 const state: Schedule = {
     userSchedules: [],
-    acknowledge: false,
     assignmentDetail: null,
     requestDetail: null,
     selfScheduleShiftMembers: null,
     openNeedShiftMembers: null,
-    pendingShiftDetails: null,
-    selfScheduleShiftDetails: null,
     isLoading: true,
     potentialTradeAssignment: null,
-    selfScheduleFacilities: null,
-    selfScheduleDepartments: null,
     openNeedsFacilities: null,
     openNeedsDepartments: null,
     openNeedsShiftDetails: null,
     departmentSchedules:[],
     payrollDetails: [],
-    defaultSelfSchedules: null,
-    orAssignmentDetail: null
+    shiftMembersDetail: null
 }
    // mutations
 const mutations: MutationTree<Schedule> = {
@@ -63,10 +52,6 @@ const mutations: MutationTree<Schedule> = {
         state.userSchedules = schedules;
         state.isLoading = false;
     },
-   
-     setAcknowledge(state,acknowledge: boolean) {
-        state.acknowledge = acknowledge;
-    },
 
    
      setAssignmentDetail(state,detail: any) {
@@ -76,6 +61,13 @@ const mutations: MutationTree<Schedule> = {
         }) : '';
         detail.shift = detail?.shiftCode + ' ' + detail?.shiftDescription;
         state.assignmentDetail = detail;
+    },
+    setShiftMembersDetail(state,shiftMembers: any) {
+        shiftMembers?.length > 0 ? shiftMembers?.map((member:any) => {
+            member.name = member.firstName + ' ' + member.lastName;
+            return member;
+        }) : '';
+        state.shiftMembersDetail = shiftMembers;
     },
 
     
@@ -87,58 +79,7 @@ const mutations: MutationTree<Schedule> = {
         state.selfScheduleShiftMembers = detail;
     },
 
-    
-     setSelfScheduleShiftDetails(state,newObj: any): void {
-        newObj.map((element: any) => {
-            Object.defineProperty(element, 'shiftDescription', { value: element.shiftCode + ' ' + element.shiftDescription })
-            Object.defineProperty(element, 'shiftValue', { value: +element.departmentShiftId + '_' + element.departmentId })
-        });
 
-        const lastUsedShiftCode = localStorage.getItem("lastUsedShiftCode");
-        if (lastUsedShiftCode != null) {
-            const itemIndex = newObj.findIndex((item:any) => item.shiftCode == lastUsedShiftCode);
-
-            newObj.splice(
-                0,                           // new index,
-                0,                           // no removal
-                newObj.splice(itemIndex, 1)[0] // detach the item and return it
-            );
-        }
-
-        state.selfScheduleShiftDetails = newObj;
-    },
-
-   
-     setSelfScheduleFacilities(state,newObj: any) {
-        const removeDuplicatesFromArrayByProperty = (arr:any, prop:any) => arr.reduce((accumulator:any, currentValue:any) => {
-            if (!accumulator.find((obj:any) => obj[prop] === currentValue[prop])) {
-                accumulator.push(currentValue);
-            }
-            return accumulator;
-        }, [])
-        const facilities = removeDuplicatesFromArrayByProperty(newObj, 'facilityId');
-        state.selfScheduleFacilities = facilities;
-    },
-
-    
-    setSelfScheduleDepartments(state,newObj: any): void {
-        const removeDuplicatesFromArrayByProperty = (arr:any, prop:any) => arr.reduce((accumulator:any, currentValue:any) => {
-            if (!accumulator.find((obj:any) => obj[prop] === currentValue[prop])) {
-                accumulator.push(currentValue);
-            }
-            return accumulator;
-        }, [])
-
-        const departments = removeDuplicatesFromArrayByProperty(newObj, 'departmentId');
-        state.selfScheduleDepartments = departments;
-    },
-
-   
-     setPendingShiftDetails(state,newObj: any) {
-        state.pendingShiftDetails = newObj;
-    },
-
-    
      setOpenNeedsFacilities(state,newObj: any) {
         const removeDuplicatesFromArrayByProperty = (arr:any, prop:any) => arr.reduce((accumulator:any, currentValue:any) => {
             if (!accumulator.find((obj:any) => obj[prop] === currentValue[prop])) {
@@ -180,16 +121,8 @@ const mutations: MutationTree<Schedule> = {
     
      setPayrollDetails(state,lstPayrollDetails: ScheduleActualCIOD[]): void {
         state.payrollDetails = lstPayrollDetails;
-    },
-
-    
-     setDefaultSelfSchedules(state,schedule: any): void {
-        state.defaultSelfSchedules = schedule;
-    },
-    
-     setORAssignmentDetail(state,detail: any): void {       
-        state.orAssignmentDetail = detail;
     }
+    
 }
     // ACTIONS
     //actions
@@ -221,9 +154,23 @@ const actions: ActionTree<Schedule, RootState> = {
                 console.log(err)
             })
     },
+    getShiftMembersDetail({ commit, rootState }, payload: any) {
+        const api = `${process.env.VUE_APP_APIURL}/Staff/ShiftMembers/${payload.deptId}/${payload.start}/${payload.end}`
+
+        return http
+            .get(api)
+            .then((res: any) => {
+                commit('setShiftMembersDetail', res.data);
+                return res
+            })
+            .catch((err: AxiosError) => {
+                console.log(err)
+            })
+    },
     
      GetRequestDetails({ commit, rootState }, payload: any) {
-        const api = `${process.env.VUE_APP_APIURL}/Schedules/Requests/${payload.id}/${payload.username}`;
+        // const api = `${process.env.VUE_APP_APIURL}/Schedules/Requests/${payload.id}/${payload.username}`;
+        const api = `${process.env.VUE_APP_APIURL}/Requests/NonProductives`;
 
         return http
             .get(api)
@@ -235,37 +182,7 @@ const actions: ActionTree<Schedule, RootState> = {
                 console.log(err)
             });
     },
-
-    GetSelfScheduleNeedsDetails({ commit, rootState },payload: any) {
-        const api = `${process.env.VUE_APP_APIURL}/Schedules/SelfScheduleNeeds/${payload.date}/${payload.username}?departmentIds=${payload.departmentIds}`;
-
-        return http
-            .get(api)
-            .then((res: any) => {
-                commit('setSelfScheduleShiftDetails', res.data);
-                commit('setSelfScheduleFacilities', res.data);
-                commit('setSelfScheduleDepartments', res.data);
-            })
-            .catch((err: AxiosError) => {
-                console.log(err)
-            });
-    },
-
-   
-    GetPendingShiftDetails({ commit, rootState },payload) {
-        const api = `${process.env.VUE_APP_APIURL}/Schedules/PendingShifts/${payload.id}/${payload.username}`;
-
-        return http
-            .get(api)
-            .then((res: any) => {
-                console.log(res.data);
-                commit('setPendingShiftDetails', res.data);
-            })
-            .catch((err: AxiosError) => {
-                console.log(err)
-            });
-    },
-
+  
     GetNeedsDetails({ commit, rootState }, payload: any) {
         const api = `${process.env.VUE_APP_APIURL}/Schedules/Needs/${payload.date}/${payload.id}`;
 
@@ -352,25 +269,10 @@ const actions: ActionTree<Schedule, RootState> = {
                 console.log(err)
             });
     },
-
-    
-     SavePendingShiftDetails({ commit, rootState },psData: any[]){
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/PendingShifts`;
-
-        return http
-            .post(apiUrl, psData)
-            .then((res: AxiosResponse) => {
-                /*console.log(res);*/
-            })
-            .catch((err: AxiosError) => {
-                console.log(err)
-                throw err;
-            });
-    },
-
     
      RequestSchedule({ commit, rootState },psData){
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Requests`;
+        // const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Requests`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Requests/NonProductives`;
 
         return http
             .post(apiUrl, psData)
@@ -382,21 +284,6 @@ const actions: ActionTree<Schedule, RootState> = {
                 throw err;
             });
     },
-
-    
-     DeletePendingShiftDetails({ commit, rootState },payload){
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/PendingShifts/${payload.id}/${payload.username}`;
-
-        return http
-            .delete(apiUrl)
-            .then((res: AxiosResponse) => {
-            })
-            .catch((err: AxiosError) => {
-                console.log(err)
-                throw err;
-            });
-    },
-
     
      SaveUnavailabilityDetails({ commit, rootState },uaData: UnavailabilityModel[]) {
         const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Unavailabilities`;
@@ -523,36 +410,6 @@ const actions: ActionTree<Schedule, RootState> = {
                 throw err;
             });
     },
-
-   
-     SaveSelfScheduleAsAssignment({ commit, rootState },assignmentData: any[]){
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Assigment`;
-
-        return http
-            .post(apiUrl, assignmentData)
-            .then((res: AxiosResponse) => {
-                /*console.log(res);*/
-            })
-            .catch((err: AxiosError) => {
-                console.log(err)
-                throw err;
-            });
-    },
-
-   
-     DeleteSelfScheduleAssignment({ commit, rootState },assignmentId: string){
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Assigment/${assignmentId}`;
-
-        return http
-            .delete(apiUrl)
-            .then((res: AxiosResponse) => {
-            })
-            .catch((err: AxiosError) => {
-                console.log(err)
-                throw err;
-            });
-    },
-
     
      GetScheduleAssignmentDetail({ commit, rootState },id: string){
         const api = `${process.env.VUE_APP_APIURL}/Requests/Needs/${id}`

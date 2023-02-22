@@ -3340,58 +3340,6 @@ export const departmentSchedulesNew = {
     ]
 }
 
-export const resultOpenNeed = [
-    {
-      "id": "cef47bce-8a04-435d-9f0c-47bb5a1a2966",
-      "tenantId": "bed1116d-cd91-41b9-bc60-edb0c42596b4",
-      "facilityId": 12,
-      "coid": "32905",
-      "facilityName": "Parkland Hospital",
-      "departmentId": 110541,
-      "departmentName": "PCU",
-      "departmentCode": "60702",
-      "departmentShiftId": 185611,
-      "type": "Open Need",
-      "shiftCode": "P",
-      "skillId": 14,
-      "skill": "CC",
-      "date": "2023-01-30T00:00:00",
-      "startTime": "2023-01-30T19:00:00",
-      "endTime": "2023-01-31T07:00:00",
-      "needStatusId": 0,
-      "needStatus": "No Status",
-      "shiftMembers": [
-        {
-          "username": "HNI4875",
-          "firstName": "Amanda",
-          "lastName": "Garnham (T)",
-          "skill": "RN",
-          "deptShiftId": null
-        },
-        {
-          "username": "MJI5971",
-          "firstName": "Rudy",
-          "lastName": "Stensaas",
-          "skill": "RN",
-          "deptShiftId": null
-        },
-        {
-          "username": "QPO5652",
-          "firstName": "Raymond",
-          "lastName": "Gingras(StaRN)",
-          "skill": "RN",
-          "deptShiftId": null
-        }
-      ],
-      "startDate": "0001-01-01T00:00:00",
-      "endDate": "0001-01-01T00:00:00",
-      "isPartial": false,
-      "premiumLaborLevel": false,
-      "isWeekend": false,
-      "needId": 999
-    }
-];
-
 export const currentEvent = {
     id:"bed1116d-cd91-41b9-bc60-edb0c42596b4",
     type:"Need",
