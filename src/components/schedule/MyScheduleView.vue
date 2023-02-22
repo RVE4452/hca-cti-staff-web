@@ -189,6 +189,7 @@ export default class MyScheduleView extends Vue.with(Props) {
     schedules: any;
     scheduleStatus = "Unknown";
     currentEvent: any = null;
+    currentEvents: any = null;
 
     updateData = new Date();
     firstName: string = "";
