@@ -60,36 +60,13 @@
     },
 
     created: function (){
-      //this.loadData();
-      
-      //const currentEvent = this.currentEvent;
       if(this.currentEvent?.schedulePreferenceId != undefined){
         this.dayPreference = this.currentEvent.schedulePreferenceId;
      
       }
-      debugger;
-      console.log(this.currentEvent.schedulePreferenceId);
     },
     methods : {
-
-      // loadData(){
-      //   this.schedulePreferences.map((item:any)=>{
-      //     if(item.code == "P"){
-      //       item.Desc = "I prefere to work this day"
-      //     }
-      //     if(item.code == "N"){
-      //       item.Desc = "I prefere not to work this day"
-      //     }
-      //     if(item.code == "NP"){
-      //       item.Desc = "I am neutral"
-      //     }
-      //   });
-      // },
-
       selectionChange(value:string){
-      // if (this.dayPreference == value){
-      //   return 0;
-      // }
       this.dayPreference = value;
         this.enableSave =true;
       },
@@ -104,7 +81,6 @@
         
         await this.$store.dispatch('schedule/saveDayPreference', payload)
             .then((res: any) => {
-                console.log(res);
                 this.$emit('showSuccessMsgPopUp', true);
                 this.$emit('closeSharedModal');
                 this.enableSave = !this.enableSave;
