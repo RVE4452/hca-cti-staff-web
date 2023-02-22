@@ -1177,7 +1177,6 @@ export default class MyScheduleView extends Vue.with(Props) {
     }
     //get staff assigments for particular schedules
     async getSchedules(currentDate: boolean = false) {
-        console.log(this.profileData);
         this.weeksInSchedule = this.profileData.weeksInSchedule;
         if (currentDate) {
             let currSchedule = this.getCurrentWeekSchedule();
