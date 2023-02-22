@@ -643,6 +643,34 @@ const actions: ActionTree<Schedule, RootState> = {
             .catch((err: AxiosError) => {               
                  console.log(err)                
             })
+    },
+
+    saveDayPreference({ commit, rootState },payload:any){
+        
+        // delete payload['staffSchedulePreferenceId'];
+        if(payload.staffSchedulePreferenceId){
+            const apiUrl = `${process.env.VUE_APP_APIURL}/Staff/SchedulePreferences/${payload.staffSchedulePreferenceId}`;
+            return http
+            .put(apiUrl,{staffId: payload.staffId, schedulePreferenceId: payload.schedulePreferenceId, date: payload.date})
+            .then((res: AxiosResponse) => {
+                return res;
+            })
+            .catch((err: AxiosError) => {
+                console.log(err)
+                throw err;
+            });
+        }else{
+            const apiUrl = `${process.env.VUE_APP_APIURL}/Staff/SchedulePreferences/`;
+            return http
+            .post(apiUrl,{staffId: payload.staffId, schedulePreferenceId: payload.schedulePreferenceId, date: payload.date})
+            .then((res: AxiosResponse) => {
+                return res;
+            })
+            .catch((err: AxiosError) => {
+                console.log(err)
+                throw err;
+            }); 
+        }
     }
 
 }

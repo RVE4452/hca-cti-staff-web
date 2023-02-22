@@ -97,7 +97,8 @@
                      :sharedRequest="sharedRequest"
                      :isPanelOpen="sharedToggle"
                      :counter="counter"
-                     :key="counter">
+                     :key="counter"
+                     :schedulePreferences="schedulePreferences">
         </SharedModal>       
     </neu-row>
     </neu-container>   
@@ -237,6 +238,7 @@
         events: any = [];
         sharedToggle: boolean = false;
         counter: any = 0;
+        schedulePreferences:any={};
         
         beforeRouteLeave(to:any, from:any, next:any) {
             let warningMsgStatus = this.checkWarningMessage();
@@ -508,7 +510,7 @@
                         italicEl.appendChild(descriptionChild);
                         childElementTippy.disable();
                     }
-                } else if (arg.event.extendedProps.type.includes("Unavailability")) {
+                } else if (arg.event.extendedProps.type.includes("Preference")) {
                     italicEl.classList.add("main-unavail");
                     child.classList.add("unavail-title");
                     child.innerHTML = arg.event.title;
@@ -1193,6 +1195,7 @@
             await this.$store.dispatch("schedule/getStaffSchedule", payload)
            .then(() => {              
                     if (this.userSchedules.events != undefined) {
+                    this.schedulePreferences = this.userSchedules.schedulePreferences;
                     //clear all existing events
                     if (this.viewFlag == 'CalView') {
                             this.currentMonthCalendarApi.removeAllEvents();
@@ -1296,6 +1299,7 @@
         }
 
         handleDateSelect(selectInfo: any, onDateNavigation: boolean = false) {
+            debugger;
             let startDate = moment(selectInfo.start).format("YYYY-MM-DD");
             let objEndDate: Date = new Date(selectInfo.end);
             objEndDate.setDate(objEndDate.getDate() - 1);
@@ -1581,8 +1585,7 @@
         }
 
         processClickEvent(cellTitle:string, eventStart:any, eventId:number, needFV:boolean) {
-            debugger
-            console.log(this.events);
+            debugger;
              const event = cellTitle.includes("NEEDS")
                 ? this.events.find(
                     (event: Event) =>
@@ -1598,6 +1601,7 @@
                 this.counter = this.counter + 1;
                 setTimeout(() => this.currentMonthCalendarApi.updateSize(), 300);
                 window.scrollTo(0, 0);
+                
                 if (
                     event.status == "Scheduled" &&
                     this.scheduleStatus == "Posted" && 
@@ -1625,7 +1629,7 @@
                     this.sharedRequest = {
                         type: 4,
                         tradeShift: this.isShiftTradeAllowed,
-                        staffPreferenceAllowed: this.staffPreferenceAllowed,
+                        staffPreferenceAllowed:true,
                         request: this.checkIfFutureDate(strClickEventDate),
                         status: this.scheduleStatus,
                         calSelectedDates: this.calSelectedDates,
@@ -1652,26 +1656,18 @@
                     this.sharedRequest = {
                         type: 1,
                         request: this.checkIfFutureDate(strClickEventDate),
-                        staffPreferenceAllowed: this.staffPreferenceAllowed,
+                        staffPreferenceAllowed: true,
                         calSelectedDates: this.calSelectedDates,
                         status: this.scheduleStatus,
                         SelfScheduleDepartments: event.selfScheduleDepartments                      
                     };
                 }                
-                else if (event.type == "Unavailability") {
-                    this.sharedRequest = {
-                        type: 1,
-                        request: false,
-                        availability: true,
-                        calSelectedDates: {},
-                        isUnavailabilityEvent: true,
-                        status: this.scheduleStatus
-                    }; /*needApproval: false,*/
-                }
+                
                 else if ((event.status == "Requested" || event.status == "Pending") && event.type == "Trade") {
                     this.sharedRequest = {
                         type: 3,
                         val: true,
+                        staffPreferenceAllowed: true,
                     };
                 }
                 else if (event.type == "Request") {
@@ -1683,16 +1679,39 @@
                         additionalRequest: this.checkIfFutureDate(strClickEventDate),
                         availability: false,
                         calSelectedDates,
-                        status: this.scheduleStatus                       
+                        status: this.scheduleStatus ,
+                        staffPreferenceAllowed: true,                      
                     };
                 } //event.type = "Assignment"
+                else if (event.type == "Preference") {
+                    let strClickEventDate = moment(event.date).format("YYYY-MM-DD");
+                    let todayDate = moment(new Date()).format("YYYY-MM-DD");
+
+                    if (new Date(strClickEventDate) <= new Date(todayDate)) {
+                        this.staffPreferenceAllowed = false;
+                    }
+                    else {
+                        this.staffPreferenceAllowed = true;
+                    }
+
+                    this.sharedRequest = {
+                        type: 1,
+                        request: false,
+                        availability: true,
+                        calSelectedDates: {},
+                        isUnavailabilityEvent: true,
+                        status: this.scheduleStatus,
+                        staffPreferenceAllowed: this.staffPreferenceAllowed,
+                    }; 
+                }
                 else {
                     this.sharedRequest = {
                         type: 2,
                         event: this.checkIf48hour(event),
                         assignmentDetail: true,
                         status: this.scheduleStatus,
-                        availability:true
+                        availability:true,
+                        staffPreferenceAllowed: this.staffPreferenceAllowed,
                     };
                 }
             }
