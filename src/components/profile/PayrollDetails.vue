@@ -348,7 +348,7 @@ export default class PayrollDetails extends Vue {
 @media (min-width: 481px) and (max-width: 899px) {
     .div_centered {
         margin: 5px !important;
-    }
+}
 
     .overflowHide {
         overflow-x: hidden;
