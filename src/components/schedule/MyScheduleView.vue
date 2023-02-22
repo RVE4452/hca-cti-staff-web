@@ -86,7 +86,7 @@
                 <SharedModal v-if="sharedToggle" ref="sharedModal" :currentEvent="currentEvent"
                     :scheduleStartDate="scheduleStartDate" :scheduleEndDate="scheduleEndDate"
                     @close-modal="closeSharedModal()" @showSuccessModal="showSMPModal" @raiseClickEvent="raiseClickEvent"
-                    :sharedRequest="sharedRequest" :isPanelOpen="sharedToggle" :counter="counter" :key="counter">
+                    :sharedRequest="sharedRequest" :isPanelOpen="sharedToggle" :counter="counter" :key="counter" :schedulePreferences="schedulePreferences">
                 </SharedModal>
             </neu-row>
         </neu-container>
@@ -227,6 +227,7 @@ export default class MyScheduleView extends Vue.with(Props) {
     events: any = [];
     sharedToggle: boolean = false;
     counter: any = 0;
+    schedulePreferences:any={};
 
     beforeRouteLeave(to: any, from: any, next: any) {
         let warningMsgStatus = this.checkWarningMessage();
@@ -497,7 +498,7 @@ export default class MyScheduleView extends Vue.with(Props) {
                     italicEl.appendChild(descriptionChild);
                     childElementTippy.disable();
                 }
-            } else if (arg.event.extendedProps.type.includes("Unavailability")) {
+            } else if (arg.event.extendedProps.type.includes("Preference")) {
                 italicEl.classList.add("main-unavail");
                 child.classList.add("unavail-title");
                 child.innerHTML = arg.event.title;
@@ -800,8 +801,8 @@ export default class MyScheduleView extends Vue.with(Props) {
             cellTitle = "RESERVED";
         } else if (event.type == "Request" || (event.type == "Assignment" && event.status == "Pending")) {
             cellTitle = "REQUESTED";
-        } else if (event.type == "Unavailability") {
-            cellTitle = "UNAVAILABLE";
+        } else if (event.type == "Preference") {
+            cellTitle = "Preference";
         } else if (event.type == "Trade") {
             cellTitle = event.status.toUpperCase();
         }//event.type = "Assignment"
@@ -1062,7 +1063,7 @@ export default class MyScheduleView extends Vue.with(Props) {
                     event.extendedProps.type == "Assignment" ||
                     event.extendedProps.type == "Pending" ||
                     event.extendedProps.type == "Trade" ||
-                    event.extendedProps.type == "Unavailability" ||
+                    event.extendedProps.type == "Preference" ||
                     event.extendedProps.type == "Request" ||
                     (event.extendedProps.type == "Assignment" && event.extendedProps.status == "Pending")
                 ) {
@@ -1082,7 +1083,7 @@ export default class MyScheduleView extends Vue.with(Props) {
                     event.extendedProps.type == "Assignment" ||
                     event.extendedProps.type == "Pending" ||
                     event.extendedProps.type == "Trade" ||
-                    event.extendedProps.type == "Unavailability" ||
+                    event.extendedProps.type == "Preference" ||
                     event.extendedProps.type == "Request" ||
                     (event.extendedProps.type == "Assignment" && event.extendedProps.status == "Pending")
                 ) {
@@ -1105,7 +1106,7 @@ export default class MyScheduleView extends Vue.with(Props) {
         let isAllFilterStatusUpdated: boolean = false;
         if (check) {
             events.forEach((event: any) => {
-                if (event.extendedProps.type == "Unavailability") {
+                if (event.extendedProps.type == "Preference") {
                     event.setProp("display", "auto");
                     filteredDatesAdded.push(event.start);
                     if (this.isAllFilterChecked == false && event.extendedProps.dailyEvents > 1) {
@@ -1120,7 +1121,7 @@ export default class MyScheduleView extends Vue.with(Props) {
             }
         } else if (!check) {
             events.forEach((event: any) => {
-                if (event.extendedProps.type == "Unavailability") {
+                if (event.extendedProps.type == "Preference") {
                     event.setProp("display", "none");
                     filteredDatesRemoved.push(event.start);
                 }
@@ -1132,7 +1133,7 @@ export default class MyScheduleView extends Vue.with(Props) {
                 let startDate = moment(removedDate).format("YYYY-MM-DD");
                 events.forEach((event: any) => {
                     let eventDate = moment(event.start).format("YYYY-MM-DD");
-                    if (event.extendedProps.type != "Unavailability" && startDate == eventDate) {
+                    if (event.extendedProps.type != "Preference" && startDate == eventDate) {
                         let count = event.extendedProps.filteredEventCount == 0 ? event.extendedProps.dailyEvents - 1 : event.extendedProps.filteredEventCount - 1;
                         event.setExtendedProp('filteredEventCount', count);
                         event.setExtendedProp('isAllFilterChecked', true);
@@ -1146,7 +1147,7 @@ export default class MyScheduleView extends Vue.with(Props) {
                 let startDate = moment(addedDate).format("YYYY-MM-DD");
                 events.forEach((event: any) => {
                     let eventDate = moment(event.start).format("YYYY-MM-DD");
-                    if (event.extendedProps.type != "Unavailability" && startDate == eventDate) {
+                    if (event.extendedProps.type != "Preference" && startDate == eventDate) {
                         let count = event.extendedProps.filteredEventCount == 0 ? event.extendedProps.dailyEvents : event.extendedProps.filteredEventCount + 1;
                         event.setExtendedProp('filteredEventCount', count);
                         event.setExtendedProp('isAllFilterChecked', true);
@@ -1181,6 +1182,7 @@ export default class MyScheduleView extends Vue.with(Props) {
         await this.$store.dispatch("schedule/getStaffSchedule", payload)
             .then(() => {
                 if (this.userSchedules.events != undefined) {
+                    this.schedulePreferences = this.userSchedules.schedulePreferences;
                     //clear all existing events
                     if (this.viewFlag == 'CalView') {
                         this.currentMonthCalendarApi.removeAllEvents();
@@ -1639,20 +1641,22 @@ export default class MyScheduleView extends Vue.with(Props) {
                     SelfScheduleDepartments: event.selfScheduleDepartments
                 };
             }
-            else if (event.type == "Unavailability") {
+            else if (event.type == "Preference") {
                 this.sharedRequest = {
                     type: 1,
                     request: false,
                     availability: true,
                     calSelectedDates: {},
                     isUnavailabilityEvent: true,
-                    status: this.scheduleStatus
+                    status: this.scheduleStatus,
+                    staffPreferenceAllowed:true
                 }; /*needApproval: false,*/
             }
             else if ((event.status == "Requested" || event.status == "Pending") && event.type == "Trade") {
                 this.sharedRequest = {
                     type: 3,
                     val: true,
+                    staffPreferenceAllowed:true
                 };
             }
             else if (event.type == "Request") {
@@ -1664,7 +1668,8 @@ export default class MyScheduleView extends Vue.with(Props) {
                     additionalRequest: this.checkIfFutureDate(strClickEventDate),
                     availability: false,
                     calSelectedDates,
-                    status: this.scheduleStatus
+                    status: this.scheduleStatus,
+                    staffPreferenceAllowed:true
                 };
             } //event.type = "Assignment"
             else {
@@ -1673,7 +1678,7 @@ export default class MyScheduleView extends Vue.with(Props) {
                     event: this.checkIf48hour(event),
                     assignmentDetail: true,
                     status: this.scheduleStatus,
-                    availability: true
+                    staffPreferenceAllowed:true
                 };
             }
         }

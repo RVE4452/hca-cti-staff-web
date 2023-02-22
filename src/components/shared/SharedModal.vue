@@ -92,7 +92,7 @@
       </div>
 
       <div v-if="tabCurrent === 'DayPreference'">
-        <day-preference-view />
+        <day-preference-view  :currentEvent="currentEvent"  :schedulePreferences="schedulePreferences" @showSuccessMsgPopUp="showSuccessModal" @closeSharedModal="close" />
       </div>
       <div v-if="tabCurrent === 'Event'">
         <h3>Event</h3>
@@ -136,6 +136,7 @@ class Props {
   counter!: any;
   scheduleStartDate!: Date;
   scheduleEndDate!: Date;
+  schedulePreferences!:any;
 }
 @Options({
   //     props: {
@@ -193,6 +194,7 @@ export default class SharedModal extends Vue.with(Props) {
   TabId: any = {
     1: ["OpenNeed", "Request", "DayPreference"],
     2: ["Event", "Details", "Request", "DayPreference"],
+    3: ["Details","DayPreference"],
     4: ["Trade", "Details", "Request", "DayPreference"],
   };
 
@@ -254,6 +256,12 @@ export default class SharedModal extends Vue.with(Props) {
       {
         this.tabCurrent = "NoEvent";
       }
+    //   if(sharedRequest.type == 3 && (item.id === "DayPreference" || item.id === "Details")){
+    //     item.show = true;
+    //     item.focused = tabfocused == 0 ? true : false;
+    //     this.tabCurrent = item.focused ? item.id : this.tabCurrent;
+    //     tabfocused++;
+    //   }
     });
   }
 

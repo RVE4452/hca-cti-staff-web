@@ -6,38 +6,20 @@
     </div>
     <div class="row">
       <div class="row neu-margin--top-20">
-        <neu-radio-group :value="dayPreference"  @v-neu-change="selectionChange(value)">
-          <!-- @v-neu-change="preferenceSelected()" -->
-        
-        
-        <div class="col-12 neu-margin--top-05">
-            <!-- <neu-radio  color="primary" ></neu-radio> -->
-            <neu-radio value="Required"></neu-radio>
-            <neu-label class="col-4 ">Required</neu-label>
-        </div>
-        <div class="col-12 neu-margin--top-05">
-            <!-- <neu-radio  color="primary" ></neu-radio> -->
-            <neu-radio value="Available"></neu-radio>
-        
-            <neu-label class="col-4 ">Available</neu-label>
-        </div>
-        <div class="col-12 neu-margin--top-05">
-            <!-- <neu-radio  color="primary" ></neu-radio> -->
-            <neu-radio value="Neutral"></neu-radio>
-            <neu-label class="col-4 ">Neutral</neu-label>
-        </div>
-        <div class="col-12 neu-margin--top-05">
-            <!-- <neu-radio  color="primary" ></neu-radio> -->
-            <neu-radio value="Unavailable"></neu-radio>
-            <neu-label class="col-4 ">Unavailable</neu-label>
-        </div>
-        
+        <neu-radio-group :value="dayPreference">
+          <span  v-for="(option,id) in schedulePreferences" :key="id" >
+            <div class="col-12 neu-margin--top-05" @click="selectionChange(option.schedulePreferenceId)">
+              <!-- <neu-radio  color="primary" ></neu-radio> -->
+              <neu-radio :value="option.schedulePreferenceId"></neu-radio>
+              <neu-label class="col-4 "> {{ option.description}}</neu-label>
+            </div>
+          </span>
         </neu-radio-group>
       </div>
     </div>
     <div class="row">
       <div class="row neu-margin--top-20 neu-margin--left-30" style="width:100%" >
-        <neu-button :color="enableSave?'green-50':'gray-50'" full="true" type="submit" fill="raised"  style="width:100%" >
+        <neu-button :color="enableSave?'primary':'gray-50'"  type="submit" fill="raised"  style="width:100%" @click="savePreference()" >
               Save
         </neu-button>
       </div>
@@ -47,40 +29,67 @@
   <neu-container></neu-container>
   </template>
   
-  <script>
-  import { NeuContainer } from '@neutron/vue'
-  
-  export default {
+  <script lang="ts">
+  import { NeuButton, NeuContainer, NeuRadioGroup,NeuRadio } from '@neutron/vue';
+  import { defineComponent } from '@vue/runtime-core';
+  import { mapState } from "vuex";
+    import moment from "moment";
+
+  export default defineComponent ({
     name: 'DayPreferenceView',
-    components: { NeuContainer },
+    components: { NeuContainer,NeuRadioGroup,NeuButton,NeuRadio },
     props: {
-      resource: {
-        type: String,
-        required: false,
-        default: 'resource',
-      },
-      
+      currentEvent:{
+        type:Object,
+        default: () => {}
+      } as any,
+      schedulePreferences:{
+        type:Object,
+        default: () => {}
+      } as any,
     },
     data : () =>{
       return {
-        dayPreference:'',
-        enableSave:false,
+        dayPreference:'' as string,
+        enableSave:false as boolean,
+        optionList:{} as any,
+      }
+    },
+    computed: {
+      ...mapState('profile',["profileData"]),
+    },
+
+    created: function (){
+      if(this.currentEvent?.schedulePreferenceId != undefined){
+        this.dayPreference = this.currentEvent.schedulePreferenceId;
+     
       }
     },
     methods : {
-
-      selectionChange(value){
-      // if (this.dayPreference == value){
-      //   return 0;
-      // }
+      selectionChange(value:string){
       this.dayPreference = value;
         this.enableSave =true;
       },
 
-    }
-    
-    
-    
-  }
+      async savePreference(){
+        var payload = {
+            staffSchedulePreferenceId:this.currentEvent.staffSchedulePreferenceId,
+            staffId: this.profileData.staffId,
+            schedulePreferenceId: this.dayPreference,
+            date: moment(this.currentEvent.date).format("YYYY-MM-DD")
+        };
+        
+        await this.$store.dispatch('schedule/saveDayPreference', payload)
+            .then((res: any) => {
+                this.$emit('showSuccessMsgPopUp', true);
+                this.$emit('closeSharedModal');
+                this.enableSave = !this.enableSave;
+            })
+            .catch((err: any) => {
+              console.log(err)
+            });
+      } 
+    },
+  });
   </script>
   
