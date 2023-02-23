@@ -1711,7 +1711,7 @@ export default class MyScheduleView extends Vue.with(Props) {
     }
 
     handleEvents(events: any) {
-        this.currentEvents = events;
+       
     }
 
 
