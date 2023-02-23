@@ -197,11 +197,11 @@ const actions: ActionTree<Schedule, RootState> = {
     },
 
     
-     WithdrawEvent(payload:any) {
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Requests/Needs/${payload.assignementid}`;
-
+    WithdrawEvent({ commit, rootState }, payload: any) {
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Requests/Needs/${payload.assignmentRequestId}`;
+        delete payload["assignmentRequestId"]; 
         return http
-            .put(apiUrl)
+            .put(apiUrl, payload)
             .then((res: AxiosResponse) => {
             })
             .catch((err: AxiosError) => {
