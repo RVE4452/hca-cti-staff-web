@@ -247,29 +247,29 @@ export default class Request extends Vue.with(Props) {
             const profileData:any[] = [];
             
 
-            for (var i = 0; i < this.profileData.departmentShifts.length; i++) {
-                let selectedDate = moment(new Date(
-                    this.calSelectedDates.startDate.getTime() -
-                    this.calSelectedDates.startDate.getTimezoneOffset() * 60000
-                ).toISOString());
+            // for (var i = 0; i < this.profileData.departmentShifts.length; i++) {
+            //     let selectedDate = moment(new Date(
+            //         this.calSelectedDates.startDate.getTime() -
+            //         this.calSelectedDates.startDate.getTimezoneOffset() * 60000
+            //     ).toISOString());
 
-                if ((this.profileData.departmentShifts[i].effective === null)
-                    && (this.profileData.departmentShifts[i].expires === null)) {
-                   // this.availableShifts.push(this.profileData.departmentShifts[i]);
-                }
-                else if ((this.profileData.departmentShifts[i].effective !== null)
-                    && (this.profileData.departmentShifts[i].expires !== null)) {
-                    if ((this.profileData.departmentShifts[i].effective <= selectedDate) && (this.profileData.departmentShifts[i].expires >= selectedDate)) {
-                      //  this.availableShifts.push(this.profileData.departmentShifts[i]);
-                    }
-                }
-                else if (((this.profileData.departmentShifts[i].effective === null)) && (selectedDate <= moment(this.profileData.departmentShifts[i].expires))) {
-                   // this.availableShifts.push(this.profileData.departmentShifts[i]);
-                }
-                else if (((this.profileData.departmentShifts[i].expires === null)) && (selectedDate >= moment(this.profileData.departmentShifts[i].effective))) {
-                   // this.availableShifts.push(this.profileData.departmentShifts[i]);
-                }
-            }
+            //     if ((this.profileData.departmentShifts[i].effective === null)
+            //         && (this.profileData.departmentShifts[i].expires === null)) {
+            //         this.availableShifts.push(this.profileData.departmentShifts[i]);
+            //     }
+            //     else if ((this.profileData.departmentShifts[i].effective !== null)
+            //         && (this.profileData.departmentShifts[i].expires !== null)) {
+            //         if ((this.profileData.departmentShifts[i].effective <= selectedDate) && (this.profileData.departmentShifts[i].expires >= selectedDate)) {
+            //             this.availableShifts.push(this.profileData.departmentShifts[i]);
+            //         }
+            //     }
+            //     else if (((this.profileData.departmentShifts[i].effective === null)) && (selectedDate <= moment(this.profileData.departmentShifts[i].expires))) {
+            //         this.availableShifts.push(this.profileData.departmentShifts[i]);
+            //     }
+            //     else if (((this.profileData.departmentShifts[i].expires === null)) && (selectedDate >= moment(this.profileData.departmentShifts[i].effective))) {
+            //         this.availableShifts.push(this.profileData.departmentShifts[i]);
+            //     }
+            // }
         } catch (error) {
             console.log(error);
         }
@@ -339,7 +339,7 @@ export default class Request extends Vue.with(Props) {
     async FireAction(additionalRequestEvent: any) {
         if (!this.widthdrawMode(additionalRequestEvent)) {
             //If there is no email address present in profile then doesn't allow them to send Non-productive shift request]
-            var selectedShift = this.data.availableShifts?.find((x: any) => x.id == this.shift);
+            var selectedShift = this.userSchedules.departmentShifts?.find((x: any) => x.id == this.shift);
             if (this.profileData.email == null ||
                 this.profileData.email == undefined || this.profileData.email == "") {
                 this.showErrorMsg = true;
