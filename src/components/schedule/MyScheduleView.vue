@@ -1672,6 +1672,18 @@ export default class MyScheduleView extends Vue.with(Props) {
                     staffPreferenceAllowed:true
                 };
             } //event.type = "Assignment"
+            else if (event.type == "Assignment" && event.status == "Pending") {
+                    let strClickEventDate = moment(event.date).format("YYYY-MM-DD");
+                    const calSelectedDates = { startDate: eventStart, endDate: moment(eventStart).add(1, 'days') };
+                    this.sharedRequest = {
+                        type: 1,
+                        request: true,
+                        additionalRequest: this.checkIfFutureDate(strClickEventDate),
+                        availability: true,
+                        calSelectedDates,
+                        status: this.scheduleStatus                       
+                    };
+                }
             else {
                 this.sharedRequest = {
                     type: 2,

@@ -515,9 +515,25 @@ g<template>
 
         FireAction() {
             try {
+                const filteredShift: any = this.data?.shifts?.filter((shift: any) => {
+                        return shift.id ===  this.data.selectedShift;
+                    });
                 if (this.currentEvent?.type == "Assignment" && this.currentEvent?.status == "Pending") {
                     this.isLoading = true;
-                    this.$store.dispatch('schedule/WithdrawEvent', { needid: this.needid, assignementid: this.currentEvent.id })
+                    const requestBody = {
+                        "assignmentRequestId": this.currentEvent?.id,
+                        "staffId": this.assignmentDetail?.staffId,
+                        "departmentId": this.assignmentDetail?.departmentId,
+                        "departmentShiftId": this.assignmentDetail?.departmentShiftId,
+                        "skillId": this.assignmentDetail?.skillId,
+                        "start": this.assignmentDetail?.start,
+                        "end": this.assignmentDetail?.end,
+                        "expires": this.assignmentDetail?.expires, 
+                        "comment": "",
+                        "status": "",
+                        "managerComment": ""
+                    };
+                    this.$store.dispatch('schedule/WithdrawEvent', requestBody)
                         .then((res: any) => {
                             // showing message in MyScheduleView Screen and close modal only on success
                             this.isLoading = false;
@@ -536,10 +552,6 @@ g<template>
                         });
 
                 } else {
-                    const filteredShift: any = this.data?.shifts?.filter((shift: any) => {
-                        return shift.id ===  this.data.selectedShift;
-                    });
-
                     const requestBody = {
                         "staffId": this.profileData?.staffId,
                         "departmentId": this.selectedDeptId,

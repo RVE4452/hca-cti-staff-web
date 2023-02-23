@@ -221,9 +221,10 @@ export default class SharedModal extends Vue.with(Props) {
       }
 
       if (
-        currentEvent.type === "Need" &&
+        (currentEvent.type === "Need" &&
         currentEvent.status != "0 Needs" &&
-        item.id === "OpenNeed"
+        item.id === "OpenNeed") || (sharedRequest.type == 1 && sharedRequest.status == "Posted" &&
+        item.id === "OpenNeed")
       ) {
         item.show = true;
         item.focused = tabfocused == 0 ? true : false;
