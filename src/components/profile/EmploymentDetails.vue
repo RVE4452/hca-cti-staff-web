@@ -152,7 +152,7 @@ export default defineComponent({
   computed: {
       ...mapState('profile',["profileData"]),
       getName():any  {
-          return (this.profileData.first + " " + this.profileData.last);
+          return (this.profileData.firstName + " " + this.profileData.lastName);
       },
       getFullHomeAddress():any {
           let fulladdress = "";
