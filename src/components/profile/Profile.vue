@@ -107,10 +107,10 @@
                 setDefaultValue(){
                     if (this.profileData) {
                         
-                        this.userName = this.profileData.first + " " + this.profileData.last; 
+                        this.userName = this.profileData.firstName + " " + this.profileData.lastName; 
                         
-                        if (this.profileData.first != undefined && this.profileData.last != undefined) {
-                            this.nameInitials = this.profileData.first.charAt(0).toUpperCase() + this.profileData.last.charAt(0).toUpperCase();
+                        if (this.profileData.firstName != undefined && this.profileData.lastName != undefined) {
+                            this.nameInitials = this.profileData.firstName.charAt(0).toUpperCase() + this.profileData.lastName.charAt(0).toUpperCase();
                         }
     
                         this.isSelfScheduleAllowed = this.profileData.selfSchedule;
