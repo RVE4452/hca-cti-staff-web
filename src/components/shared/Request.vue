@@ -190,6 +190,7 @@ export default class Request extends Vue.with(Props) {
     loaderColor: string = "#0085ca";
     isConfirmModalVisible: boolean = false;
     confirmMsgValue: string = '';
+    value: string = '';
     maxCommentsCharacters: number = 25;
     public profileData!: any;
     currentSchedule!: ORSchedule;
@@ -222,20 +223,15 @@ export default class Request extends Vue.with(Props) {
     }
 
     matchSkillId() {
-        // debugger
         console.log("test", this.userSchedules)
         let skills = [] as any
-        // debugger
         this.userSchedules.events.filter((item: any) => {
             if (item.departmentShiftId === (this.shift || this.defaultShift)) {
                 skills.push(item.skillId)
             }
         })
         this.skillId = skills[0];
-    }   
-    
-    // console.log(this.matchSkillId());
-    
+    }    
 
     async loadData() {
         try {
