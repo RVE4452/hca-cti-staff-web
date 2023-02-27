@@ -214,8 +214,7 @@ export default class Request extends Vue.with(Props) {
     skillId: number = 0;
     staffId: number = 0;
     bindDisabled: Boolean | Object = {};
-    selectedDate: string = "";
-    
+    selectedDate: string = "";    
 
     async mounted(): Promise<void> {
         await this.loadData();
@@ -247,8 +246,7 @@ export default class Request extends Vue.with(Props) {
             this.defaultDuration = "";
             this.defaultShift = "";
             this.availableShifts = [];
-            this.defaultComment = "";
-            
+            this.defaultComment = "";            
 
             for (var i = 0; i < this.profileData.departmentShifts.length; i++) {
                 let selectedDate = moment(new Date(
