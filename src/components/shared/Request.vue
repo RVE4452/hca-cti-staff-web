@@ -10,12 +10,15 @@
                         <strong>{{ profileData.ptoBalance }}</strong>
                     </p>
                 </div>
+                
                 <div class="col-12 neu-margin--bottom-20" v-if="showErrorMsg">
                     <ErrorNotification :errorMsg="errorMsg" :errorType="errorType" />
                 </div>
+
                 <div class="col-12 pt3 pb4" v-if="availiableDates.length > 1">
                     <h4>Dates</h4>
                 </div>
+
                 <div class="col-12" v-if="availiableDates.length > 1">
                     <div class="row">
                         <div class="col-6 mb3" v-for="dates of availiableDates" v-bind:key="dates">
@@ -31,9 +34,11 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col-12">
                     <div class="hr-line"></div>
                 </div>
+
                 <div class="col-md-12 pb4">
                     <div class="row">
                         <div class="col-12">
