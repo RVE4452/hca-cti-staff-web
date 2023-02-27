@@ -1,13 +1,13 @@
 import { mount } from '@vue/test-utils'
 import Vuex from 'vuex';
-import { currentEvent, profileData } from '../../src/mocks/mockSpecData';
+import { currentEvent, staff } from '../../src/mocks/mockSpecData';
 import MySchedule from '@/components/schedule/MyScheduleView.vue';
 const store = new Vuex.Store({
     modules: {
       "profile": {
         namespaced: true,
         state: {
-          profileData: profileData
+          profileData: staff
         },
         actions: {
             getProfileDetails: jest.fn()
@@ -16,7 +16,7 @@ const store = new Vuex.Store({
       "schedule": {
         namespaced: true,
         state: {
-            userSchedules: profileData
+            userSchedules: staff
         },
         actions: {
             getStaffSchedule: jest.fn()
@@ -46,7 +46,7 @@ describe('MyScheduleView', () => {
           });
         it('validate getCurrentWeekSchedule method', async() => {       
           
-          wrapper.vm.profileData = profileData;
+          wrapper.vm.profileData = staff;
           const currweek= wrapper.vm.getCurrentWeekSchedule();
           expect(currweek.start).toBe('2023-01-29T07:00:00');
         });
