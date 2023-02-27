@@ -24,4 +24,5 @@ export interface DepartmentStaff {
    scheduleBlocks: ScheduleBlocks[];
    departmentShifts: DepartmentShifts[];
    cancelReasons: CancelReasons[];
+   needs: any[];
 }
