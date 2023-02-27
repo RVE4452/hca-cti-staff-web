@@ -1,14 +1,14 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import OpenNeed from '@/components/shared/OpenNeed.vue';
 import Vuex from 'vuex';
-import { currentEvent, profileData, resOpenNeedData } from '../../src/mocks/mockSpecData';
+import { currentEvent, staff, resOpenNeedData } from '../../src/mocks/mockSpecData';
 
 const store = new Vuex.Store({
     modules: {
       "profile": {
         namespaced: true,
         state: {
-          profileData: profileData,
+          profileData: staff,
           appInsightEventData: [],
           isAdmin: false,
           isImpersonating: false
@@ -51,7 +51,7 @@ const store = new Vuex.Store({
     },
     props: {
       appInsightEventData: {},
-      profileData: profileData,
+      profileData: staff,
       openNeedShiftMembers: resOpenNeedData,
       assignmentDetail: [],
       openNeedsFacilities: resOpenNeedData,
@@ -77,7 +77,7 @@ const store = new Vuex.Store({
       partialShifts: [],
       selectedPartialShift: null
     };
-    wrapper.vm.profileData = profileData;
+    wrapper.vm.profileData = staff;
     wrapper.vm.openNeedsDepartments = resOpenNeedData;
     wrapper.vm.openNeedsFacilities = resOpenNeedData;
     wrapper.vm.openNeedShiftMembers = resOpenNeedData;
@@ -119,13 +119,13 @@ const store = new Vuex.Store({
 
       describe("Testing on loadopenNeeds", () => {
         wrapper.vm.assignmentDetail = {
-          facilityName: "Frisbie Memorial Hospital",
+          facilityName: "Mock Facility",
         }; 
         it("check prop values in loadopenNeeds", async ()=> {
           wrapper.vm.loadopenNeeds();
           await wrapper.vm.$nextTick();
           expect(wrapper.vm.isLoaded).toBe(true);
-          expect(wrapper.vm.facilityName).toBe("Frisbie Memorial Hospital");        
+          expect(wrapper.vm.facilityName).toBe("Mock Facility");        
         })
       });
 
@@ -154,7 +154,7 @@ const store = new Vuex.Store({
           await wrapper.vm.$nextTick();
           expect(wrapper.vm.selectedSkillId).toBe(14);
           expect(wrapper.vm.skillName).toBe(undefined);
-          expect(wrapper.vm.deptPartialShifts.length).toBe(6);
+          expect(wrapper.vm.deptPartialShifts.length).toBe(2);
         })
       });
 
