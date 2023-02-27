@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils'
+import { shallowMount } from '@vue/test-utils'
 import Vuex from 'vuex';
 import { currentEvent, staff } from '../../src/mocks/mockSpecData';
 import MySchedule from '@/components/schedule/MyScheduleView.vue';
@@ -35,7 +35,7 @@ describe('MyScheduleView', () => {
     describe('Template', () => {
         let wrapper: any;
         beforeEach(() => {
-            wrapper = mount(MySchedule, {
+            wrapper = shallowMount(MySchedule, {
               data: () =>  { return { currentEvent: currentEventData}},
               global: {
                 mocks: {
