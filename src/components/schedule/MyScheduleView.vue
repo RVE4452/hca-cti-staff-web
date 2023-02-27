@@ -1176,7 +1176,7 @@ export default class MyScheduleView extends Vue.with(Props) {
             return;
         //get all events
         let payload = {
-            scheduleId: schedule.scheduleId,
+            scheduleId: schedule?.scheduleId,
             staffId: this.profile.staffId
         };
         await this.$store.dispatch("schedule/getStaffSchedule", payload)
@@ -1227,14 +1227,14 @@ export default class MyScheduleView extends Vue.with(Props) {
                     }
                 }
             });
-        this.scheduleStartDate = schedule.start;
-        this.scheduleEndDate = schedule.end;
-        this.scheduleStatus = schedule.status;
-        this.currentMonthCalendarApi?.gotoDate(schedule.start);
+        this.scheduleStartDate = schedule?.start;
+        this.scheduleEndDate = schedule?.end;
+        this.scheduleStatus = schedule?.status;
+        this.currentMonthCalendarApi?.gotoDate(schedule?.start);
         this.currentDate =
-            moment(schedule.start).format("ll") +
+            moment(schedule?.start).format("ll") +
             " - " +
-            moment(schedule.end).format("ll");
+            moment(schedule?.end).format("ll");
 
 
         //filtered
