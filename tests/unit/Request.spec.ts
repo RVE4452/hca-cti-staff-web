@@ -1,4 +1,4 @@
-import { mount, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import Request from '@/components/shared/Request.vue';
 import Vuex from 'vuex';
 import { requestDetailsMockData, profileMockData } from '../../src/mocks/requestMockSpecData';
@@ -40,16 +40,14 @@ describe('computed prop', () => {
       jest.useRealTimers();
     });
 
-    wrapper = mount(Request, {
+     wrapper = shallowMount(Request, {
         store,
-        data: () => {
-          return {
+        data: () => ({
             appInsightEventData: {},
             requestDetail: [],
             profileData: [],
             userSchedules: []
-          }
-        },
+        }),
         props: {
             profileData: profileMockData,
             appInsightEventData: {},          
