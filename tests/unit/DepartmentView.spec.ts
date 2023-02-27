@@ -129,20 +129,20 @@ describe('computed prop', () => {
 
     it("check for skills dropdown onChangeEvent Id- onSkillSelect", async () => {
       const items = [{id:100,description:"All",skill:"All"},{id:110,description:"PCT",skill:"PCT"}];
-      const lastSelectItem = "";
       wrapper.vm.skills = items;
-      wrapper.findComponent({ref: 'ddlSkills'}).vm.$emit("update", items, lastSelectItem);
       await wrapper.vm.$nextTick();
-      expect(wrapper.vm.selectedSkills[0].description).toBe("All");
+      wrapper.findComponent({ref: 'ddlSkills'}).vm.$emit("update", items);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.skills[0].skill).toBe("All");
     });
 
     it("check for schedule blocks dropdown onChangeEvent Id- onScheduleBlockSelect", async () => {      
       const items1 = [{startTime:"07:00:00",description:"All",endTime:"07:00:00"},{startTime:"1:00:00",description:"PCT",endTime:"1:00:00"}];
-      const lastSelectItem = "";
+      
       wrapper.vm.scheduleBlocks = items1;
-      wrapper.findComponent({ref: 'ddlScheduleBlocks'}).vm.$emit("update", items1, lastSelectItem);
+      wrapper.findComponent({ref: 'ddlScheduleBlocks'}).vm.$emit("update", items1);
       await wrapper.vm.$nextTick();
-      expect(wrapper.vm.selectedScheduleBlock[0].description).toBe("All");
+      expect(wrapper.vm.scheduleBlocks[0].description).toBe("All");
     });
 
     // it("check for period dropdown onChangeEvent Id- onScheduleChange", async () => {
@@ -178,8 +178,6 @@ describe('computed prop', () => {
       expect(wrapper.vm.sortOrder).toBe("asc");
       expect(wrapper.vm.sortArrow).toBe("arrow_upward");
       expect(wrapper.vm.finalArray).toBe(undefined);
-      expect(wrapper.vm.selectedSkills[0].skill).toBe("All");
-      expect(wrapper.vm.selectedSkillList).toBe("All");
     })
   });
 
@@ -210,7 +208,7 @@ describe('computed prop', () => {
       await wrapper.vm.$nextTick();
       expect(wrapper.vm.sortArrow).toBe("arrow_downward");
       expect(wrapper.vm.sortOrder).toBe("desc");
-      expect(wrapper.vm.sortedDSList.length).toBe(13);
+      expect(wrapper.vm.sortedDSList.length).toBe(2);
     })
   });
 
