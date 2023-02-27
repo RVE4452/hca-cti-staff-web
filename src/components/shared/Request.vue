@@ -222,15 +222,20 @@ export default class Request extends Vue.with(Props) {
     }
 
     matchSkillId() {
+        // debugger
         console.log("test", this.userSchedules)
         let skills = [] as any
-        this.userSchedules?.events?.filter((item: any) => {
+        // debugger
+        this.userSchedules.events.filter((item: any) => {
             if (item.departmentShiftId === (this.shift || this.defaultShift)) {
                 skills.push(item.skillId)
             }
         })
         this.skillId = skills[0];
-    }    
+    }   
+    
+    // console.log(this.matchSkillId());
+    
 
     async loadData() {
         try {
@@ -351,7 +356,7 @@ export default class Request extends Vue.with(Props) {
 
             let requestBody = {
                 staffId: this.profileData.staffId,
-                skillId: this.profileData.staffId,
+                skillId: this.skillId,
                 departmentId: this.profileData.departmentId,
                 departmentShiftId: additionalRequestEvent ? this.defaultShift : this.shift,
                 start: new Date(
@@ -476,7 +481,7 @@ export default class Request extends Vue.with(Props) {
             this.errorMsg = "";
         }
 
-        this.matchSkillId();
+        this.matchSkillId();     
     }
 
     formatTime(t: Date): string {
