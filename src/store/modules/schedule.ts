@@ -118,7 +118,7 @@ const mutations: MutationTree<Schedule> = {
         state.departmentSchedules = schedules;
     },
 
-    
+        
      setPayrollDetails(state,lstPayrollDetails: ScheduleActualCIOD[]): void {
         state.payrollDetails = lstPayrollDetails;
     }
@@ -427,7 +427,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      getDepartmentSchedule({ commit, rootState },payload: any){
-        const api = `${process.env.VUE_APP_APIURL}/Departments/${payload.deptId}/Schedules/${payload.scheduleId}`;
+        const api = `${process.env.VUE_APP_APIURL}/Schedules/${payload.scheduleId}`;
 
         return http
             .get(api)
@@ -528,7 +528,7 @@ const actions: ActionTree<Schedule, RootState> = {
                 throw err;
             }); 
         }
-    }
+    }    
 
 }
 export const schedule: Module<Schedule, RootState> = {
