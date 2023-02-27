@@ -398,8 +398,6 @@ export default class Request extends Vue.with(Props) {
                     hours: Number(additionalRequestEvent ? this.defaultDuration : this.duration), // Add Hours
                     minutes: 0,
                 };
-
-                // requestBody.shifts.push(objReq);
             }
             this.isFullScreenLoading = true;
             this.$store
