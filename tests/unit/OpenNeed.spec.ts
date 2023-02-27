@@ -68,7 +68,7 @@ const store = new Vuex.Store({
     } 
 }
   describe('computed prop', () => {
-    wrapper = mount(OpenNeed, componentOptions);
+    const newLocal = wrapper = mount(OpenNeed, componentOptions);
     wrapper.vm.data = {
       allShifts: [{departmentId:110541, skillId: 14}],
       shifts: [{departmentId:110541, departmentShiftId: 14}],
