@@ -211,6 +211,7 @@ export default class Request extends Vue.with(Props) {
     comment: string = "";
     defaultComment: string = "";
     skillId: number = 0;
+    staffId: number = 0;
     bindDisabled: Boolean | Object = {};
     selectedDate: string = "";
     
@@ -350,8 +351,7 @@ export default class Request extends Vue.with(Props) {
 
             let requestBody = {
                 staffId: this.profileData.staffId,
-                // skillId: this.skillId,
-                skillId: 20,
+                skillId: this.profileData.staffId,
                 departmentId: this.profileData.departmentId,
                 departmentShiftId: additionalRequestEvent ? this.defaultShift : this.shift,
                 start: new Date(
