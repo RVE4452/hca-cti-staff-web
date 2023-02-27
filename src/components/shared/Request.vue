@@ -350,7 +350,8 @@ export default class Request extends Vue.with(Props) {
 
             let requestBody = {
                 staffId: this.profileData.staffId,
-                skillId: this.skillId,
+                // skillId: this.skillId,
+                skillId: 20,
                 departmentId: this.profileData.departmentId,
                 departmentShiftId: additionalRequestEvent ? this.defaultShift : this.shift,
                 start: new Date(
@@ -364,8 +365,7 @@ export default class Request extends Vue.with(Props) {
                 ),
                 comment: additionalRequestEvent ? this.defaultComment : this.comment,
                 email: this.profileData.email,
-                status: "Pending",
-                shifts: [] as any
+                status: "Pending"
             };
             for (var i = 0; i < this.selectedDate?.length; i++) {
                 var eventStartDateTime = new Date(this.selectedDate[i]);
