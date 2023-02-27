@@ -73,12 +73,12 @@
         </div>
     <div class="neu-container neu-padding--0 deptTableContainer deptContainer margin">
             <table class="neu-table_new deptView">
-                <tr class="th_HeaderRow">
-                    <th class="neu-input__label td_column1 empName pt10"  v-bind:class="{ 'hideEmployeNameCol': columnToggle }">
-                        Employee Name
-                        <i class="material-icons neu-table__sort no-print valign" v-on:click="getSortedDSData('clicked')">{{ sortArrow }}</i>
+                <tr class="th_HeaderRow deptbg">
+                    <th class="neu-input__label td_column1 empName pt10 deptbg"  v-bind:class="{ 'hideEmployeNameCol': columnToggle }">
+                        Employee Name                          
+                            <i class="material-icons neu-table__sort no-print valign" v-on:click="getSortedDSData('clicked')">{{ sortArrow }}</i>                                               
                     </th>
-                    <th class="neu-input__label td_column2 skillWidth pt14" v-bind:class="{ 'hideSkillCol': columnToggle }">
+                    <th class="neu-input__label td_column2 skillWidth pt14 deptbg" v-bind:class="{ 'hideSkillCol': columnToggle }">
                         <span v-bind:class="{ 'hideIcon': columnToggle }">Skill</span>
                         <div class="navArrow mobileNav no-print">                           
                             <neu-icon class="material-icons pointer colNavigation"  v-bind:class="{ 'hideIcon': !iconToggle }" @click="hideColumns">
@@ -112,6 +112,43 @@
                     </td>
                 </tr>
             </table>
+            <table class="neu-table_new deptView">
+                <tr class="th_HeaderRow summarybg">
+                    <th class="neu-input__label td_column1 empName pt10 summarybg" v-bind:class="{ 'hideEmployeNameCol': columnToggle }" >
+                        <neu-list color="gray-10" lines="none" @click="showSummary">
+                        <neu-item>
+                            <neu-icon v-if="toggleSummary" slot="start">expand_less</neu-icon>
+                            <neu-icon v-else slot="start">expand_more</neu-icon>
+                            <neu-label>Summary Periods</neu-label>
+                        </neu-item>
+                        </neu-list>
+                    </th>
+                    <th class="neu-input__label td_column2 skillWidth pt14 summarybg rightBorderNone">
+                        <div class="navArrow mobileNav no-print">
+                        </div>
+                    </th>
+                    <th v-for="day in days" :key="days.indexOf(day)" class="neu-input__label periodWidth">
+                        <!-- {{  getFormattedDay(day) }}
+                        <br />
+                        {{ getFormattedDate(day) }} -->
+                    </th>
+                </tr>
+                <template v-if="toggleSummary">
+                <tr class="neu-table__row tableBorder" v-for="ds in summaryRows" :key="ds.schedule_block" :staffId="ds.schedule_block">
+                    <td :class="['neu-table__cell neu-table__row-comfy neu-input__label td_column1 colEmpNameData', columnToggle? 'hideEmployeNameCol': '']">
+                        {{ ds.schedule_block }}
+                    </td>
+                    <td class="neu-table__row-comfy neu-input__label td_column2" v-bind:class="{ 'hideSkillCol': columnToggle }">
+                        
+                    </td>
+                    <td v-for="day in days" :key="days.indexOf(day)+'_row'" class="neu-table__row-comfy neu-input__label"
+                        
+                        style=" border: 1px solid silver; word-wrap: break-word !important; text-align: center !important;"  :date="displayDate(day)">
+                        {{ showCellSummaryData(day,ds) }}
+                    </td>
+                </tr>
+                </template>
+            </table>
             <div class="col-sm-12 neu-margin--top-20 neu-text--caption neu-text--align-center mTop0">
                 <span class="neu-text--bold">Important Note </span>: Shift assignments display on the date of the shift's actual start time.
             </div>
@@ -124,7 +161,7 @@
     //@ts-ignore
     import moment from "moment";
     import { mapState } from "vuex";
-    import { DepartmentStaff, DepartmentAssignment } from "@/models";    
+    import { DepartmentStaff } from "@/models";    
     //@ts-ignore
     import { Multiselect } from 'vue-multiselect';
     import { useAppInsights } from '../../store/modules/AppInsights'
@@ -166,7 +203,7 @@
         skills: any = [];
         selectedSkillId: number = 0;
         scheduleBlocks: ScheduleBlocks[] = [];
-        selectedScheduleBlock: string = "";
+        selectedScheduleBlock: any = [];
         facilityName: string = '';
         departmentName: string = '';
         skillName!: string;
@@ -182,6 +219,13 @@
         private columnToggle: boolean = false;
         private iconToggle: boolean = true;
 
+        staffMembers: any = [];
+        summaryRows: any  = [];
+        summaryRowsData: any  = [];
+        needs: any  = [];
+        toggleSummary: boolean =  false;
+        defaultSkill: any = { "id": 0, "description": "All", "skill": "All" };
+        defaultScheduleBlock: any = { "id": 0, "description": "All", "schedule_block": "All" };
         async mounted() { 
             if(this.profileData?.first == "" || this.profileData?.first == null || this.profileData?.first == undefined)
             {
@@ -190,6 +234,7 @@
             await this.getFiltersData();
             await this.showScheduleDays();
             await this.getDepartmentSchedule();
+            await this.getScheduleSummaries();
             localStorage.setItem("visitedDepartmentView", "true");
             useAppInsights().trackEvent({name:'ViewDepartment',properties: 
             JSON.parse(JSON.stringify(this.appInsightEventData))});           
@@ -224,9 +269,6 @@
         }, [])
 
         removeDuplicatesSkillsFromArrayByProperty = (arr:any, prop:any) => arr?.reduce((accumulator:any, currentValue:any) => {
-            if (accumulator.length == 0) {
-                accumulator.push({ "id": 0, "description": "All", "skill": "All" });
-            }
             if (!accumulator.find((obj:any) => obj[prop] === currentValue[prop])) {
                 accumulator.push({ "id": accumulator.length, "description": currentValue.skill, "skill": currentValue.skill });
             }
@@ -247,16 +289,29 @@
                 .then((res: any) => {
                     this.getLastUpdatedDate();
                     let result = this.departmentSchedules?.staff?.map((a:any) => a.skills);
-                    result.forEach((obj:any) => {
+                    this.skills.push(this.defaultSkill);
+                    result?.forEach((obj:any) => {
                         Object.entries(obj).forEach(([key, value]) => {   
                             this.skills.push({"description": value, "skill": value });
-                        }); 
+                        });
                     });
-                    this.scheduleBlocks = this.departmentSchedules?.scheduleBlocks;
                     this.skills = this.removeDuplicatesSkillsFromArrayByProperty(this.skills, 'skill');
-                    this.selectedSkills = localStorage.getItem("selSkills") == null ? this.skills?.filter((x:any) => x.skill == "All") : JSON.parse(localStorage.getItem("selSkills") as any);
-                    this.selectedScheduleBlock = this.skills?.filter((x:any) => x.skill == "All");
+                    this.selectedSkills = this.skills?.[0];
                     this.selectedSkillList = Array.prototype.map.call(this.selectedSkills, function(item) { return item.description; }).join(",");
+
+                    var schDropdown: any = [this.defaultScheduleBlock];                    
+                    this.departmentSchedules?.scheduleBlocks.forEach((block: any) => {
+                    schDropdown.push({ 
+                        schedule_block: `${block.startTime.slice(0, -3)}-${block.endTime.slice(0, -3)}`,
+                        id: `${block.startTime.slice(0, -3)}-${block.endTime.slice(0, -3)}`,
+                        startTime: block.startTime,
+                        endTime: block.endTime,
+                        description: block.description
+                        });
+                    })
+                    this.scheduleBlocks = schDropdown;
+                    this.selectedScheduleBlock = this.scheduleBlocks[0];
+                    
                     this.sortedDSList = this.departmentSchedules?.staff;
                     this.sortedDSListforSkills = this.departmentSchedules?.staff;                    
                     this.getSortedDSData('');
@@ -268,6 +323,70 @@
                     }
                 });
                 }
+            }
+        }
+
+        async getScheduleSummaries() {
+            if(this.departmentSchedules != undefined && this.departmentSchedules != null){
+                this.summaryRows = [];
+                var scheduleBlocksData: any = this.departmentSchedules?.scheduleBlocks ?? [];
+                this.staffMembers = this.departmentSchedules?.staff ?? []
+
+                scheduleBlocksData.forEach((block: any) => {
+                    this.summaryRows.push({
+                    schedule_block: `${block.startTime.slice(
+                        0,
+                        -3
+                    )}-${block.endTime.slice(0, -3)}`,
+                    })
+                })
+                this.needs = this.departmentSchedules?.needs ?? []
+                this.needs.forEach((need: any) => {
+                    const blockStr = `${need.summaryStart.slice(
+                    -8,
+                    -3
+                    )}-${need.summaryEnd.slice(-8, -3)}`
+                    const blockIndex = this.summaryRows.findIndex(
+                    (e: any) => e.schedule_block === blockStr
+                    )
+                    // const blockStartKey = `${parseInt(need.summaryStart.slice(5, 7)
+                    // )}/${parseInt(need.summaryStart.slice(8, 10))}`
+                    const blockStartKey = this.getFormattedDay(need.summaryStart) + " " + this.getFormattedDate(need.summaryStart);                    
+
+                    if (blockIndex > -1) {
+                    if (this.summaryRows[blockIndex][blockStartKey]) {
+                        const assignmentsTarget = this.summaryRows[blockIndex][blockStartKey]
+                        if (typeof assignmentsTarget?.label === 'string') {
+                        const assignmentsTargetArr = assignmentsTarget?.label.split('/')
+                        const assignments = parseInt(assignmentsTargetArr[0])
+                        const target = parseInt(assignmentsTargetArr[1])
+                        const variance = parseInt(assignmentsTarget.variance)
+
+                        if (assignmentsTargetArr.length === 2) {
+                            this.summaryRows[blockIndex][blockStartKey] = {
+                            label: `${parseInt(need.assignments) + assignments}/${
+                                parseInt(need.target) + target
+                            }`,
+                            needs: [...assignmentsTarget.needs, need],
+                            editable: true,
+                            variance: parseInt(need.variance) + variance,
+                            staff: this.staffMembers,
+                            }
+                        }
+                        }
+                    } else {
+                        this.summaryRows[blockIndex][blockStartKey] = {
+                        label: `${need.assignments}/${need.target}`,
+                        needs: [need],
+                        editable: true,
+                        variance: need.variance,
+                        staff: this.staffMembers,
+                        }
+                    }
+                    }
+                })
+                this.summaryRowsData = this.summaryRows;
+                //console.log("summaryrows", this.summaryRows);
             }
         }
 
@@ -314,6 +433,9 @@
         getFormattedDay(date: Date): string {
            return moment(date).format("ddd");
         }
+        formatTime(t: Date): string {
+            return moment(t).format("h:mm");
+        }
         applyCSS(date:Date, ds:any): string {                     
             let dayname= moment(date).format("ddd"); 
             let getcss = '';          
@@ -347,7 +469,7 @@
                 }
             }
             return getcss;
-        }
+        }             
 
         getFormattedDate(date: Date): string {
             return moment(date).format("D");
@@ -366,6 +488,29 @@
             else {
                 return "";
             }
+        }
+
+        showSummary() {
+            this.toggleSummary = !this.toggleSummary
+        }
+
+        showCellSummaryData(dayValue:any, dsObject:any) {
+            let summaryValue = "";  
+            let summaryValueIndication = "";
+            let blockStartKey = this.getFormattedDay(dayValue) + " " + this.getFormattedDate(dayValue);                    
+            let summaryData = dsObject?.[blockStartKey];  
+            if(summaryData?.variance == 0){
+                summaryValueIndication = "";
+            }    
+            else if(summaryData?.variance > 0){
+                summaryValueIndication = "+";
+            }
+            else if(summaryData?.variance < 0){
+                summaryValueIndication = "-";
+            }
+            let checkSummaryDataValue = (summaryData != null && summaryData != undefined) ? summaryData?.label : "0/0";
+            summaryValue = summaryValueIndication + "" + checkSummaryDataValue;
+            return summaryValue;
         }
 
         displayDate(date:Date){
@@ -387,6 +532,7 @@
             this.selectedFacilityName =  this.facilities?.filter((x:any)=> x.facilityId == this.selectedFacilityId)[0]?.facilityName;
             this.selectedDeptName = this.facilityDepts?.filter((y:any)=> y.departmentId == this.selectedDeptId)[0]?.departmentName;
             await this.getDepartmentSchedule();
+            await this.getScheduleSummaries();
         }
 
         async onDepartmentChange(event:any) {
@@ -395,28 +541,48 @@
             localStorage.removeItem("selSkills");
             this.selectedDeptName = this.facilityDepts?.filter((y:any)=> y.departmentId == this.selectedDeptId)[0]?.departmentName;
             await this.getDepartmentSchedule();
+            await this.getScheduleSummaries();
         }
 
-        onSkillSelect(items:any, lastSelectItem:any) {            
-            this.selectedSkills = lastSelectItem?.skill == "All" ? items.filter((x:any) => x.skill == "All") : items.filter((x:any) => x.skill != "All");
-            this.lastSelectedSkills = lastSelectItem;
-
-            this.sortedDSListforSkills = this.sortedDSListforSkills.slice().sort((a: any , b: any) => (a.lastName as any) > (b.lastName as any) ? 1 : -1);
-
-            var loggedInStaff = this.sortedDSListforSkills?.find((x: any) => x.staffId == this.profileData?.staffId);
-            if (loggedInStaff != undefined) {
-                var loggedInStaffIndex = this.sortedDSListforSkills?.findIndex((x: any) => x.staffId == this.profileData?.staffId);
-                this.sortedDSListforSkills.splice(loggedInStaffIndex, 1);
-                this.sortedDSListforSkills.unshift(loggedInStaff);
+        onSkillSelect(items :any) { 
+            var selectedItem = items.length > 0 ? items[items.length - 1] : this.defaultSkill;
+            this.selectedSkills = selectedItem.skill == "All" ? selectedItem : items.filter((x:any) => x.skill != "All");
+            
+            let getSortedList = this.departmentSchedules?.staff;
+            this.sortedDSList = getSortedList;
+            this.sortedDSListforSkills = getSortedList;
+            if(selectedItem.skill != "All") {               
+                var filteredDataSkills: any = [];            
+                this.selectedSkills.forEach((element: any) => {
+                    this.sortedDSList?.forEach((item: any) => {
+                        if(item.skills.includes(element.skill)){
+                            filteredDataSkills.push(item);
+                        }
+                    });
+                });
+                //console.log("filteredDataSkills", filteredDataSkills);
+                this.sortedDSList = filteredDataSkills;
+                this.sortedDSListforSkills = filteredDataSkills; 
             }
-
-            localStorage.setItem("selSkills", JSON.stringify(this.selectedSkills));
-            this.selectedSkillList = Array.prototype.map.call(this.selectedSkills, function(item) { return item.description; }).join(",");
-            this.sortDSListForFilteredSkills("skill"); 
+            this.getSortedDSData('');
         }
 
-        onScheduleBlockSelect(items:any, lastSelectItem:any) {
-            this.selectedScheduleBlock = lastSelectItem?.description == "All" ? items.filter((x:any) => x.description == "All") : items.filter((x:any) => x.description != "All");
+        async onScheduleBlockSelect(items:any) {
+            var selectedItem = items.length > 0 ? items[items.length - 1] : this.defaultScheduleBlock;
+            this.selectedScheduleBlock = selectedItem.description == "All" ? selectedItem : items.filter((x:any) => x.description != "All");
+
+            this.summaryRows = this.summaryRowsData;           
+            if(selectedItem.description != "All") {               
+                var filteredDataBlocks: any = [];            
+                this.selectedScheduleBlock.forEach((element: any) => {
+                    this.summaryRowsData?.forEach((item: any) => {
+                        if(item.schedule_block.includes(element.schedule_block)){
+                            filteredDataBlocks.push(item);
+                        }
+                    });
+                });
+                this.summaryRows = filteredDataBlocks;
+            }
         }
 
         sortDSListForFilteredSkills(flag:string) {
@@ -469,6 +635,7 @@
             this.selectedScheduleName = this.getSchedulePeriod(this.userSchedulesData?.indexOf(Schedule));
             this.showScheduleDays();
             await this.getDepartmentSchedule();
+            await this.getScheduleSummaries();
         }
 
         getCommmaSepSkills(skills: any){
@@ -501,7 +668,7 @@
     {
         .deptTableContainer{
             overflow:auto !important;
-            height:480px;
+            height:500px;
         }
 
         .deptTable{
@@ -519,7 +686,7 @@
             width: 25vw;
             background: white;
             border: 1px solid silver;
-            border-top: 0px !important;
+            /* border-top: 0px !important; */
         }
 
         .td_column1 {
@@ -722,7 +889,7 @@
         }
         @media (min-width: 576px){
             .col-sm-12 {
-                /* flex: 0 0 100%; */
+                flex: 0;
                 max-width: 100%;
             }
         }
@@ -800,4 +967,24 @@
     padding-right: 15px;
     padding-left: 5px;
 }
+.summarybg{
+    background-color: #e2e2e2;
+}
+.deptbg{
+    height: 50px;
+    background-color: #e2e2e2;
+}
+.rightBorderNone{
+    border-right: 0 !important;
+}
+.grid-yellow {
+    background-color: var(--neu-color-yellow-0);
+  }
+  .grid-red {
+    background-color: var(--neu-color-red-10);
+  }
+  .grid-no-color {
+    pointer-events: none;
+    cursor: auto;
+  }
 </style>
