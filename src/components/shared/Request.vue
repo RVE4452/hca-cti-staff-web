@@ -394,7 +394,7 @@ export default class Request extends Vue.with(Props) {
                     minutes: 0,
                 };
 
-                requestBody.shifts.push(objReq);
+                // requestBody.shifts.push(objReq);
             }
             this.isFullScreenLoading = true;
             this.$store
