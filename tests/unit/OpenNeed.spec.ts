@@ -1,4 +1,4 @@
-import { mount, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import OpenNeed from '@/components/shared/OpenNeed.vue';
 import Vuex from 'vuex';
 import { currentEvent, staff, resOpenNeedData } from '../../src/mocks/mockSpecData';
@@ -68,7 +68,7 @@ const store = new Vuex.Store({
     } 
 }
   describe('computed prop', () => {
-    wrapper = mount(OpenNeed, componentOptions);
+    wrapper = shallowMount(OpenNeed, componentOptions);
     wrapper.vm.data = {
       allShifts: [{departmentId:110541, skillId: 14}],
       shifts: [{departmentId:110541, departmentShiftId: 14}],

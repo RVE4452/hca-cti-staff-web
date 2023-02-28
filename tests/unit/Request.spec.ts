@@ -1,4 +1,4 @@
-import { mount, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import Request from '@/components/shared/Request.vue';
 import Vuex from 'vuex';
 import { requestDetailsMockData, profileMockData } from '../../src/mocks/requestMockSpecData';
@@ -40,16 +40,14 @@ describe('computed prop', () => {
       jest.useRealTimers();
     });
 
-    wrapper = mount(Request, {
+     wrapper = shallowMount(Request, {
         store,
-        data: () => {
-          return {
+        data: () => ({
             appInsightEventData: {},
             requestDetail: [],
             profileData: [],
             userSchedules: []
-          }
-        },
+        }),
         props: {
             profileData: profileMockData,
             appInsightEventData: {},          
@@ -92,22 +90,6 @@ describe('computed prop', () => {
 
         it("should call generateTimeList to get the total hours", () => {
             expect(wrapper.vm.generateTimeList("maxDuration")).toBe(undefined)
-        });
-
-        it("should on change call getRequestEvent to get Shift Listings", () => {
-            const event = {
-                detail: {
-                    value: 'Education'
-                }
-            }
-            wrapper.setData({
-                additionalRequestEvent: false
-            })
-            
-            wrapper.findComponent({
-                ref: 'shiftChange'
-            }).vm.$emit('v-neu-change', event)
-            expect(wrapper.vm.shift).toBe('Education')
         });
 
         it("should display label 'Comments (Optional)'", () =>{

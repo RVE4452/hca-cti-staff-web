@@ -152,9 +152,11 @@ class Props {
         ...mapState('schedule', ['requestDetail', 'userSchedules']),
         ...mapState('profile', ['profileData', 'isAdmin', 'isImpersonating', 'appInsightEventData'])
     },
-    disabled: {
+    props: {
+        disabled: {
         type: Boolean,
         default: true
+    },
     },
     data() {
         return {
@@ -188,6 +190,7 @@ export default class Request extends Vue.with(Props) {
     loaderColor: string = "#0085ca";
     isConfirmModalVisible: boolean = false;
     confirmMsgValue: string = '';
+    value: string = '';
     maxCommentsCharacters: number = 25;
     public profileData!: any;
     currentSchedule!: ORSchedule;
@@ -205,13 +208,13 @@ export default class Request extends Vue.with(Props) {
     hours: number = 0;
     startDateTime: string = "";
     durationList = [];
-    availableShifts = [];
+    availableShifts = [] as any;
     comment: string = "";
     defaultComment: string = "";
     skillId: number = 0;
-    bindDisabled: boolean = true;
-    selectedDate: any;
-    
+    staffId: number = 0;
+    bindDisabled: Boolean | Object = {};
+    selectedDate: string = "";    
 
     async mounted(): Promise<void> {
         await this.loadData();
@@ -221,7 +224,7 @@ export default class Request extends Vue.with(Props) {
     matchSkillId() {
         console.log("test", this.userSchedules)
         let skills = [] as any
-        this.userSchedules?.events?.filter((item: any) => {
+        this.userSchedules.events.filter((item: any) => {
             if (item.departmentShiftId === (this.shift || this.defaultShift)) {
                 skills.push(item.skillId)
             }
@@ -243,33 +246,31 @@ export default class Request extends Vue.with(Props) {
             this.defaultDuration = "";
             this.defaultShift = "";
             this.availableShifts = [];
-            this.defaultComment = "";  
-            const profileData:any[] = [];
-            
+            this.defaultComment = "";            
 
-            // for (var i = 0; i < this.profileData.departmentShifts.length; i++) {
-            //     let selectedDate = moment(new Date(
-            //         this.calSelectedDates.startDate.getTime() -
-            //         this.calSelectedDates.startDate.getTimezoneOffset() * 60000
-            //     ).toISOString());
+            for (var i = 0; i < this.profileData.departmentShifts.length; i++) {
+                let selectedDate = moment(new Date(
+                    this.calSelectedDates.startDate.getTime() -
+                    this.calSelectedDates.startDate.getTimezoneOffset() * 60000
+                ).toISOString());
 
-            //     if ((this.profileData.departmentShifts[i].effective === null)
-            //         && (this.profileData.departmentShifts[i].expires === null)) {
-            //         this.availableShifts.push(this.profileData.departmentShifts[i]);
-            //     }
-            //     else if ((this.profileData.departmentShifts[i].effective !== null)
-            //         && (this.profileData.departmentShifts[i].expires !== null)) {
-            //         if ((this.profileData.departmentShifts[i].effective <= selectedDate) && (this.profileData.departmentShifts[i].expires >= selectedDate)) {
-            //             this.availableShifts.push(this.profileData.departmentShifts[i]);
-            //         }
-            //     }
-            //     else if (((this.profileData.departmentShifts[i].effective === null)) && (selectedDate <= moment(this.profileData.departmentShifts[i].expires))) {
-            //         this.availableShifts.push(this.profileData.departmentShifts[i]);
-            //     }
-            //     else if (((this.profileData.departmentShifts[i].expires === null)) && (selectedDate >= moment(this.profileData.departmentShifts[i].effective))) {
-            //         this.availableShifts.push(this.profileData.departmentShifts[i]);
-            //     }
-            // }
+                if ((this.profileData.departmentShifts[i].effective === null)
+                    && (this.profileData.departmentShifts[i].expires === null)) {
+                    this.availableShifts.push(this.profileData.departmentShifts[i]);
+                }
+                else if ((this.profileData.departmentShifts[i].effective !== null)
+                    && (this.profileData.departmentShifts[i].expires !== null)) {
+                    if ((this.profileData.departmentShifts[i].effective <= selectedDate) && (this.profileData.departmentShifts[i].expires >= selectedDate)) {
+                        this.availableShifts.push(this.profileData.departmentShifts[i]);
+                    }
+                }
+                else if (((this.profileData.departmentShifts[i].effective === null)) && (selectedDate <= moment(this.profileData.departmentShifts[i].expires))) {
+                    this.availableShifts.push(this.profileData.departmentShifts[i]);
+                }
+                else if (((this.profileData.departmentShifts[i].expires === null)) && (selectedDate >= moment(this.profileData.departmentShifts[i].effective))) {
+                    this.availableShifts.push(this.profileData.departmentShifts[i]);
+                }
+            }
         } catch (error) {
             console.log(error);
         }
@@ -339,7 +340,6 @@ export default class Request extends Vue.with(Props) {
     async FireAction(additionalRequestEvent: any) {
         if (!this.widthdrawMode(additionalRequestEvent)) {
             //If there is no email address present in profile then doesn't allow them to send Non-productive shift request]
-            var selectedShift = this.userSchedules.departmentShifts?.find((x: any) => x.id == this.shift);
             if (this.profileData.email == null ||
                 this.profileData.email == undefined || this.profileData.email == "") {
                 this.showErrorMsg = true;
@@ -364,7 +364,7 @@ export default class Request extends Vue.with(Props) {
                 ),
                 comment: additionalRequestEvent ? this.defaultComment : this.comment,
                 email: this.profileData.email,
-                status: "Pending",
+                status: "Pending"
             };
             for (var i = 0; i < this.selectedDate?.length; i++) {
                 var eventStartDateTime = new Date(this.selectedDate[i]);
@@ -392,8 +392,6 @@ export default class Request extends Vue.with(Props) {
                     hours: Number(additionalRequestEvent ? this.defaultDuration : this.duration), // Add Hours
                     minutes: 0,
                 };
-
-                //requestBody.shifts.push(objReq);
             }
             this.isFullScreenLoading = true;
             this.$store
@@ -475,7 +473,7 @@ export default class Request extends Vue.with(Props) {
             this.errorMsg = "";
         }
 
-        this.matchSkillId();
+        this.matchSkillId();     
     }
 
     formatTime(t: Date): string {
