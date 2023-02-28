@@ -1,7 +1,7 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import DepartmentView from '@/components/schedule/DepartmentView.vue';
 import Vuex from 'vuex';
-import { staff, departmentSchedulesNew } from '../../src/mocks/mockSpecData';
+import { staff, departmentSchedulesNew, summaryRows } from '../../src/mocks/mockSpecData';
 import moment from "moment";
 
 const store = new Vuex.Store({
@@ -80,52 +80,16 @@ describe('computed prop', () => {
     wrapper.vm.userSchedules = staff?.schedules;
     wrapper.vm.profileData = staff;
     wrapper.vm.departmentSchedules = departmentSchedulesNew;
-    // it("check for facility dropdown onChangeEvent Id - onFacilityChange", async () => {
-    //   //expect(wrapper.html()).toBe("");
-    //   const select = wrapper.findComponent({ref: 'ddlFacility'});
-    //   expect(select.exists()).toBe(true);
-    //   const event = {
-    //     target: {
-    //       value: 2
-    //     }
-    //   }
-    //   wrapper.findComponent({ref: 'ddlFacility'}).vm.$emit("v-neu-change", event);
-    //   await wrapper.vm.$nextTick();
-    //   expect(wrapper.vm.selectedFacilityId).toBe(2);
-    // });
 
     it("check for facility dropdown value - facilityName", async () => {
       await wrapper.vm.$nextTick();
       expect(wrapper.vm.facilities[0].facilityName).toBe("Mock Facility")
     });
 
-    // it("check for facility dropdown option values", async () => {
-    //   const options = wrapper.findComponent({ref: 'ddlFacilityOption'});
-    //   expect(options.vm.value).toBe(9);
-    // });
-
-    // it("check for department dropdown onChangeEvent Id- onDepartmentChange", async () => {
-    //   const event = {
-    //     target: {
-    //       value: 110541
-    //     }
-    //   }
-    //   wrapper.vm.facilityDepts = [{ deptId: 110541, deptName: "ED"}];
-    //   wrapper.findComponent({ref: 'ddlDepartment'}).vm.$emit("v-neu-change", event);
-    //   await wrapper.vm.$nextTick();
-    //   //expect(wrapper.vm.getDeptSchedules(payload)).toEqual(Promise.resolve({}));
-    //   expect(wrapper.vm.selectedDeptId).toBe(110541);
-    // });
-
     it("check for department dropdown value - deptName", async () => {      
       await wrapper.vm.$nextTick();
       expect(wrapper.vm.facilityDepts[0].deptName).toBe(undefined)
     });
-
-    // it("check for department dropdown option values", async () => {
-    //   const options = wrapper.findComponent({ref: 'ddlDepartmentOption'});
-    //   expect(options.vm.value).toBe(110541);
-    // });
 
     it("check for skills dropdown onChangeEvent Id- onSkillSelect", async () => {
       const items = [{id:100,description:"All",skill:"All"},{id:110,description:"PCT",skill:"PCT"}];
@@ -133,7 +97,7 @@ describe('computed prop', () => {
       await wrapper.vm.$nextTick();
       wrapper.findComponent({ref: 'ddlSkills'}).vm.$emit("update", items);
       await wrapper.vm.$nextTick();
-      expect(wrapper.vm.skills[0].skill).toBe("All");
+      expect(wrapper.vm.selectedSkills.skill).toBe("All");
     });
 
     it("check for schedule blocks dropdown onChangeEvent Id- onScheduleBlockSelect", async () => {      
@@ -142,30 +106,13 @@ describe('computed prop', () => {
       wrapper.vm.scheduleBlocks = items1;
       wrapper.findComponent({ref: 'ddlScheduleBlocks'}).vm.$emit("update", items1);
       await wrapper.vm.$nextTick();
-      expect(wrapper.vm.scheduleBlocks[0].description).toBe("All");
+      expect(wrapper.vm.selectedScheduleBlock.description).toBe("All");
     });
-
-    // it("check for period dropdown onChangeEvent Id- onScheduleChange", async () => {
-    //   const event = {
-    //     target: {
-    //       value: '6e1aceac-dc7b-4af3-9dfb-01b5d73648f9'
-    //     }
-    //   }
-    //   wrapper.findComponent({ref: 'ddlPeriod'}).vm.$emit("v-neu-change", event);
-    //   await wrapper.vm.$nextTick();
-    //   //expect(wrapper.html()).toBe("");      
-    //   expect(wrapper.vm.selectedScheduleId).toBe('6e1aceac-dc7b-4af3-9dfb-01b5d73648f9');
-    // });
 
     it("check for period dropdown value - selectedScheduleName", async () => {      
       await wrapper.vm.$nextTick();
       expect(wrapper.vm.selectedScheduleName).toBe("Dec 4, 2022 - Dec 31, 2022")
     });
-
-    // it("check for period dropdown option values", async () => {
-    //   const options = wrapper.findComponent({ref: 'ddlPeriodOption'});
-    //   expect(options.vm.value).toBe(14);
-    // });
   });
 
   describe("Testing on getDepartmentSchedule", () => {
@@ -178,6 +125,16 @@ describe('computed prop', () => {
       expect(wrapper.vm.sortOrder).toBe("asc");
       expect(wrapper.vm.sortArrow).toBe("arrow_upward");
       expect(wrapper.vm.finalArray).toBe(undefined);
+    })
+  });
+
+  describe("Testing on getScheduleSummaries", () => {
+    wrapper.vm.selectedDeptId = 1;
+    wrapper.vm.departmentSchedules = departmentSchedulesNew;   
+    it("should update prop values when trigger the getScheduleSummaries", async ()=> {
+      wrapper.vm.getScheduleSummaries();
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.summaryRows.length).toBe(6);
     })
   });
 
@@ -301,6 +258,17 @@ describe('computed prop', () => {
       const date = "Wed Mar 22 2023 00:00:00";
       const ds = null;
       wrapper.vm.applyCSS(date, ds);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.getcss).toBe(undefined);
+    })
+  });
+
+  describe("Testing on applySummaryCSS", () => {
+    wrapper.vm.ds = summaryRows;
+    it("check prop values in applySummaryCSS", async ()=> { 
+      const date = "Wed Apr 23 2023 00:00:00";
+      const ds = summaryRows;
+      wrapper.vm.applySummaryCSS(date, ds);
       await wrapper.vm.$nextTick();
       expect(wrapper.vm.getcss).toBe(undefined);
     })

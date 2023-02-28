@@ -76,7 +76,7 @@
                 <tr class="th_HeaderRow deptbg">
                     <th class="neu-input__label td_column1 empName pt10 deptbg"  v-bind:class="{ 'hideEmployeNameCol': columnToggle }">
                         Employee Name                          
-                            <i class="material-icons neu-table__sort no-print valign" v-on:click="getSortedDSData('clicked')">{{ sortArrow }}</i>                                               
+                            <i class="material-icons neu-table__sort no-print valign" v-on:click="getSortedDSData('clicked')">{{ sortArrow }}</i>
                     </th>
                     <th class="neu-input__label td_column2 skillWidth pt14 deptbg" v-bind:class="{ 'hideSkillCol': columnToggle }">
                         <span v-bind:class="{ 'hideIcon': columnToggle }">Skill</span>
@@ -116,14 +116,14 @@
                 <tr class="th_HeaderRow summarybg">
                     <th class="neu-input__label td_column1 empName pt10 summarybg" v-bind:class="{ 'hideEmployeNameCol': columnToggle }" >
                         <neu-list color="gray-10" lines="none" @click="showSummary">
-                        <neu-item>
-                            <neu-icon v-if="toggleSummary" slot="start">expand_less</neu-icon>
-                            <neu-icon v-else slot="start">expand_more</neu-icon>
-                            <neu-label>Summary Periods</neu-label>
-                        </neu-item>
-                        </neu-list>
+                            <neu-item>
+                                <neu-icon v-if="toggleSummary" slot="start">expand_less</neu-icon>
+                                <neu-icon v-else slot="start">expand_more</neu-icon>
+                                <neu-label>Summary Periods</neu-label>
+                            </neu-item>
+                        </neu-list>                        
                     </th>
-                    <th class="neu-input__label td_column2 skillWidth pt14 summarybg rightBorderNone">
+                    <th class="neu-input__label td_column2 skillWidth pt14 summarybg rightBorderNone" v-bind:class="{ 'hideSkillCol': columnToggle }">                        
                         <div class="navArrow mobileNav no-print">
                         </div>
                     </th>
@@ -142,7 +142,7 @@
                         
                     </td>
                     <td v-for="day in days" :key="days.indexOf(day)+'_row'" class="neu-table__row-comfy neu-input__label"
-                        
+                        v-bind:class="applySummaryCSS(day,ds)"
                         style=" border: 1px solid silver; word-wrap: break-word !important; text-align: center !important;"  :date="displayDate(day)">
                         {{ showCellSummaryData(day,ds) }}
                     </td>
@@ -469,7 +469,24 @@
                 }
             }
             return getcss;
-        }             
+        }      
+        
+        applySummaryCSS(date:any, ds:any): string {
+            let blockStartKey = this.getFormattedDay(date) + " " + this.getFormattedDate(date);                    
+            let summaryData = ds?.[blockStartKey];
+            console.log("debNo")
+            let getcss = 'grid-no-color'; 
+            if(summaryData?.variance == 0){
+                getcss = "grid-no-color";
+            }    
+            else if(summaryData?.variance < 0){
+                getcss = "grid-red";
+            }
+            else if(summaryData?.variance > 0){
+                getcss = "grid-yellow";
+            }
+            return getcss;
+        } 
 
         getFormattedDate(date: Date): string {
             return moment(date).format("D");
@@ -503,10 +520,10 @@
                 summaryValueIndication = "";
             }    
             else if(summaryData?.variance > 0){
-                summaryValueIndication = "+";
+                summaryValueIndication = "-";
             }
             else if(summaryData?.variance < 0){
-                summaryValueIndication = "-";
+                summaryValueIndication = "+";
             }
             let checkSummaryDataValue = (summaryData != null && summaryData != undefined) ? summaryData?.label : "0/0";
             summaryValue = summaryValueIndication + "" + checkSummaryDataValue;
@@ -823,6 +840,8 @@
                 border-radius: 50%;
                 background-color: #777;
                 color: #fff;
+                left:23px;
+                top:5px
             }
 
             .pt10{
