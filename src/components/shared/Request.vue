@@ -10,15 +10,12 @@
                         <strong>{{ profileData.ptoBalance }}</strong>
                     </p>
                 </div>
-                
                 <div class="col-12 neu-margin--bottom-20" v-if="showErrorMsg">
                     <ErrorNotification :errorMsg="errorMsg" :errorType="errorType" />
                 </div>
-
                 <div class="col-12 pt3 pb4" v-if="availiableDates.length > 1">
                     <h4>Dates</h4>
                 </div>
-
                 <div class="col-12" v-if="availiableDates.length > 1">
                     <div class="row">
                         <div class="col-6 mb3" v-for="dates of availiableDates" v-bind:key="dates">
@@ -34,17 +31,21 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="col-12">
                     <div class="hr-line"></div>
                 </div>
-
                 <div class="col-md-12 pb4">
                     <div class="row">
                         <div class="col-12">
                             <label for="approval_code" class="neu-input__label">Select Shift</label>
                             <template v-if="!additionalRequestEvent">
-                                <neu-select                                     
+                                <neu-select  
+                                :class="[
+                                    'dropdown dropdown-input',
+                                    { 'readonly_text_field bg-transparent': widthdrawMode(additionalRequestEvent) },
+                                  ]"
+                                    :isDisabled="widthdrawMode(additionalRequestEvent)"
+                                    @input="shiftChange(additionalRequestEvent)"                                   
                                     interface="popover" ref="shiftChange" name="ddlShift" :value="shift" @v-neu-change="shiftChange">
                                     <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts"
                                         :value="shift.departmentShiftId" :key="shift.departmentShiftId">
@@ -54,7 +55,12 @@
                             </template>
 
                             <template v-if="additionalRequestEvent">
-                                <neu-select                                     
+                                <neu-select 
+                                :class="[
+                  'dropdown dropdown-input',
+                  { 'readonly_text_field bg-transparent': widthdrawMode(additionalRequestEvent) },
+                ]"
+                                    :isDisabled="widthdrawMode(additionalRequestEvent)"                                 
                                     interface="popover"  name="ddlShift" :value="defaultShift"
                                     @v-neu-change="shiftChange">
                                     <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts"
@@ -83,7 +89,8 @@
                                                 {
                                                     'readonly_text_field starttimecolor': getDisableDuration(additionalRequestEvent),
                                                 },
-                                            ]" type="time" />
+                                            ]" 
+                                            type="time" />
                                         </template>
                                     </div>
 
@@ -120,10 +127,16 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <neu-button :disabled="bindDisabled" color="primary" fill="raised" class="actionButton d-block"
-                        @click="FireAction(additionalRequestEvent)"
-                        v-bind:name="'btn' + (currentEvent?.type == 'Request' && additionalRequestEvent == false ? 'Withdraw' : 'AddToSchedule')"
-                        data-test="fire-action">Add to Schedule</neu-button>
+                    <neu-button @click="FireAction(additionalRequestEvent:any)"
+                            v-bind:name="'btn' + (currentEvent.type == 'Request' && additionalRequestEvent == false ? 'Withdraw' : 'AddToSchedule')"
+                            data-test="fire-action"
+                            :class="[
+              'd-block mb4 mt4 neu-button w-100 neu-text--white'
+                ? 'neu-button--blue-disabled'
+                : 'neu-background--denim'
+            ]">
+                        {{currentEvent.type == "Request" && additionalRequestEvent == false ? "Withdraw" : "Add to Schedule"}}
+                    </neu-button>
                 </div>
             </div>
         </div>
@@ -195,6 +208,7 @@ export default class Request extends Vue.with(Props) {
     loaderColor: string = "#0085ca";
     isConfirmModalVisible: boolean = false;
     confirmMsgValue: string = '';
+    value: string = '';
     maxCommentsCharacters: number = 25;
     public profileData!: any;
     currentSchedule!: ORSchedule;
@@ -218,8 +232,7 @@ export default class Request extends Vue.with(Props) {
     skillId: number = 0;
     staffId: number = 0;
     bindDisabled: Boolean | Object = {};
-    selectedDate: string = "";
-    
+    selectedDate: string = "";    
 
     async mounted(): Promise<void> {
         await this.loadData();
@@ -227,20 +240,15 @@ export default class Request extends Vue.with(Props) {
     }
 
     matchSkillId() {
-        // debugger
         console.log("test", this.userSchedules)
         let skills = [] as any
-        // debugger
         this.userSchedules.events.filter((item: any) => {
             if (item.departmentShiftId === (this.shift || this.defaultShift)) {
                 skills.push(item.skillId)
             }
         })
         this.skillId = skills[0];
-    }   
-    
-    // console.log(this.matchSkillId());
-    
+    }    
 
     async loadData() {
         try {
@@ -256,8 +264,7 @@ export default class Request extends Vue.with(Props) {
             this.defaultDuration = "";
             this.defaultShift = "";
             this.availableShifts = [];
-            this.defaultComment = "";
-            
+            this.defaultComment = "";            
 
             for (var i = 0; i < this.profileData.departmentShifts.length; i++) {
                 let selectedDate = moment(new Date(
@@ -406,7 +413,7 @@ export default class Request extends Vue.with(Props) {
             }
             this.isFullScreenLoading = true;
             this.$store
-                .dispatch("schedule/RequestSchedule", requestBody)
+                .dispatch("schedule/getRequestSchedule", requestBody)
                 .then(() => {
                     // showing message in MyScheduleView Screen and close modal only on success
                     this.isFullScreenLoading = false;

@@ -273,10 +273,26 @@ const actions: ActionTree<Schedule, RootState> = {
     
      RequestSchedule({ commit, rootState },psData){
         // const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Requests`;
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Requests/NonProductives`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Requests/NonProductives/${psData.assignmentRequestId}`;
 
         return http
-            .post(apiUrl, psData)
+            .get(apiUrl, psData)
+            .then((res: AxiosResponse) => {
+                /*console.log(res);*/
+            })
+            .catch((err: AxiosError) => {
+                console.log(err)
+                throw err;
+            });
+    },
+
+
+     getRequestSchedule({ commit, rootState },psData){
+        // const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Requests`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Requests/NonProductives/${psData.assignmentRequestId}`;
+
+        return http
+            .get(apiUrl, psData)
             .then((res: AxiosResponse) => {
                 /*console.log(res);*/
             })
