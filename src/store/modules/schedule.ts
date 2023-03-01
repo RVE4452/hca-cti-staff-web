@@ -225,7 +225,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      getShiftTradeRequested({ commit, rootState }, payload: any){
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/ShiftTradeRequested/${payload.shiftTradeOfferId}/${payload.username}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Requests/Trades/${payload.shiftTradeOfferId}`;
 
         return http
             .get(apiUrl)
@@ -329,7 +329,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      createShiftTradeOffers({ commit, rootState },payload: any) {
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/ShiftTradeOffers`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Requests/Trades`;
 
         return http
             .post(apiUrl, payload)
@@ -369,7 +369,7 @@ const actions: ActionTree<Schedule, RootState> = {
 
     
      getPotetialTradeAssignment({ commit, rootState },payload: any){
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/ShiftTradeOffers/PotentialTrades/${payload.assignmentId}?currentPage=${payload.currentPage}&pageSize=6&autoApprovableOnly=${payload.autoApprovableOnly}&searchFirstNameLike=${payload.searchFirstNameLike}&searchLastNameLike=${payload.searchLastNameLike}&searchStartDate=${payload.searchStartDate}&searchEndDate=${payload.searchEndDate}&primaryDeptOnly=${payload.primaryDeptOnly}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Assignments/${payload.assignmentId}/Trades`;
 
         return http
             .get(apiUrl)

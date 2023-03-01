@@ -148,9 +148,6 @@ import moment from "moment";
 import { mapState } from "vuex";
 import ErrorNotification from "./ErrorNotification.vue";
 // import Detail from "./Detail.vue";
-// import Loading from 'vue-loading-overlay';
-import 'vue-loading-overlay/dist/vue-loading.css';
-//import bus from '../../eventBus';
 import { useAppInsights } from '../../store/modules/AppInsights';
 
 class Props{
@@ -196,7 +193,6 @@ export default class RequestedTrade extends Vue.with(Props) {
 
   getShiftTradeOffer() {            
     var payload = { 
-      username: this.profileData.username, 
       shiftTradeOfferId: this.currentEvent.id,
     };
 
