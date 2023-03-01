@@ -802,7 +802,7 @@ export default class MyScheduleView extends Vue.with(Props) {
         } else if (event.type == "Request" || (event.type == "Assignment" && event.status == "Pending")) {
             cellTitle = "REQUESTED";
         } else if (event.type == "Preference") {
-            cellTitle = "Preference";
+            cellTitle = "PREFERENCE";
         } else if (event.type == "Trade") {
             cellTitle = event.status.toUpperCase();
         }//event.type = "Assignment"

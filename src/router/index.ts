@@ -49,7 +49,7 @@ const routes = [
         component: Profile
     }, 
     {
-        path: '/callback-silent',
+        path: '/oidc-popup-callback',
         name: 'oidcPopupCallback',
         component: OidcPopupCallback,
         meta: {key: 'callbackSilent', title: 'Schedule Management - Callback Silent'}

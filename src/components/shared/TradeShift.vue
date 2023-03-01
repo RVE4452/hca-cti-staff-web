@@ -6,8 +6,8 @@
        <neu-spinner class="div-center" color="primary" >
       </neu-spinner> 
     </div>
-    <div v-if="data.assignmentLoaded && data.shiftDetailLoaded" class="container-fluid pb3 pt3">
-      <div v-if="isProductive">
+    <div  class="container-fluid pb3 pt3">
+      <div>
         <div class="col-12 d-flex nt1 progress">
         <div class="col-6 completed">
           <p class="absolute f6 white" data-test="drop">
@@ -152,15 +152,15 @@
         </neu-button>
       </div>            
     </div>
-    <div v-else>
+    <div>
       <shift-member-detail :currentEvent="currentEvent" />
-        <div class="container-fluid tc">
+        <!-- <div class="container-fluid tc">
           <div>
             <div class="col-12">
               <h6>Cannot be Modified</h6>
             </div>
           </div>
-        </div>
+        </div> -->
     </div>
   </div>     
   </div>
@@ -181,7 +181,7 @@ import { useAppInsights } from '../../store/modules/AppInsights'
    computed: {
         ...mapState('oidcStore',['oidcUser']),
          ...mapState('schedule',['assignmentDetail']),
-        ...mapState('profile', ['profileData', 'appInsightEventData','isImpersonating'])
+        ...mapState('profile', ['profileData', 'appInsightEventData'])
     },
     components: {
             Detail,
@@ -217,7 +217,6 @@ export default class TradeShift extends Vue.with(Props) {
             Detail:any;
         };  
   profileData!: any;
-  isImpersonating!: boolean;
   assignmentDetail!: any;
   appInsightEventData!: any;
   isLoaded: boolean = false;
@@ -274,55 +273,43 @@ export default class TradeShift extends Vue.with(Props) {
       })
   }
 
-  getGuidforCreateShift() {
-            var uuidValue = "", k, randomValue;
-            for (k = 0; k < 32; k++) {
-                randomValue = Math.random() * 16 | 0;
-                if (k == 8 || k == 12 || k == 16 || k == 20) {
-                    uuidValue += "-"
-                }
-                uuidValue += (k == 12 ? 4 : (k == 16 ? (randomValue & 3 | 8) : randomValue)).toString(16);
-            }
-            return uuidValue;
-  }
+
 
   createShiftOffer() {
     let requestBody: any[] = [];
     const checkedPotential: any = this.data.checkedPotential;
     checkedPotential.forEach((checked:any) => {
             requestBody.push({
-                id: this.getGuidforCreateShift(),
-                username: this.profileData.username,
-                firstName: this.profileData.first,
-                lastName: this.profileData.last,
-                tenantId: this.profileData.tenantId,
-                scheduleId: this.assignmentDetail.scheduleId,
-                facilityId: this.assignmentDetail.facilityId,
-                coid: this.profileData.coid,
-                facilityName: this.profileData.facilityName,
-                departmentId: this.profileData.deptId,
-                facilityCoId: this.assignmentDetail.facilityCoId,
-                departmentName: this.assignmentDetail.departmentCode,
-                departmentCode: this.profileData.deptCode,
-                departmentShiftId: this.assignmentDetail.departmentShiftId,
-                shiftCode: this.assignmentDetail.shiftCode,
-                shiftDescription: this.assignmentDetail.shiftDescription,
-                skill:checked.skill,
-                date: this.currentEvent.date,
-                startTime: this.assignmentDetail.startTime,
-                endTime: this.assignmentDetail.endTime,
-                actualStartTime: this.assignmentDetail.actualStartTime,
-                actualEndTime: this.assignmentDetail.actualEndTime,
-                hours: this.assignmentDetail.hours,
-                minutes: this.assignmentDetail.minutes,
+                // username: this.profileData.username,
+                // firstName: this.profileData.first,
+                // lastName: this.profileData.last,
+                // tenantId: this.profileData.tenantId,
+                // scheduleId: this.assignmentDetail.scheduleId,
+                // facilityId: this.assignmentDetail.facilityId,
+                // coid: this.profileData.coid,
+                // facilityName: this.profileData.facilityName,
+                // departmentId: this.profileData.deptId,
+                // facilityCoId: this.assignmentDetail.facilityCoId,
+                // departmentName: this.assignmentDetail.departmentCode,
+                // departmentCode: this.profileData.deptCode,
+                // departmentShiftId: this.assignmentDetail.departmentShiftId,
+                // shiftCode: this.assignmentDetail.shiftCode,
+                // shiftDescription: this.assignmentDetail.shiftDescription,
+                // skill:checked.skill,
+                // date: this.currentEvent.date,
+                // startTime: this.assignmentDetail.startTime,
+                // endTime: this.assignmentDetail.endTime,
+                // actualStartTime: this.assignmentDetail.actualStartTime,
+                // actualEndTime: this.assignmentDetail.actualEndTime,
+                // hours: this.assignmentDetail.hours,
+                // minutes: this.assignmentDetail.minutes,
                 status: 'Offered',
-                requestorAssignmentId: this.assignmentDetail.id,
-                productiveType: this.assignmentDetail.productiveType,
-                acceptorAssignmentId: checked.assignmentId,
-                offeredToUsername:  checked.staffUsername,
-                offeredToFirstName: checked.firstName,
-                offeredToLastName: checked.lastName,
-                isAutoapprovable: checked.isAutoapprovable
+                requestedAssignmentId: this.currentEvent.id,
+                offeredAssignmentId: checked.assignmentId,
+                // offeredToUsername:  checked.staffUsername,
+                // offeredToFirstName: checked.firstName,
+                // offeredToLastName: checked.lastName,
+                //isAutoapprovable: checked.isAutoapprovable
             });
     });
 
@@ -376,15 +363,9 @@ export default class TradeShift extends Vue.with(Props) {
   }
 
   async getAssignmentDetail() {
-    var payload = { 
-      username: this.profileData.username, 
-      id: this.currentEvent.id
-    };  
-
-    await this.$store.dispatch("schedule/getAssignmentDetail", payload);
     this.data.assignmentLoaded = true;
     this.data.shiftDetailLoaded = true;    
-    this.isProductive = (this.assignmentDetail.productiveType == "Productive" || this.assignmentDetail.productiveTypeId == 1) ? true : false;     
+    this.isProductive = (this.currentEvent.productiveType == "Productive" || this.currentEvent.productiveTypeId == 1) ? true : false;     
   }
 
   async getPotetialTradeAssignment(offsetVal = 0, searchFirstNameLike = '', searchLastNameLike = '',searchStartDate='', searchEndDate='') {

@@ -94,12 +94,8 @@
       <div v-if="tabCurrent === 'DayPreference'">
         <day-preference-view  :currentEvent="currentEvent"  :schedulePreferences="schedulePreferences" @showSuccessMsgPopUp="showSuccessModal" @closeSharedModal="close" />
       </div>
-      <div v-if="tabCurrent === 'Event'">
-        <h3>Event</h3>
-        <p>
-          Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae
-          dicta sunt explicabo.
-        </p>
+      <div v-if="tabCurrent === 'RequestedTrade'">
+        <RequestedTrade :currentEvent="currentEvent"></RequestedTrade>
       </div>
       <div class="pb3 row div-center" v-if="tabCurrent === 'NoEvent'">
                      No events to display
@@ -115,9 +111,9 @@ import { mapState } from "vuex";
 import ShiftMemberDetail from "./ShiftMemberDetail.vue";
 import AssignmentDetail from "./AssignmentDetail.vue";
 /*import Approval from "./Approval.vue";*/
-// import PotentialTrade from "./PotentialTrades.vue";
+//import PotentialTrade from "./PotentialTrades.vue";
 // import Request from './Request.vue';
-// import RequestedTrade from "./RequestedTrade.vue";
+import RequestedTrade from "./RequestedTrade.vue";
 import DayPreferenceView from "./DayPreference.vue";
 import OpenNeed from "./OpenNeed.vue";
 import TradeShift from "./TradeShift.vue";
@@ -150,7 +146,7 @@ class Props {
     AssignmentDetail,
     ShiftMemberDetail,
     Request,
-    // RequestedTrade,
+    RequestedTrade,
     OpenNeed,
     TradeShift,
     DayPreferenceView,
@@ -186,15 +182,15 @@ export default class SharedModal extends Vue.with(Props) {
     { id: "Details", title: "Details", show: false, focused: false },
     { id: "OpenNeed", title: "Open Need", show: false, focused: false },
     { id: "Trade", title: "Trade", show: false, focused: false },
-    { id: "Event", title: "Event", show: false, focused: false },
+    { id: "RequestedTrade", title: "Requested Trade", show: false, focused: false },
     { id: "Request", title: "Request", show: false, focused: false },
     { id: "DayPreference", title: "Day Preference", show: false, focused: false },
   ];
   //Based on the sharedRequest type add the type and include the TabID from the Tablist
   TabId: any = {
     1: ["OpenNeed", "Request", "DayPreference"],
-    2: ["Event", "Details", "Request", "DayPreference"],
-    3: ["Details","DayPreference"],
+    2: ["Details", "Request", "DayPreference"],
+    3: ["RequestedTrade","Details","DayPreference"],
     4: ["Trade", "Details", "Request", "DayPreference"],
   };
 
@@ -246,14 +242,14 @@ export default class SharedModal extends Vue.with(Props) {
         tabfocused++;
       }
 
-      if (sharedRequest.event && item.id === "Event") {
+      if (item.id === "RequestedTrade") {
         item.show = true;
         item.focused = tabfocused == 0 ? true : false;
         this.tabCurrent = item.focused ? item.id : this.tabCurrent;
         tabfocused++;
       }
       if (!sharedRequest.request && !sharedRequest.event && !sharedRequest.availability
-      && currentEvent.type != "Need" && !sharedRequest.assignmentDetail && !sharedRequest.tradeShift)
+      && currentEvent.type != "Need" && !sharedRequest.assignmentDetail && !sharedRequest.tradeShift && sharedRequest.type !=3)
       {
         this.tabCurrent = "NoEvent";
       }
