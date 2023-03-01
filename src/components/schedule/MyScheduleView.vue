@@ -205,7 +205,7 @@ export default class MyScheduleView extends Vue.with(Props) {
     staffType: string = "";
     scheduleId!: string;
     weeksInSchedule: number = 4;
-    currentShceduleIndex: number = 0;
+    currentShceduleIndex: number = (localStorage.getItem("sIndex") == null ? 0 : Number(localStorage.getItem("sIndex")));
     scheduleStartDate!: Date;
     scheduleEndDate!: Date;
     isTierOpen: boolean = false;
@@ -1725,6 +1725,7 @@ export default class MyScheduleView extends Vue.with(Props) {
         this.scheduleEndDate = prevWeek.end;
         this.scheduleStatus = prevWeek.status;
         this.currentMonthCalendarApi.gotoDate(prevWeek.start);
+        localStorage.setItem("sIndex", this.currentShceduleIndex.toString());
     }
 
     getCurrentWeekSchedule(): any {
@@ -1770,6 +1771,7 @@ export default class MyScheduleView extends Vue.with(Props) {
         this.currentShceduleIndex += 1;
         const nextWeek = this.profile.schedules[this.currentShceduleIndex];
         await this.setStaffEvents(nextWeek);
+        localStorage.setItem("sIndex", this.currentShceduleIndex.toString());
     }
 }
 
