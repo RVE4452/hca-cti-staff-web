@@ -2,21 +2,21 @@
 <template>
     <div class="margin">
         <neu-row class="no-print">
-            <neu-col xxl="" xl="3" lg="12" md="2" sm="6" cols="12">
+            <neu-col xxl="2" xl="4" lg="12" md="4" sm="6" cols="12">
                 <neu-select ref="ddlFacility" interface="popover" :value="selectedFacilityId" @v-neu-change="onFacilityChange">
                 <neu-option ref="ddlFacilityOption" v-for="facility in facilities" :value="facility.facilityId" :key="facility.facilityId">
                     {{facility.facilityName}}
                 </neu-option>
                 </neu-select>
             </neu-col>
-            <neu-col xxl="2" xl="3" lg="12" md="2" sm="6" cols="12">
+            <neu-col xxl="2" xl="4" lg="12" md="4" sm="6" cols="12">
                 <neu-select ref="ddlDepartment" interface="popover" :value="selectedDeptId" @v-neu-change="onDepartmentChange">
                 <neu-option ref="ddlDepartmentOption" v-for="department in facilityDepts" :value="department.departmentId" :key="department.departmentId">
                     {{department.departmentName}}
                 </neu-option>
                 </neu-select>
             </neu-col>
-            <neu-col xxl="2" xl="3" lg="12" md="2" sm="6" cols="12">
+            <neu-col xxl="2" xl="4" lg="12" md="4" sm="6" cols="12">
                 <VueMultiselect ref="ddlSkills" v-model="selectedSkills"
                         :options="skills"
                         :multiple="true"
@@ -28,7 +28,7 @@
                         track-by="description">
                 </VueMultiselect>
             </neu-col>
-            <neu-col xxl="2" xl="3" lg="12" md="2" sm="6" cols="12">
+            <neu-col xxl="2" xl="4" lg="12" md="4" sm="6" cols="12">
                 <VueMultiselect ref="ddlScheduleBlocks" v-model="selectedScheduleBlock"
                         :options="scheduleBlocks"
                         :multiple="true"
@@ -40,14 +40,14 @@
                         track-by="description">
                 </VueMultiselect>
             </neu-col>
-            <neu-col xxl="2" xl="3" lg="12" md="2" sm="6" cols="12">
+            <neu-col xxl="2" xl="4" lg="12" md="4" sm="6" cols="12">
                 <neu-select ref="ddlPeriod" interface="popover" :value="selectedScheduleId" @v-neu-change="onScheduleChange">
                     <neu-option ref="ddlPeriodOption" v-for="schedule in userSchedulesData" :key="schedule.scheduleId" :value="schedule.scheduleId">
                         {{getSchedulePeriod(userSchedulesData.indexOf(schedule))}}
                     </neu-option>
                 </neu-select>
             </neu-col>
-            <neu-col xxl="2" xl="3" lg="12" md="2" sm="6" cols="12">
+            <neu-col xxl="2" xl="4" lg="12" md="4" sm="6" cols="12">
                 <span>Last Updated : <br> {{lastUpdatedDate}}</span>
             </neu-col>
         </neu-row>        
@@ -138,7 +138,7 @@
                     <td :class="['neu-table__cell neu-table__row-comfy neu-input__label td_column1 colEmpNameData', columnToggle? 'hideEmployeNameCol': '']">
                         {{ ds.schedule_block }}
                     </td>
-                    <td class="neu-table__row-comfy neu-input__label td_column2" v-bind:class="{ 'hideSkillCol': columnToggle }">
+                    <td class="neu-table__row-comfy neu-input__label td_column2 td_column2Tab" v-bind:class="{ 'hideSkillCol': columnToggle }">
                         
                     </td>
                     <td v-for="day in days" :key="days.indexOf(day)+'_row'" class="neu-table__row-comfy neu-input__label"
@@ -278,7 +278,6 @@
         async getDepartmentSchedule() {
             if(this.userSchedulesData != undefined && this.userSchedulesData != null){
                 var payload = {
-                    deptId: this.selectedDeptId,
                     scheduleId: this.selectedScheduleId,
                 };
 
@@ -474,7 +473,6 @@
         applySummaryCSS(date:any, ds:any): string {
             let blockStartKey = this.getFormattedDay(date) + " " + this.getFormattedDate(date);                    
             let summaryData = ds?.[blockStartKey];
-            console.log("debNo")
             let getcss = 'grid-no-color'; 
             if(summaryData?.variance == 0){
                 getcss = "grid-no-color";
@@ -671,7 +669,7 @@
             this.columnToggle = false;
             this.iconToggle = true;
         }
-    }
+}
 
 </script>
 
@@ -840,7 +838,7 @@
                 border-radius: 50%;
                 background-color: #777;
                 color: #fff;
-                left:23px;
+                left:10px;
                 top:5px
             }
 
@@ -868,6 +866,9 @@
 
             neu-col{
                 padding-bottom: 5px;
+            }
+            .deptView{
+                width:1400px
             }
         }
     /* Media Query for low resolution  Tablets, Ipads */
@@ -901,10 +902,15 @@
                 background: white;
                 border-right: 1px solid silver !important;
             }
+            .td_column2Tab{
+                width:60px
+            }
             neu-col{
                 padding-bottom: 5px;
             }
-
+            .deptView{
+                width:2000px
+            }
         }
         @media (min-width: 576px){
             .col-sm-12 {
