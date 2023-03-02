@@ -29,7 +29,8 @@ const store = new Vuex.Store({
             getOpenNeeds: jest.fn(),
             GetScheduleAssignmentDetail: jest.fn(),
             WithdrawEvent: jest.fn(),
-            ScheduleOpenNeedRequest: jest.fn()
+            ScheduleOpenNeedRequest: jest.fn(),
+            getShiftMembersDetail: jest.fn()
         }
       }
     },

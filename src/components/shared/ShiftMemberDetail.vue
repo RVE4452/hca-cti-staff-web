@@ -1,17 +1,11 @@
 <template>
   <div class="container-fluid" v-if="isLoaded">
-    <div class="neu-margin--bottom-20 pb4 pt3">
-         <div class="col-12">
-          <p class="f3 h2 tl ttu">
-            {{ formatTime(currentEvent.startTime) }} -
-            {{ formatTime(currentEvent.endTime) }}
-          </p>
-        </div>
+    <div class="neu-margin--bottom-20 pb4 pt3">        
         <div class="col-12 neu-margin--top-20">
-          <div v-if="shiftMembersDetail.length == 0">          
+          <div v-if="shiftMembersDetail?.length == 0">          
             <p class="neu-text--tag neu-text--align-left">No Shift Member Found</p>
          </div>
-          <div class="row" v-if="shiftMembersDetail.length > 0">
+          <div class="row" v-if="shiftMembersDetail?.length > 0">
             <div class="col-12 "><p class="neu-text--tag neu-text--align-left">SHIFT MEMBERS</p></div>            
             <div class="col-12 row mt3">
               <div
