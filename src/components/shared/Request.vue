@@ -10,12 +10,15 @@
                         <strong>{{ profileData.ptoBalance }}</strong>
                     </p>
                 </div>
+
                 <div class="col-12 neu-margin--bottom-20" v-if="showErrorMsg">
                     <ErrorNotification :errorMsg="errorMsg" :errorType="errorType" />
                 </div>
+
                 <div class="col-12 pt3 pb4" v-if="availiableDates.length > 1">
                     <h4>Dates</h4>
                 </div>
+
                 <div class="col-12" v-if="availiableDates.length > 1">
                     <div class="row">
                         <div class="col-6 mb3" v-for="dates of availiableDates" v-bind:key="dates">
@@ -31,15 +34,18 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col-12">
                     <div class="hr-line"></div>
                 </div>
+
                 <div class="col-md-12 pb4">
                     <div class="row">
                         <div class="col-12">
                             <label for="approval_code" class="neu-input__label">Select Shift</label>
                             <template v-if="!additionalRequestEvent">
-                                <neu-select  
+                                <neu-select
+                                id="Select_1"
                                 :class="[
                                     'dropdown dropdown-input',
                                     { 'readonly_text_field bg-transparent': widthdrawMode(additionalRequestEvent) },
@@ -48,7 +54,7 @@
                                     @input="shiftChange(additionalRequestEvent)"                                   
                                     interface="popover" ref="shiftChange" name="ddlShift" :value="shift" @v-neu-change="shiftChange">
                                     <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts"
-                                        :value="shift.departmentShiftId" :key="shift.departmentShiftId">
+                                        :value="shift.code" :key="shift.code">
                                         {{ shift.description }}
                                     </neu-option>
                                 </neu-select>
@@ -56,16 +62,17 @@
 
                             <template v-if="additionalRequestEvent">
                                 <neu-select 
+                                id="Select_2"
                                 :class="[
                   'dropdown dropdown-input',
                   { 'readonly_text_field bg-transparent': widthdrawMode(additionalRequestEvent) },
                 ]"
-                                    :isDisabled="widthdrawMode(additionalRequestEvent)"                                 
+                                    :isDisabled="widthdrawMode(additionalRequestEvent)"
                                     interface="popover"  name="ddlShift" :value="defaultShift"
                                     @v-neu-change="shiftChange">
                                     <neu-option ref="ddlShiftOptions" v-for="shift in userSchedules.departmentShifts"
-                                        :value="shift.departmentShiftId" :key="shift.departmentShiftId">
-                                        {{ shift.description }}
+                                        :value="shift.code" :key="shift.code">
+                                        {{ shift.description  }}
                                     </neu-option>
                                 </neu-select>
                             </template>
@@ -79,17 +86,15 @@
                                     <div class="col-6">
                                         <label for="partof_day" class="neu-input__label">Start Time</label>
                                         <template v-if="!additionalRequestEvent">
-                                            <neu-input name="txtStartTime" :disabled="bindDisabled" :input="startTime"
-                                                :value:class="['neu-input__text-field']" type="time" />
+                                            <neu-input id="timeInput_1" name="txtStartTime" v-model="formatedStartTime.value" 
+                                            v-bind="formatedStartTime.value"                                        
+                                            type="time" />
                                         </template>
 
                                         <template v-if="additionalRequestEvent">
-                                            <neu-input name="txtStartTime" :input="defaultStartTime" :value:class="[
-                                                'neu-input__text-field',
-                                                {
-                                                    'readonly_text_field starttimecolor': getDisableDuration(additionalRequestEvent),
-                                                },
-                                            ]" 
+                                            <neu-input id="timeInput_2" name="txtStartTime" 
+                                            v-bind="formatedDefaultStartTime.value"
+                                            v-model="formatedDefaultStartTime.value"
                                             type="time" />
                                         </template>
                                     </div>
@@ -97,10 +102,20 @@
                                     <div class="col-6">
                                         <label for="partof_day" class="neu-input__label">Duration</label>
                                         <div v-if="!additionalRequestEvent">
-                                            <neu-select :disabled="bindDisabled" id="durationOne" interface="popover"
+                                            <neu-select id="durationOne" interface="popover"
                                                 name="ddlDuration">
-                                                <neu-option v-for="duration in durationList" :value="duration.value"
-                                                    :key="duration.value">
+                                                <neu-option v-for="duration in durationList" v-model="duration.value" :value="duration.value" v-bind="duration.maxTimeDuration"
+                                                    :key="duration.maxTimeDuration">
+                                                    {{ duration.label }}
+                                                </neu-option>
+                                            </neu-select>
+                                        </div>
+
+                                        <div v-if="additionalRequestEvent">
+                                            <neu-select id="durationOne" interface="popover"
+                                                name="ddlDuration">
+                                                <neu-option v-for="duration in durationList" v-model="defaultDuration" :value="duration.value" v-bind="duration.maxTimeDuration"
+                                                    :key="duration.maxTimeDuration">
                                                     {{ duration.label }}
                                                 </neu-option>
                                             </neu-select>
@@ -115,10 +130,31 @@
                     <div class="row pt3">
                         <div class="col-12">
                             <label for="approval_code" class="neu-input__label">Comments (Optional)</label>
-                            <textarea :disabled="bindDisabled" class="neu-textarea" :maxlength="maxCommentsCharacters" v-model="comment" name="Comment"></textarea>
+                            
+                            <template v-if="!additionalRequestEvent">
+                                <textarea class="neu-textarea bg-white"
+                                :disabled="widthdrawMode(additionalRequestEvent)"
+                                :maxlength="maxCommentsCharacters"
+                                v-model="comment" 
+                                v-bind="comment" 
+                                name="Comment"></textarea>
                             <br>
                             <span class="commentCharacterCountText">Remaining {{ maxCommentsCharacters - (comment !=
                                 undefined ? comment.length : 0) }} characters.</span>
+                            </template>
+
+                            <template v-if="additionalRequestEvent">
+                                 <textarea
+                                    class="neu-textarea bg-white"
+                                    :disabled="widthdrawMode(additionalRequestEvent)"
+                                    :maxlength="maxCommentsCharacters"
+                                    v-model="defaultComment"
+                                    v-bind="defaultComment" 
+                                    name="Comment"
+                                ></textarea>
+                                <br>
+                                <span class="commentCharacterCountText">Remaining {{ maxCommentsCharacters - (data.defaultComment!= undefined ? data.defaultComment.length: 0) }}  characters.</span>
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -127,7 +163,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <neu-button @click="FireAction(additionalRequestEvent:any)"
+                    <neu-button @click="FireAction(additionalRequestEvent)"
                             v-bind:name="'btn' + (currentEvent.type == 'Request' && additionalRequestEvent == false ? 'Withdraw' : 'AddToSchedule')"
                             data-test="fire-action"
                             :class="[
@@ -158,6 +194,7 @@ import { mapState } from "vuex";
 import ErrorNotification from "./ErrorNotification.vue";
 import ConfirmMsgPopUp from "@/components/shared/ConfirmMsgPopUp.vue";
 import { useAppInsights } from '../../store/modules/AppInsights'
+import { watch, ref } from "vue";
 
 class Props {
     calSelectedDates!: any;
@@ -174,7 +211,47 @@ class Props {
         disabled: {
         type: Boolean,
         default: true
+        },
     },
+    watch: {
+        currentEvent() {
+            debugger
+            this.shift = this.currentEvent.code
+            this.defaultShift = this.currentEvent.code
+
+            this.formatedStartTime = this.formatTime(
+                new Date(this.currentEvent.startTime)
+            )           
+
+            this.formatedDefaultStartTime = this.formatTime(
+                new Date(this.currentEvent.startTime)
+            )
+            
+            this.duration = this.currentEvent.maxTimeDuration
+            this.defaultDuration = this.currentEvent.maxTimeDuration
+            
+            this.comment = this.currentEvent.comment
+            this.defaultComment = this.currentEvent.comment
+        }
+    },
+    created() {
+        // debugger
+        this.shift = this.currentEvent.code
+        this.defaultShift = this.currentEvent.code 
+
+        this.formatedStartTime = this.formatTime(
+            new Date(this.currentEvent.startTime)
+        )           
+
+        this.formatedDefaultStartTime = this.formatTime(
+            new Date(this.currentEvent.startTime)
+        )
+
+        this.duration = this.currentEvent.maxTimeDuration
+        this.defaultDuration = this.currentEvent.maxTimeDuration
+
+        this.comment = this.currentEvent.comment
+        this.defaultComment = this.currentEvent.comment
     },
     data() {
         return {
@@ -216,7 +293,8 @@ export default class Request extends Vue.with(Props) {
     public userSchedules!: any;
     isImpersonating!: boolean;
     appInsightEventData!: any;
-    startTime: string = "";
+    start: string = "";
+    startTime: string = "";    
     defaultStartTime: string = "";
     duration: string = "";
     defaultDuration: string = "";
@@ -232,11 +310,14 @@ export default class Request extends Vue.with(Props) {
     skillId: number = 0;
     staffId: number = 0;
     bindDisabled: Boolean | Object = {};
-    selectedDate: string = "";    
+    selectedDate: string = ""; 
+    formatedStartTime: string = "";
+    formatedDefaultStartTime: string = "";  
 
     async mounted(): Promise<void> {
         await this.loadData();
-        console.log(this.calSelectedDates)
+        
+        console.log(this.calSelectedDates);        
     }
 
     matchSkillId() {
@@ -248,7 +329,15 @@ export default class Request extends Vue.with(Props) {
             }
         })
         this.skillId = skills[0];
-    }    
+    }   
+   
+
+
+    onCurrentEventChanges(newValue:boolean){
+        if(this.currentEvent){
+            this.shift = this.currentEvent.departmentShiftDescription
+        }
+    }
 
     async loadData() {
         try {
@@ -263,6 +352,7 @@ export default class Request extends Vue.with(Props) {
             this.defaultStartTime = "";
             this.defaultDuration = "";
             this.defaultShift = "";
+            this.formatedDefaultStartTime = "";
             this.availableShifts = [];
             this.defaultComment = "";            
 
@@ -344,7 +434,7 @@ export default class Request extends Vue.with(Props) {
                     );
                     var requestHours = this.requestDetail.hours;
                     this.duration = requestHours;
-                    this.startTime = requeststartTime;
+                    this.start = requeststartTime;
                     this.comment = this.requestDetail.comment;
                 }
             })
@@ -481,8 +571,10 @@ export default class Request extends Vue.with(Props) {
         this.defaultShift = event?.detail.value;
         this.duration = defaultDuration;
         this.defaultDuration = defaultDuration;
-        this.startTime = defaultStartTime;
+        this.start = defaultStartTime;
         this.defaultStartTime = defaultStartTime;
+        // this.formatedStartTime = formatedDefaultStartTime;
+        // this.formatedDefaultStartTime = formatedDefaultStartTime;
         this.disableduration = true;
         this.bindDisabled = false;
 
@@ -495,7 +587,7 @@ export default class Request extends Vue.with(Props) {
     }
 
     formatTime(t: Date): string {
-        return moment(t).format("HH:mm:ss");
+        return moment(t).format("hh:mm A");
     }
 
 
@@ -649,5 +741,8 @@ export default class Request extends Vue.with(Props) {
 
 .text-right {
     text-align: right;
+}
+.bg-white{
+    background-color: #fff;
 }
 </style>

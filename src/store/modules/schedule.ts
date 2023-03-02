@@ -213,7 +213,8 @@ const actions: ActionTree<Schedule, RootState> = {
     
      WithdrawRequestEvent({ commit, rootState },payload:any){
         // const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Requests/${requestId}`;
-        const apiUrl = `${process.env.VUE_APP_APIURL}/Requests/NonProductives/${payload.assignmentRequestId}`;
+        // const apiUrl = `${process.env.VUE_APP_APIURL}/Requests/NonProductives/${payload.assignmentRequestId}`;
+        const apiUrl = `${process.env.VUE_APP_APIURL}/Requests/NonProductives`;
 
         return http
             .put(apiUrl)
@@ -287,7 +288,7 @@ const actions: ActionTree<Schedule, RootState> = {
     },
 
 
-     getRequestSchedule({ commit, rootState },psData){
+    getRequestSchedule({ commit, rootState },psData){
         // const apiUrl = `${process.env.VUE_APP_APIURL}/Schedules/Requests`;
         const apiUrl = `${process.env.VUE_APP_APIURL}/Requests/NonProductives/${psData.assignmentRequestId}`;
 
