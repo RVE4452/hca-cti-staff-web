@@ -76,38 +76,7 @@ g<template>
                     </label>
                 </div>
                 <div class="col-12">
-                    <div class="row" v-if="data?.shiftMembers?.length == 0">
-                        <div class="col-12 neu-margin--top-20">
-                            <p class="neu-text--tag neu-text--align-left">No Shift Member Found</p>
-                        </div>
-                    </div>
-                    <div class="row"
-                         v-if="data?.shiftMembers?.length > 0">
-                        <div class="col-12 neu-margin--top-20"><p class="neu-text--tag neu-text--align-left">SHIFT MEMBERS</p></div>
-                        <div class="col-12 row mt3">
-                            <div class="col-12 mt2 mb2"
-                                 v-for="shiftMember in data.shiftMembers"
-                                 :key="shiftMember.username">
-                                <div class="d-flex">
-                                    <div>                        
-                                        <neu-avatar color="gray-60" :initials="shiftMember.firstName[0] + shiftMember.lastName[0]"></neu-avatar>                  
-                                    </div>
-                                        <div>
-                                            <div class="col-12" v-bind:title="shiftMember.name">
-                                                <span class="fw6">
-                                                    {{
-                                                        shiftMember.name
-                                                    }}
-                                                </span>
-                                            </div>
-                                            <div class="col-12">
-                                                <span class="gray">{{ shiftMember.skill }}</span>
-                                            </div>
-                                        </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <shift-member-detail :currentEvent="currentEvent" />
                 </div>
                 <div class="col-12">
                     <neu-button color="primary" fill="raised" class="d-block"
@@ -131,6 +100,7 @@ g<template>
     import {
         NeuSelect,NeuOption,NeuLabel,NeuInput,NeuButton
     } from '@neutron/vue'
+    import ShiftMemberDetail from "./ShiftMemberDetail.vue";
     class Props{
         currentEvent!: any;
         scheduleStartDate!: Date;
@@ -139,12 +109,13 @@ g<template>
     @Options({
         components: {
             ErrorNotification,
-            NeuButton
+            NeuButton,
+            ShiftMemberDetail
         },
          computed: {
-        ...mapState(['oidcUser']),
+         ...mapState(['oidcUser']),
          ...mapState('schedule',['openNeedShiftMembers','assignmentDetail','openNeedsFacilities','openNeedsDepartments','openNeedsShiftDetails']),
-        ...mapState('profile', ['profileData', 'isAdmin', 'appInsightEventData','isImpersonating']),
+         ...mapState('profile', ['profileData', 'isAdmin', 'appInsightEventData','isImpersonating']),
     },
     })
     export default class OpenNeed extends Vue.with(Props) {
@@ -318,6 +289,10 @@ g<template>
                             return members;
                         });
                         this.skillName = this.assignmentDetail?.skill;
+
+                        //Get data for shiftmember
+                        this.getShiftMemberDetails(this.assignmentDetail);
+                        //Get data for shiftmember
                     }
                 })
                 .catch((err: any) => {
@@ -470,10 +445,32 @@ g<template>
                 this.showErrorMsg = false;
                 this.errorMsg = "";
             }
+            
+            if( event != 0){
+                this.getShiftMemberDetails(filteredShift);
+            }
 
             // if (this.deptPartialShifts?.length){
             //     this.setPartialShiftDetails(this.deptPartialShifts[0]?.departmentShiftId, this.deptPartialShifts[0]?.departmentId);
             // }
+        }
+
+        private getShiftMemberDetails(filteredShift: any) {
+            var addPayloadForShiftMembers = {
+                deptId: this.selectedDeptId,
+                start: filteredShift[0]?.start,
+                end: filteredShift[0]?.end
+            };
+            this.$store
+            .dispatch("schedule/getShiftMembersDetail", addPayloadForShiftMembers)
+            .then(() => {
+                this.isLoaded = true;
+            })
+            .catch((err: any) => {
+                if (err) {
+                    console.log(err);
+                }
+            });
         }
 
         onOpenNeedPartialShiftChanges() {
