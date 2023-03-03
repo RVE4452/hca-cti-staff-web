@@ -84,17 +84,19 @@
                             <div class="row">
                                 <div class="d-inline-flex w-100">
                                     <div class="col-6">
+                                        {{  formatedStartTime  }}  <br />
                                         <label for="partof_day" class="neu-input__label">Start Time</label>
                                         <template v-if="!additionalRequestEvent">
-                                            <neu-input id="timeInput_1" name="txtStartTime" v-model="formatedStartTime.value" 
-                                            v-bind="formatedStartTime.value"                                        
+                                            <neu-input id="timeInput_1" 
+                                            :value="formatedStartTime"
+                                            name="txtStartTime"                                        
                                             type="time" />
                                         </template>
 
                                         <template v-if="additionalRequestEvent">
-                                            <neu-input id="timeInput_2" name="txtStartTime" 
-                                            v-bind="formatedDefaultStartTime.value"
-                                            v-model="formatedDefaultStartTime.value"
+                                            <neu-input id="timeInput_2" 
+                                            :value="formatedDefaultStartTime"
+                                            name="txtStartTime"                                             
                                             type="time" />
                                         </template>
                                     </div>
@@ -104,7 +106,7 @@
                                         <div v-if="!additionalRequestEvent">
                                             <neu-select id="durationOne" interface="popover"
                                                 name="ddlDuration">
-                                                <neu-option v-for="duration in durationList" v-model="duration.value" :value="duration.value" v-bind="duration.maxTimeDuration"
+                                                <neu-option v-for="duration in durationList" v-model="duration.value" v-bind="duration.maxTimeDuration"
                                                     :key="duration.maxTimeDuration">
                                                     {{ duration.label }}
                                                 </neu-option>
@@ -114,7 +116,7 @@
                                         <div v-if="additionalRequestEvent">
                                             <neu-select id="durationOne" interface="popover"
                                                 name="ddlDuration">
-                                                <neu-option v-for="duration in durationList" v-model="defaultDuration" :value="duration.value" v-bind="duration.maxTimeDuration"
+                                                <neu-option v-for="duration in durationList" v-model="defaultDuration" v-bind="duration.maxTimeDuration"
                                                     :key="duration.maxTimeDuration">
                                                     {{ duration.label }}
                                                 </neu-option>
@@ -219,13 +221,13 @@ class Props {
             this.shift = this.currentEvent.code
             this.defaultShift = this.currentEvent.code
 
-            this.formatedStartTime = this.formatTime(
-                new Date(this.currentEvent.startTime)
-            )           
+        this.formatedStartTime = this.formatTime(
+            new Date(this.currentEvent.startTime)
+        )           
 
-            this.formatedDefaultStartTime = this.formatTime(
-                new Date(this.currentEvent.startTime)
-            )
+        this.formatedDefaultStartTime = this.formatTime(
+            new Date(this.currentEvent.startTime)
+        )
             
             this.duration = this.currentEvent.maxTimeDuration
             this.defaultDuration = this.currentEvent.maxTimeDuration
